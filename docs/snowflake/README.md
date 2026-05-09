@@ -22,6 +22,9 @@ docs/snowflake/
 │   ├── 000-design.md    The proposal that established this docs system
 │   └── 001-foundational-bridge.md
 │
+├── spikes/              Research spikes — read-only investigations between iterations
+│   └── 001-module-analysis.md
+│
 └── sites/               Per-migrated-site folders
     └── experience-manager/
         ├── OVERVIEW.md         Site coordinates, modules table, authored shape
@@ -34,6 +37,8 @@ docs/snowflake/
 The split between **generic** (top of `docs/snowflake/`) and **site-specific** (under `sites/<name>/`) is deliberate — when onboarding a second site, generic knowledge transfers verbatim while site-specific knowledge stays. Rule of thumb: *if onboarding a second site would benefit from knowing this, it's generic.*
 
 The split between `LEARNINGS.md` (curated encyclopedia) and `iterations/*.md` (messy chronological diary) is the most important seam in the system. Iteration logs are the diary; LEARNINGS is what remains after promotion.
+
+**Spikes vs iterations.** A spike is a research-only investigation — read-only, no production code, no rendered pages. It produces a report (`spikes/NNN-name.md`) that informs *future* iteration scoping but doesn't itself advance the bridge or any site. Spike findings are deliberately *hypotheses* until an iteration validates them; only then do they get promoted to LEARNINGS or DECISIONS. Iterations are the action; spikes are the design study.
 
 ---
 
