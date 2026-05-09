@@ -1,0 +1,1813 @@
+{
+  "summary": {
+    "pages": 7,
+    "totalModules": 86,
+    "uniqueByName": 49,
+    "uniqueBySkeleton": 53,
+    "uniqueByShape": 54,
+    "uniqueByVariant": 75,
+    "nameMultiPage": 16,
+    "skelMultiPage": 15,
+    "shapeMultiPage": 15,
+    "variantMultiPage": 8,
+    "nameMultiBucket": 0,
+    "skelMultiBucket": 0,
+    "shapeMultiBucket": 0
+  },
+  "results": [
+    {
+      "page": "stardust/index.html",
+      "site": "afbs-main",
+      "tag": "section",
+      "moduleId": "hero-announce",
+      "classes": [
+        "hero-announce"
+      ],
+      "skeletonSig": "f90c911b6f92",
+      "shapeSig": "f90c911b6f92",
+      "variantSig": "3d04e82e44d1",
+      "skeletonFp": "section(div(img,div(p+),div(a+)))",
+      "slots": {
+        "headings": 0,
+        "paragraphs": 2,
+        "links": 2,
+        "images": 1,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/index.html",
+      "site": "afbs-main",
+      "tag": "section",
+      "moduleId": "hero",
+      "classes": [],
+      "skeletonSig": "0d01331f317c",
+      "shapeSig": "3c3d5359ff31",
+      "variantSig": "a265b3ba735e",
+      "skeletonFp": "section(div(div(span+),h1,p,div(a)),div(div(div(img)+)+),div(div(div(img)+)+,div(div(img),div),div(div(img)+)+),div(div(div(div(span),div(img),div(div(p,a)))+)))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 4,
+        "links": 4,
+        "images": 22,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/index.html",
+      "site": "afbs-main",
+      "tag": "section",
+      "moduleId": "acrobat-feature",
+      "classes": [
+        "acrobat-feature"
+      ],
+      "skeletonSig": "979062423825",
+      "shapeSig": "279888ad3015",
+      "variantSig": "882fd4dcf8ff",
+      "skeletonFp": "section(div(div(h2,p),div(div(div(img,div(br)),div(div(p+),a))+)))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 7,
+        "links": 3,
+        "images": 3,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/index.html",
+      "site": "afbs-main",
+      "tag": "section",
+      "moduleId": "announce-carousel",
+      "classes": [
+        "announce-carousel"
+      ],
+      "skeletonSig": "84b60273dc9a",
+      "shapeSig": "84b60273dc9a",
+      "variantSig": "40ff8515be59",
+      "skeletonFp": "section(div(h2),div(div(article(p+,a)+)),div(button+))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 12,
+        "links": 6,
+        "images": 0,
+        "buttons": 2,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/index.html",
+      "site": "afbs-main",
+      "tag": "section",
+      "moduleId": "testimonial",
+      "classes": [
+        "testimonial"
+      ],
+      "skeletonSig": "f544328736e4",
+      "shapeSig": "f544328736e4",
+      "variantSig": "d183a0dcaa06",
+      "skeletonFp": "section(div(div(div(span,p+,a),div(div,span+))))",
+      "slots": {
+        "headings": 0,
+        "paragraphs": 2,
+        "links": 1,
+        "images": 0,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/index.html",
+      "site": "afbs-main",
+      "tag": "section",
+      "moduleId": "brands-strip",
+      "classes": [
+        "brands-strip"
+      ],
+      "skeletonSig": "97111f77c4db",
+      "shapeSig": "97111f77c4db",
+      "variantSig": "97d7ae5e0174",
+      "skeletonFp": "section(div(h2,div(span+),div(a)))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 0,
+        "links": 1,
+        "images": 0,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/index.html",
+      "site": "afbs-main",
+      "tag": "section",
+      "moduleId": "search-section",
+      "classes": [
+        "search-section"
+      ],
+      "skeletonSig": "274ffa8ab99e",
+      "shapeSig": "274ffa8ab99e",
+      "variantSig": "db60f5968be8",
+      "skeletonFp": "section(div(div(h2,p),form(div(svg(circle,path)),input,button),div(button+),p(a+)))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 2,
+        "links": 2,
+        "images": 0,
+        "buttons": 5,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/index.html",
+      "site": "afbs-main",
+      "tag": "section",
+      "moduleId": "product-section",
+      "classes": [
+        "product-section"
+      ],
+      "skeletonSig": "cf7d998ea468",
+      "shapeSig": "2c87408e4a95",
+      "variantSig": "83635aa596c5",
+      "skeletonFp": "section(div(div(h2),div(div(button+),div(h3,p)),p,div(div(div(a(div(div,div(h3,p))),div(img)))+),div(a)))",
+      "slots": {
+        "headings": 8,
+        "paragraphs": 8,
+        "links": 7,
+        "images": 6,
+        "buttons": 6,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/index.html",
+      "site": "afbs-main",
+      "tag": "section",
+      "moduleId": "home-final-cta",
+      "classes": [
+        "home-final-cta"
+      ],
+      "skeletonSig": "1448313468a3",
+      "shapeSig": "1448313468a3",
+      "variantSig": "c863be496014",
+      "skeletonFp": "section(div(div(h2,a),div(div(div(span+)),div,a)))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 0,
+        "links": 2,
+        "images": 0,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/index.html",
+      "site": "afbs-main",
+      "tag": "header",
+      "moduleId": "gnav",
+      "classes": [],
+      "skeletonSig": "320f8c4e28f5",
+      "shapeSig": "320f8c4e28f5",
+      "variantSig": "0daad2ad762a",
+      "skeletonFp": "header(div(div(img+,span,div(img+),button,nav(a+)),div(button(img),a+)))",
+      "slots": {
+        "headings": 0,
+        "paragraphs": 0,
+        "links": 8,
+        "images": 5,
+        "buttons": 2,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/index.html",
+      "site": "afbs-main",
+      "tag": "footer",
+      "moduleId": "footer",
+      "classes": [
+        "footer"
+      ],
+      "skeletonSig": "4dfe9eba8515",
+      "shapeSig": "4dfe9eba8515",
+      "variantSig": "1ca691081bfa",
+      "skeletonFp": "footer(div(div(div(div,ul(li(a)),div,ul(li(a)+)),div(div(br),ul(li(a)+))+,div(div,ul(li(a)+)),div(div,ul(li(a)),div,div(a+))),div(div(span,span(a)+))),div(svg(text)))",
+      "slots": {
+        "headings": 0,
+        "paragraphs": 0,
+        "links": 52,
+        "images": 0,
+        "buttons": 0,
+        "listContainers": 7
+      }
+    },
+    {
+      "page": "stardust/products/llm-optimizer.html",
+      "site": "afbs-main",
+      "tag": "section",
+      "moduleId": "llm-hero",
+      "classes": [
+        "llm-hero"
+      ],
+      "skeletonSig": "40713b38f45f",
+      "shapeSig": "40713b38f45f",
+      "variantSig": "e919217742eb",
+      "skeletonFp": "section(div(div(p,h1,p,div(a+)),div(img)))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 2,
+        "links": 2,
+        "images": 1,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/products/llm-optimizer.html",
+      "site": "afbs-main",
+      "tag": "section",
+      "moduleId": "rainbow-strip",
+      "classes": [
+        "rainbow-strip"
+      ],
+      "skeletonSig": "001c2ab6855b",
+      "shapeSig": "001c2ab6855b",
+      "variantSig": "ce48e5c2cdf5",
+      "skeletonFp": "section(p,a)",
+      "slots": {
+        "headings": 0,
+        "paragraphs": 1,
+        "links": 1,
+        "images": 0,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/products/llm-optimizer.html",
+      "site": "afbs-main",
+      "tag": "section",
+      "moduleId": "semrush-promo",
+      "classes": [
+        "semrush-promo"
+      ],
+      "skeletonSig": "bf7ebbd583e4",
+      "shapeSig": "bf7ebbd583e4",
+      "variantSig": "4771d164d5f0",
+      "skeletonFp": "section(div(h2,p,a))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 1,
+        "links": 1,
+        "images": 0,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/products/llm-optimizer.html",
+      "site": "afbs-main",
+      "tag": "section",
+      "moduleId": "llm-intro",
+      "classes": [
+        "llm-intro"
+      ],
+      "skeletonSig": "57271d4631b1",
+      "shapeSig": "57271d4631b1",
+      "variantSig": "9a2a0364e7f9",
+      "skeletonFp": "section(div(h2))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 0,
+        "links": 0,
+        "images": 0,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/products/llm-optimizer.html",
+      "site": "afbs-main",
+      "tag": "section",
+      "moduleId": "split-content",
+      "classes": [
+        "split-content"
+      ],
+      "skeletonSig": "2d339989240a",
+      "shapeSig": "b6d9a040cb7a",
+      "variantSig": "45165a9cb0c9",
+      "skeletonFp": "section(div(article(div(img),div(h3,p,ul(li+),a))+))",
+      "slots": {
+        "headings": 3,
+        "paragraphs": 3,
+        "links": 3,
+        "images": 3,
+        "buttons": 0,
+        "listContainers": 3
+      }
+    },
+    {
+      "page": "stardust/products/llm-optimizer.html",
+      "site": "afbs-main",
+      "tag": "section",
+      "moduleId": "llm-stats",
+      "classes": [
+        "llm-stats"
+      ],
+      "skeletonSig": "9b5078656926",
+      "shapeSig": "9b5078656926",
+      "variantSig": "afe061e7323d",
+      "skeletonFp": "section(div(h2),div(div(p+,a)+))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 6,
+        "links": 3,
+        "images": 0,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/products/llm-optimizer.html",
+      "site": "afbs-main",
+      "tag": "section",
+      "moduleId": "acrobat-feature",
+      "classes": [
+        "acrobat-feature",
+        "acrobat-feature--teal"
+      ],
+      "skeletonSig": "87f4b959810f",
+      "shapeSig": "87f4b959810f",
+      "variantSig": "9959b86f6061",
+      "skeletonFp": "section(div(div(h2,p),div(div(div(img),div(div(p+),a))+)))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 5,
+        "links": 2,
+        "images": 2,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/products/llm-optimizer.html",
+      "site": "afbs-main",
+      "tag": "section",
+      "moduleId": "(no class)",
+      "classes": [],
+      "skeletonSig": "4632192069a7",
+      "shapeSig": "4632192069a7",
+      "variantSig": "a61c7aed418b",
+      "skeletonFp": "section(div(h2),div(a(svg(path+),p+)+,a(svg(rect,path),p+)))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 12,
+        "links": 6,
+        "images": 0,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/products/llm-optimizer.html",
+      "site": "afbs-main",
+      "tag": "section",
+      "moduleId": "training-cta",
+      "classes": [
+        "training-cta"
+      ],
+      "skeletonSig": "ed277fa06c76",
+      "shapeSig": "ed277fa06c76",
+      "variantSig": "c55fdfe5d966",
+      "skeletonFp": "section(div(h2,a))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 0,
+        "links": 1,
+        "images": 0,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/products/llm-optimizer.html",
+      "site": "afbs-main",
+      "tag": "section",
+      "moduleId": "faq-accordion",
+      "classes": [
+        "faq-accordion"
+      ],
+      "skeletonSig": "adeba087a805",
+      "shapeSig": "adeba087a805",
+      "variantSig": "6d89bbfe828b",
+      "skeletonFp": "section(div(h2,ul(li(button,div(p))+)))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 12,
+        "links": 0,
+        "images": 0,
+        "buttons": 12,
+        "listContainers": 1
+      }
+    },
+    {
+      "page": "stardust/products/llm-optimizer.html",
+      "site": "afbs-main",
+      "tag": "section",
+      "moduleId": "llm-final-cta",
+      "classes": [
+        "llm-final-cta"
+      ],
+      "skeletonSig": "c24d2ad2e13d",
+      "shapeSig": "c24d2ad2e13d",
+      "variantSig": "52a9c4deef6a",
+      "skeletonFp": "section(div(div(h2,a),div(img)))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 0,
+        "links": 1,
+        "images": 1,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/products/llm-optimizer.html",
+      "site": "afbs-main",
+      "tag": "header",
+      "moduleId": "gnav",
+      "classes": [],
+      "skeletonSig": "4ca0df390a93",
+      "shapeSig": "4ca0df390a93",
+      "variantSig": "02e95f3513bf",
+      "skeletonFp": "header(div(div(img+,span,div(img+),button,nav(a+)),div(button(img),a)))",
+      "slots": {
+        "headings": 0,
+        "paragraphs": 0,
+        "links": 6,
+        "images": 5,
+        "buttons": 2,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/products/llm-optimizer.html",
+      "site": "afbs-main",
+      "tag": "footer",
+      "moduleId": "footer",
+      "classes": [
+        "footer"
+      ],
+      "skeletonSig": "c59634af5a90",
+      "shapeSig": "c59634af5a90",
+      "variantSig": "a7c957a39e21",
+      "skeletonFp": "footer(div(div(div(div,ul(li(a)),div,ul(li(a)+)),div(div(br),ul(li(a)+))+,div(div,ul(li(a)+)),div(div,ul(li(a)))),div(div(span,span(a)+))))",
+      "slots": {
+        "headings": 0,
+        "paragraphs": 0,
+        "links": 32,
+        "images": 0,
+        "buttons": 0,
+        "listContainers": 7
+      }
+    },
+    {
+      "page": "stardust/products/brand-concierge.html",
+      "site": "afbs-main",
+      "tag": "section",
+      "moduleId": "bc-hero",
+      "classes": [
+        "bc-hero"
+      ],
+      "skeletonSig": "6d11a4126b6a",
+      "shapeSig": "6d11a4126b6a",
+      "variantSig": "9d34e96bcfcc",
+      "skeletonFp": "section(div(div(p,h1,p,div(a)),div(img)))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 2,
+        "links": 1,
+        "images": 1,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/products/brand-concierge.html",
+      "site": "afbs-main",
+      "tag": "section",
+      "moduleId": "bc-try",
+      "classes": [
+        "bc-try"
+      ],
+      "skeletonSig": "3f0f4c6b6d6e",
+      "shapeSig": "3f0f4c6b6d6e",
+      "variantSig": "d8bcf5d2321c",
+      "skeletonFp": "section(div(h2,p,div(button+),form(svg(circle,path),input,button),p(a+)))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 2,
+        "links": 2,
+        "images": 0,
+        "buttons": 5,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/products/brand-concierge.html",
+      "site": "afbs-main",
+      "tag": "section",
+      "moduleId": "bc-intro",
+      "classes": [
+        "bc-intro"
+      ],
+      "skeletonSig": "69b7c5afaeb3",
+      "shapeSig": "69b7c5afaeb3",
+      "variantSig": "17e956ccc05b",
+      "skeletonFp": "section(h2)",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 0,
+        "links": 0,
+        "images": 0,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/products/brand-concierge.html",
+      "site": "afbs-main",
+      "tag": "section",
+      "moduleId": "split-content",
+      "classes": [
+        "split-content"
+      ],
+      "skeletonSig": "00d933bcbdf9",
+      "shapeSig": "f0df2d5cb958",
+      "variantSig": "d893f37675d9",
+      "skeletonFp": "section(div(article(div(img),div(h3,p,ul(li+))),article(div(img),div(h3,p,ul(li+),a)),article(div(img),div(h3,p,ul(li+)))))",
+      "slots": {
+        "headings": 3,
+        "paragraphs": 3,
+        "links": 1,
+        "images": 3,
+        "buttons": 0,
+        "listContainers": 3
+      }
+    },
+    {
+      "page": "stardust/products/brand-concierge.html",
+      "site": "afbs-main",
+      "tag": "section",
+      "moduleId": "bc-use-cases",
+      "classes": [
+        "bc-use-cases"
+      ],
+      "skeletonSig": "141d9b4eefce",
+      "shapeSig": "141d9b4eefce",
+      "variantSig": "52b62635d0c5",
+      "skeletonFp": "section(div(h2),div(article(div,h3,p)+))",
+      "slots": {
+        "headings": 4,
+        "paragraphs": 3,
+        "links": 0,
+        "images": 0,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/products/brand-concierge.html",
+      "site": "afbs-main",
+      "tag": "section",
+      "moduleId": "bc-why",
+      "classes": [
+        "bc-why"
+      ],
+      "skeletonSig": "81be05b2eda5",
+      "shapeSig": "81be05b2eda5",
+      "variantSig": "8db916e24fa5",
+      "skeletonFp": "section(div(h2),div(article(div(img),h3,p)+))",
+      "slots": {
+        "headings": 5,
+        "paragraphs": 4,
+        "links": 0,
+        "images": 4,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/products/brand-concierge.html",
+      "site": "afbs-main",
+      "tag": "section",
+      "moduleId": "bc-conversations",
+      "classes": [
+        "bc-conversations"
+      ],
+      "skeletonSig": "d5e9ccda58f8",
+      "shapeSig": "d5e9ccda58f8",
+      "variantSig": "9956dc2df1e2",
+      "skeletonFp": "section(div(div(h2,p,a),div(div(div+))))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 1,
+        "links": 1,
+        "images": 0,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/products/brand-concierge.html",
+      "site": "afbs-main",
+      "tag": "section",
+      "moduleId": "bc-resources",
+      "classes": [
+        "bc-resources"
+      ],
+      "skeletonSig": "75488b975798",
+      "shapeSig": "75488b975798",
+      "variantSig": "b56ef5ad6215",
+      "skeletonFp": "section(div(h2),div(a(span,p)+))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 2,
+        "links": 2,
+        "images": 0,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/products/brand-concierge.html",
+      "site": "afbs-main",
+      "tag": "section",
+      "moduleId": "bc-webinar",
+      "classes": [
+        "bc-webinar"
+      ],
+      "skeletonSig": "001c2ab6855b",
+      "shapeSig": "001c2ab6855b",
+      "variantSig": "6c8fc3bbfbf3",
+      "skeletonFp": "section(p,a)",
+      "slots": {
+        "headings": 0,
+        "paragraphs": 1,
+        "links": 1,
+        "images": 0,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/products/brand-concierge.html",
+      "site": "afbs-main",
+      "tag": "section",
+      "moduleId": "bc-training",
+      "classes": [
+        "bc-training"
+      ],
+      "skeletonSig": "ed277fa06c76",
+      "shapeSig": "ed277fa06c76",
+      "variantSig": "c55fdfe5d966",
+      "skeletonFp": "section(div(h2,a))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 0,
+        "links": 1,
+        "images": 0,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/products/brand-concierge.html",
+      "site": "afbs-main",
+      "tag": "section",
+      "moduleId": "faq-accordion",
+      "classes": [
+        "faq-accordion"
+      ],
+      "skeletonSig": "adeba087a805",
+      "shapeSig": "adeba087a805",
+      "variantSig": "26b91a554d87",
+      "skeletonFp": "section(div(h2,ul(li(button,div(p))+)))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 9,
+        "links": 0,
+        "images": 0,
+        "buttons": 9,
+        "listContainers": 1
+      }
+    },
+    {
+      "page": "stardust/products/brand-concierge.html",
+      "site": "afbs-main",
+      "tag": "section",
+      "moduleId": "inline-form",
+      "classes": [
+        "inline-form"
+      ],
+      "skeletonSig": "1faee0bd7ed7",
+      "shapeSig": "1faee0bd7ed7",
+      "variantSig": "7edc44320e7c",
+      "skeletonFp": "section(div(h2,form(div(label,input),div(label,select(option+)),div(button)),p))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 1,
+        "links": 0,
+        "images": 0,
+        "buttons": 1,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/products/brand-concierge.html",
+      "site": "afbs-main",
+      "tag": "section",
+      "moduleId": "bc-final-cta",
+      "classes": [
+        "bc-final-cta"
+      ],
+      "skeletonSig": "c24d2ad2e13d",
+      "shapeSig": "c24d2ad2e13d",
+      "variantSig": "52a9c4deef6a",
+      "skeletonFp": "section(div(div(h2,a),div(img)))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 0,
+        "links": 1,
+        "images": 1,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/products/brand-concierge.html",
+      "site": "afbs-main",
+      "tag": "header",
+      "moduleId": "gnav",
+      "classes": [],
+      "skeletonSig": "4ca0df390a93",
+      "shapeSig": "4ca0df390a93",
+      "variantSig": "02e95f3513bf",
+      "skeletonFp": "header(div(div(img+,span,div(img+),button,nav(a+)),div(button(img),a)))",
+      "slots": {
+        "headings": 0,
+        "paragraphs": 0,
+        "links": 6,
+        "images": 5,
+        "buttons": 2,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/products/brand-concierge.html",
+      "site": "afbs-main",
+      "tag": "footer",
+      "moduleId": "footer",
+      "classes": [
+        "footer"
+      ],
+      "skeletonSig": "c59634af5a90",
+      "shapeSig": "c59634af5a90",
+      "variantSig": "2048a0f946c2",
+      "skeletonFp": "footer(div(div(div(div,ul(li(a)),div,ul(li(a)+)),div(div(br),ul(li(a)+))+,div(div,ul(li(a)+)),div(div,ul(li(a)))),div(div(span,span(a)+))))",
+      "slots": {
+        "headings": 0,
+        "paragraphs": 0,
+        "links": 31,
+        "images": 0,
+        "buttons": 0,
+        "listContainers": 7
+      }
+    },
+    {
+      "page": "stardust/products/experience-manager/sites.html",
+      "site": "aem-section",
+      "tag": "section",
+      "moduleId": "aem-hero",
+      "classes": [
+        "aem-hero"
+      ],
+      "skeletonSig": "40713b38f45f",
+      "shapeSig": "40713b38f45f",
+      "variantSig": "e919217742eb",
+      "skeletonFp": "section(div(div(p,h1,p,div(a+)),div(img)))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 2,
+        "links": 2,
+        "images": 1,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/products/experience-manager/sites.html",
+      "site": "aem-section",
+      "tag": "section",
+      "moduleId": "rainbow-strip",
+      "classes": [
+        "rainbow-strip"
+      ],
+      "skeletonSig": "001c2ab6855b",
+      "shapeSig": "001c2ab6855b",
+      "variantSig": "ce48e5c2cdf5",
+      "skeletonFp": "section(p,a)",
+      "slots": {
+        "headings": 0,
+        "paragraphs": 1,
+        "links": 1,
+        "images": 0,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/products/experience-manager/sites.html",
+      "site": "aem-section",
+      "tag": "section",
+      "moduleId": "aem-features",
+      "classes": [
+        "aem-features"
+      ],
+      "skeletonSig": "cb3d503946d0",
+      "shapeSig": "cb3d503946d0",
+      "variantSig": "65761d006d08",
+      "skeletonFp": "section(div(h2,p),div(div(button+)),div(div(img),div(h3,p,ul(li+),a)))",
+      "slots": {
+        "headings": 2,
+        "paragraphs": 2,
+        "links": 1,
+        "images": 1,
+        "buttons": 5,
+        "listContainers": 1
+      }
+    },
+    {
+      "page": "stardust/products/experience-manager/sites.html",
+      "site": "aem-section",
+      "tag": "section",
+      "moduleId": "aem-use-cases",
+      "classes": [
+        "aem-use-cases"
+      ],
+      "skeletonSig": "288ac9d6d035",
+      "shapeSig": "288ac9d6d035",
+      "variantSig": "4b875078f3f8",
+      "skeletonFp": "section(div(div(h2),div(article(div(img),h3,p)+)))",
+      "slots": {
+        "headings": 4,
+        "paragraphs": 3,
+        "links": 0,
+        "images": 3,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/products/experience-manager/sites.html",
+      "site": "aem-section",
+      "tag": "section",
+      "moduleId": "aem-forrester",
+      "classes": [
+        "aem-forrester"
+      ],
+      "skeletonSig": "c24d2ad2e13d",
+      "shapeSig": "c24d2ad2e13d",
+      "variantSig": "f627478ed63c",
+      "skeletonFp": "section(div(div(h2,a),div(img)))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 0,
+        "links": 1,
+        "images": 1,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/products/experience-manager/sites.html",
+      "site": "aem-section",
+      "tag": "section",
+      "moduleId": "brands-strip",
+      "classes": [
+        "brands-strip"
+      ],
+      "skeletonSig": "a427c337ff01",
+      "shapeSig": "a427c337ff01",
+      "variantSig": "81f91ca24dac",
+      "skeletonFp": "section(h2,div(div(span,p)+),div(a))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 3,
+        "links": 1,
+        "images": 0,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/products/experience-manager/sites.html",
+      "site": "aem-section",
+      "tag": "section",
+      "moduleId": "aem-resources",
+      "classes": [
+        "aem-resources"
+      ],
+      "skeletonSig": "6e88c88921fe",
+      "shapeSig": "6e88c88921fe",
+      "variantSig": "73a330774f1a",
+      "skeletonFp": "section(div(h2),div(a(svg(path+),p+),a(svg(rect,path),p+),a(svg(path+),p+),a(svg(circle,path),p+),a(svg(path),p+),a(svg(circle,path),p+),a(svg(rect,path),p+),a(svg(path),p),a(svg(rect+),p),a(svg(path)",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 17,
+        "links": 11,
+        "images": 0,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/products/experience-manager/sites.html",
+      "site": "aem-section",
+      "tag": "section",
+      "moduleId": "acrobat-feature",
+      "classes": [
+        "acrobat-feature",
+        "acrobat-feature--teal"
+      ],
+      "skeletonSig": "87f4b959810f",
+      "shapeSig": "87f4b959810f",
+      "variantSig": "f047ca4c48fa",
+      "skeletonFp": "section(div(div(h2,p),div(div(div(img),div(div(p+),a))+)))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 7,
+        "links": 3,
+        "images": 3,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/products/experience-manager/sites.html",
+      "site": "aem-section",
+      "tag": "section",
+      "moduleId": "faq-accordion",
+      "classes": [
+        "faq-accordion"
+      ],
+      "skeletonSig": "adeba087a805",
+      "shapeSig": "adeba087a805",
+      "variantSig": "0f41fb1df0df",
+      "skeletonFp": "section(div(h2,ul(li(button,div(p))+)))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 6,
+        "links": 0,
+        "images": 0,
+        "buttons": 6,
+        "listContainers": 1
+      }
+    },
+    {
+      "page": "stardust/products/experience-manager/sites.html",
+      "site": "aem-section",
+      "tag": "section",
+      "moduleId": "inline-form",
+      "classes": [
+        "inline-form"
+      ],
+      "skeletonSig": "1faee0bd7ed7",
+      "shapeSig": "1faee0bd7ed7",
+      "variantSig": "93e6cb5dda10",
+      "skeletonFp": "section(div(h2,form(div(label,input),div(label,select(option+)),div(button)),p))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 1,
+        "links": 0,
+        "images": 0,
+        "buttons": 1,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/products/experience-manager/sites.html",
+      "site": "aem-section",
+      "tag": "section",
+      "moduleId": "aem-final-cta",
+      "classes": [
+        "aem-final-cta"
+      ],
+      "skeletonSig": "c24d2ad2e13d",
+      "shapeSig": "c24d2ad2e13d",
+      "variantSig": "52a9c4deef6a",
+      "skeletonFp": "section(div(div(h2,a),div(img)))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 0,
+        "links": 1,
+        "images": 1,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/products/experience-manager/sites.html",
+      "site": "aem-section",
+      "tag": "header",
+      "moduleId": "gnav",
+      "classes": [],
+      "skeletonSig": "4ca0df390a93",
+      "shapeSig": "4ca0df390a93",
+      "variantSig": "ddd60bd05768",
+      "skeletonFp": "header(div(div(img+,span,div(img+),button,nav(a+)),div(button(img),a)))",
+      "slots": {
+        "headings": 0,
+        "paragraphs": 0,
+        "links": 8,
+        "images": 5,
+        "buttons": 2,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/products/experience-manager/sites.html",
+      "site": "aem-section",
+      "tag": "footer",
+      "moduleId": "footer",
+      "classes": [
+        "footer"
+      ],
+      "skeletonSig": "c59634af5a90",
+      "shapeSig": "c59634af5a90",
+      "variantSig": "1b75f95fdbb0",
+      "skeletonFp": "footer(div(div(div(div,ul(li(a)),div,ul(li(a)+)),div(div(br),ul(li(a)+))+,div(div,ul(li(a)+)),div(div,ul(li(a)))),div(div(span,span(a)+))))",
+      "slots": {
+        "headings": 0,
+        "paragraphs": 0,
+        "links": 46,
+        "images": 0,
+        "buttons": 0,
+        "listContainers": 7
+      }
+    },
+    {
+      "page": "stardust/prototypes/products/brand-concierge.html",
+      "site": "bc-prototype",
+      "tag": "section",
+      "moduleId": "bc-hero",
+      "classes": [
+        "bc-hero"
+      ],
+      "skeletonSig": "951ec33bc32b",
+      "shapeSig": "951ec33bc32b",
+      "variantSig": "58b25091a020",
+      "skeletonFp": "section(div(div+),div(div(p,h1,p,div(a)),div(img,div+)))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 2,
+        "links": 1,
+        "images": 1,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/prototypes/products/brand-concierge.html",
+      "site": "bc-prototype",
+      "tag": "section",
+      "moduleId": "bc-try",
+      "classes": [
+        "bc-try"
+      ],
+      "skeletonSig": "3f0f4c6b6d6e",
+      "shapeSig": "3f0f4c6b6d6e",
+      "variantSig": "d8bcf5d2321c",
+      "skeletonFp": "section(div(h2,p,div(button+),form(svg(circle,path),input,button),p(a+)))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 2,
+        "links": 2,
+        "images": 0,
+        "buttons": 5,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/prototypes/products/brand-concierge.html",
+      "site": "bc-prototype",
+      "tag": "section",
+      "moduleId": "bc-intro",
+      "classes": [
+        "bc-intro"
+      ],
+      "skeletonSig": "69b7c5afaeb3",
+      "shapeSig": "69b7c5afaeb3",
+      "variantSig": "0ae0387218e8",
+      "skeletonFp": "section(h2)",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 0,
+        "links": 0,
+        "images": 0,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/prototypes/products/brand-concierge.html",
+      "site": "bc-prototype",
+      "tag": "section",
+      "moduleId": "bc-split",
+      "classes": [
+        "bc-split"
+      ],
+      "skeletonSig": "00d933bcbdf9",
+      "shapeSig": "00d933bcbdf9",
+      "variantSig": "086b531f1744",
+      "skeletonFp": "section(div(article(div(img),div(h3,p,ul(li+))),article(div(img),div(h3,p,ul(li+),a)),article(div(img),div(h3,p,ul(li+)))))",
+      "slots": {
+        "headings": 3,
+        "paragraphs": 3,
+        "links": 1,
+        "images": 3,
+        "buttons": 0,
+        "listContainers": 3
+      }
+    },
+    {
+      "page": "stardust/prototypes/products/brand-concierge.html",
+      "site": "bc-prototype",
+      "tag": "section",
+      "moduleId": "bc-use-cases",
+      "classes": [
+        "bc-use-cases"
+      ],
+      "skeletonSig": "141d9b4eefce",
+      "shapeSig": "141d9b4eefce",
+      "variantSig": "15d0a217a22c",
+      "skeletonFp": "section(div(h2),div(article(div,h3,p)+))",
+      "slots": {
+        "headings": 4,
+        "paragraphs": 3,
+        "links": 0,
+        "images": 0,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/prototypes/products/brand-concierge.html",
+      "site": "bc-prototype",
+      "tag": "section",
+      "moduleId": "bc-why",
+      "classes": [
+        "bc-why"
+      ],
+      "skeletonSig": "81be05b2eda5",
+      "shapeSig": "81be05b2eda5",
+      "variantSig": "016581c21f4b",
+      "skeletonFp": "section(div(h2),div(article(div(img),h3,p)+))",
+      "slots": {
+        "headings": 5,
+        "paragraphs": 4,
+        "links": 0,
+        "images": 4,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/prototypes/products/brand-concierge.html",
+      "site": "bc-prototype",
+      "tag": "section",
+      "moduleId": "bc-conversations",
+      "classes": [
+        "bc-conversations"
+      ],
+      "skeletonSig": "660fe7335243",
+      "shapeSig": "660fe7335243",
+      "variantSig": "f1d57ae0dccc",
+      "skeletonFp": "section(div(div(h2,p,a),div(svg(line+),div+,div(div(br)+))))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 1,
+        "links": 1,
+        "images": 0,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/prototypes/products/brand-concierge.html",
+      "site": "bc-prototype",
+      "tag": "section",
+      "moduleId": "faq-accordion",
+      "classes": [
+        "faq-accordion"
+      ],
+      "skeletonSig": "adeba087a805",
+      "shapeSig": "adeba087a805",
+      "variantSig": "bd8254f518c5",
+      "skeletonFp": "section(div(h2,ul(li(button,div(p))+)))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 6,
+        "links": 0,
+        "images": 0,
+        "buttons": 6,
+        "listContainers": 1
+      }
+    },
+    {
+      "page": "stardust/prototypes/products/brand-concierge.html",
+      "site": "bc-prototype",
+      "tag": "section",
+      "moduleId": "bc-final-cta",
+      "classes": [
+        "bc-final-cta"
+      ],
+      "skeletonSig": "c24d2ad2e13d",
+      "shapeSig": "c24d2ad2e13d",
+      "variantSig": "2032a2acb258",
+      "skeletonFp": "section(div(div(h2,a),div(img)))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 0,
+        "links": 1,
+        "images": 1,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/prototypes/products/brand-concierge.html",
+      "site": "bc-prototype",
+      "tag": "header",
+      "moduleId": "gnav",
+      "classes": [],
+      "skeletonSig": "4ca0df390a93",
+      "shapeSig": "4ca0df390a93",
+      "variantSig": "02e95f3513bf",
+      "skeletonFp": "header(div(div(img+,span,div(img+),button,nav(a+)),div(button(img),a)))",
+      "slots": {
+        "headings": 0,
+        "paragraphs": 0,
+        "links": 6,
+        "images": 5,
+        "buttons": 2,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/prototypes/products/brand-concierge.html",
+      "site": "bc-prototype",
+      "tag": "footer",
+      "moduleId": "footer",
+      "classes": [
+        "footer"
+      ],
+      "skeletonSig": "c59634af5a90",
+      "shapeSig": "c59634af5a90",
+      "variantSig": "43eabad1ed53",
+      "skeletonFp": "footer(div(div(div(div,ul(li(a)),div,ul(li(a)+)),div(div(br),ul(li(a)+))+,div(div,ul(li(a)+)),div(div,ul(li(a)))),div(div(span,span(a)+))))",
+      "slots": {
+        "headings": 0,
+        "paragraphs": 0,
+        "links": 30,
+        "images": 0,
+        "buttons": 0,
+        "listContainers": 7
+      }
+    },
+    {
+      "page": "stardust/prototypes/products/brand-concierge-bolder.html",
+      "site": "bc-prototype",
+      "tag": "section",
+      "moduleId": "bc-hero",
+      "classes": [
+        "bc-hero"
+      ],
+      "skeletonSig": "951ec33bc32b",
+      "shapeSig": "951ec33bc32b",
+      "variantSig": "c435fd4794bf",
+      "skeletonFp": "section(div(div+),div(div(p,h1,p,div(a)),div(img,div+)))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 2,
+        "links": 1,
+        "images": 1,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/prototypes/products/brand-concierge-bolder.html",
+      "site": "bc-prototype",
+      "tag": "section",
+      "moduleId": "bc-marquee",
+      "classes": [
+        "bc-marquee"
+      ],
+      "skeletonSig": "6225629d7de1",
+      "shapeSig": "6225629d7de1",
+      "variantSig": "b2c3fb695e03",
+      "skeletonFp": "section(div(span+))",
+      "slots": {
+        "headings": 0,
+        "paragraphs": 0,
+        "links": 0,
+        "images": 0,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/prototypes/products/brand-concierge-bolder.html",
+      "site": "bc-prototype",
+      "tag": "section",
+      "moduleId": "bc-try",
+      "classes": [
+        "bc-try"
+      ],
+      "skeletonSig": "3f0f4c6b6d6e",
+      "shapeSig": "3f0f4c6b6d6e",
+      "variantSig": "0739612a2f49",
+      "skeletonFp": "section(div(h2,p,div(button+),form(svg(circle,path),input,button),p(a+)))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 2,
+        "links": 2,
+        "images": 0,
+        "buttons": 5,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/prototypes/products/brand-concierge-bolder.html",
+      "site": "bc-prototype",
+      "tag": "section",
+      "moduleId": "bc-intro",
+      "classes": [
+        "bc-intro"
+      ],
+      "skeletonSig": "bad11ef609b6",
+      "shapeSig": "bad11ef609b6",
+      "variantSig": "6b2288aef14c",
+      "skeletonFp": "section(h2(span,br,span))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 0,
+        "links": 0,
+        "images": 0,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/prototypes/products/brand-concierge-bolder.html",
+      "site": "bc-prototype",
+      "tag": "section",
+      "moduleId": "bc-split",
+      "classes": [
+        "bc-split"
+      ],
+      "skeletonSig": "00d933bcbdf9",
+      "shapeSig": "00d933bcbdf9",
+      "variantSig": "086b531f1744",
+      "skeletonFp": "section(div(article(div(img),div(h3,p,ul(li+))),article(div(img),div(h3,p,ul(li+),a)),article(div(img),div(h3,p,ul(li+)))))",
+      "slots": {
+        "headings": 3,
+        "paragraphs": 3,
+        "links": 1,
+        "images": 3,
+        "buttons": 0,
+        "listContainers": 3
+      }
+    },
+    {
+      "page": "stardust/prototypes/products/brand-concierge-bolder.html",
+      "site": "bc-prototype",
+      "tag": "section",
+      "moduleId": "bc-use-cases",
+      "classes": [
+        "bc-use-cases"
+      ],
+      "skeletonSig": "141d9b4eefce",
+      "shapeSig": "141d9b4eefce",
+      "variantSig": "635da1f8958b",
+      "skeletonFp": "section(div(h2),div(article(div,h3,p)+))",
+      "slots": {
+        "headings": 4,
+        "paragraphs": 3,
+        "links": 0,
+        "images": 0,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/prototypes/products/brand-concierge-bolder.html",
+      "site": "bc-prototype",
+      "tag": "section",
+      "moduleId": "bc-why",
+      "classes": [
+        "bc-why"
+      ],
+      "skeletonSig": "81be05b2eda5",
+      "shapeSig": "81be05b2eda5",
+      "variantSig": "453668ec541e",
+      "skeletonFp": "section(div(h2),div(article(div(img),h3,p)+))",
+      "slots": {
+        "headings": 5,
+        "paragraphs": 4,
+        "links": 0,
+        "images": 4,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/prototypes/products/brand-concierge-bolder.html",
+      "site": "bc-prototype",
+      "tag": "section",
+      "moduleId": "bc-conversations",
+      "classes": [
+        "bc-conversations"
+      ],
+      "skeletonSig": "df3af9a5b809",
+      "shapeSig": "df3af9a5b809",
+      "variantSig": "22a645ddb241",
+      "skeletonFp": "section(div(div(h2,p,a),div(svg(path+),div+,div(div(br)+))))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 1,
+        "links": 1,
+        "images": 0,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/prototypes/products/brand-concierge-bolder.html",
+      "site": "bc-prototype",
+      "tag": "section",
+      "moduleId": "faq-accordion",
+      "classes": [
+        "faq-accordion"
+      ],
+      "skeletonSig": "adeba087a805",
+      "shapeSig": "adeba087a805",
+      "variantSig": "9775269abae5",
+      "skeletonFp": "section(div(h2,ul(li(button,div(p))+)))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 6,
+        "links": 0,
+        "images": 0,
+        "buttons": 6,
+        "listContainers": 1
+      }
+    },
+    {
+      "page": "stardust/prototypes/products/brand-concierge-bolder.html",
+      "site": "bc-prototype",
+      "tag": "section",
+      "moduleId": "bc-final-cta",
+      "classes": [
+        "bc-final-cta"
+      ],
+      "skeletonSig": "c24d2ad2e13d",
+      "shapeSig": "c24d2ad2e13d",
+      "variantSig": "f3dbbf990ae8",
+      "skeletonFp": "section(div(div(h2,a),div(img)))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 0,
+        "links": 1,
+        "images": 1,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/prototypes/products/brand-concierge-bolder.html",
+      "site": "bc-prototype",
+      "tag": "header",
+      "moduleId": "gnav",
+      "classes": [],
+      "skeletonSig": "4ca0df390a93",
+      "shapeSig": "4ca0df390a93",
+      "variantSig": "02e95f3513bf",
+      "skeletonFp": "header(div(div(img+,span,div(img+),button,nav(a+)),div(button(img),a)))",
+      "slots": {
+        "headings": 0,
+        "paragraphs": 0,
+        "links": 6,
+        "images": 5,
+        "buttons": 2,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/prototypes/products/brand-concierge-bolder.html",
+      "site": "bc-prototype",
+      "tag": "footer",
+      "moduleId": "footer",
+      "classes": [
+        "footer"
+      ],
+      "skeletonSig": "c59634af5a90",
+      "shapeSig": "c59634af5a90",
+      "variantSig": "43eabad1ed53",
+      "skeletonFp": "footer(div(div(div(div,ul(li(a)),div,ul(li(a)+)),div(div(br),ul(li(a)+))+,div(div,ul(li(a)+)),div(div,ul(li(a)))),div(div(span,span(a)+))))",
+      "slots": {
+        "headings": 0,
+        "paragraphs": 0,
+        "links": 30,
+        "images": 0,
+        "buttons": 0,
+        "listContainers": 7
+      }
+    },
+    {
+      "page": "stardust/prototypes/semrush-home.html",
+      "site": "semrush-prototype",
+      "tag": "section",
+      "moduleId": "sr-hero",
+      "classes": [
+        "sr-hero"
+      ],
+      "skeletonSig": "637fdb1d4dfd",
+      "shapeSig": "637fdb1d4dfd",
+      "variantSig": "c98ab94502f6",
+      "skeletonFp": "section(div,div(div(span,h1(em,br),p,div(a+)),div(div(span,svg(defs(lineargradient(stop+)),path+,circle+)),div(strong,br))))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 1,
+        "links": 2,
+        "images": 0,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/prototypes/semrush-home.html",
+      "site": "semrush-prototype",
+      "tag": "section",
+      "moduleId": "sr-brands",
+      "classes": [
+        "sr-brands"
+      ],
+      "skeletonSig": "664d31887142",
+      "shapeSig": "664d31887142",
+      "variantSig": "40f7c9605b15",
+      "skeletonFp": "section(div(a(img)+))",
+      "slots": {
+        "headings": 0,
+        "paragraphs": 0,
+        "links": 11,
+        "images": 11,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/prototypes/semrush-home.html",
+      "site": "semrush-prototype",
+      "tag": "section",
+      "moduleId": "split-content",
+      "classes": [
+        "split-content",
+        "sr-promos"
+      ],
+      "skeletonSig": "e93c0ed0cff1",
+      "shapeSig": "9b78e736f859",
+      "variantSig": "a7075a653288",
+      "skeletonFp": "section(div(div(div(video(source)),div(span,h2,p,a)),div(div(video(source)),div(span,h2(br),p,a))))",
+      "slots": {
+        "headings": 2,
+        "paragraphs": 2,
+        "links": 2,
+        "images": 0,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/prototypes/semrush-home.html",
+      "site": "semrush-prototype",
+      "tag": "section",
+      "moduleId": "sr-toolkits",
+      "classes": [
+        "sr-toolkits"
+      ],
+      "skeletonSig": "633321102f5a",
+      "shapeSig": "633321102f5a",
+      "variantSig": "e25bf2f84911",
+      "skeletonFp": "section(div(span,h2),div(article(div(img),span,h3,p)+),p(strong+))",
+      "slots": {
+        "headings": 5,
+        "paragraphs": 5,
+        "links": 0,
+        "images": 4,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/prototypes/semrush-home.html",
+      "site": "semrush-prototype",
+      "tag": "section",
+      "moduleId": "sr-stats",
+      "classes": [
+        "sr-stats"
+      ],
+      "skeletonSig": "9f246b5ad9e3",
+      "shapeSig": "9f246b5ad9e3",
+      "variantSig": "4612feeb2e94",
+      "skeletonFp": "section(div(span,h2),div(div(div+,p)+))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 5,
+        "links": 0,
+        "images": 0,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/prototypes/semrush-home.html",
+      "site": "semrush-prototype",
+      "tag": "section",
+      "moduleId": "split-content",
+      "classes": [
+        "split-content",
+        "sr-aivi"
+      ],
+      "skeletonSig": "811503f495d7",
+      "shapeSig": "8e28dab980f1",
+      "variantSig": "b67903b262d2",
+      "skeletonFp": "section(div(div(div(img),div(span,h2,p,a))))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 1,
+        "links": 1,
+        "images": 1,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/prototypes/semrush-home.html",
+      "site": "semrush-prototype",
+      "tag": "section",
+      "moduleId": "sr-testimonial",
+      "classes": [
+        "sr-testimonial"
+      ],
+      "skeletonSig": "ef669daa49eb",
+      "shapeSig": "ef669daa49eb",
+      "variantSig": "abec4a9cf27d",
+      "skeletonFp": "section(div(div(span,h2,p,div(div(img),div(div+),div(img))),div(div+)))",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 1,
+        "links": 0,
+        "images": 2,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/prototypes/semrush-home.html",
+      "site": "semrush-prototype",
+      "tag": "section",
+      "moduleId": "sr-resources",
+      "classes": [
+        "sr-resources"
+      ],
+      "skeletonSig": "7b222f3aeb18",
+      "shapeSig": "7b222f3aeb18",
+      "variantSig": "89e69f5eb9d5",
+      "skeletonFp": "section(div(div(span,h2),a),div(a(div(img),div(span,h3,p)),a(div(img),span,h3,p)+))",
+      "slots": {
+        "headings": 8,
+        "paragraphs": 7,
+        "links": 8,
+        "images": 7,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/prototypes/semrush-home.html",
+      "site": "semrush-prototype",
+      "tag": "section",
+      "moduleId": "sr-final",
+      "classes": [
+        "sr-final"
+      ],
+      "skeletonSig": "6898a8bab4d8",
+      "shapeSig": "6898a8bab4d8",
+      "variantSig": "8f91e4e8a93b",
+      "skeletonFp": "section(h2,p,a)",
+      "slots": {
+        "headings": 1,
+        "paragraphs": 1,
+        "links": 1,
+        "images": 0,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/prototypes/semrush-home.html",
+      "site": "semrush-prototype",
+      "tag": "header",
+      "moduleId": "sr-nav",
+      "classes": [
+        "sr-nav"
+      ],
+      "skeletonSig": "d9fcc8ccbf46",
+      "shapeSig": "d9fcc8ccbf46",
+      "variantSig": "c890b6d517a9",
+      "skeletonFp": "header(div(a,nav(a+),div(a+)))",
+      "slots": {
+        "headings": 0,
+        "paragraphs": 0,
+        "links": 7,
+        "images": 0,
+        "buttons": 0,
+        "listContainers": 0
+      }
+    },
+    {
+      "page": "stardust/prototypes/semrush-home.html",
+      "site": "semrush-prototype",
+      "tag": "footer",
+      "moduleId": "sr-footer",
+      "classes": [
+        "sr-footer"
+      ],
+      "skeletonSig": "5bdc33c58f70",
+      "shapeSig": "5bdc33c58f70",
+      "variantSig": "1d567d8c5916",
+      "skeletonFp": "footer(div(div(a,p),div(h4,ul(li(a)+))+),div(span+))",
+      "slots": {
+        "headings": 3,
+        "paragraphs": 1,
+        "links": 13,
+        "images": 0,
+        "buttons": 0,
+        "listContainers": 3
+      }
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "name": "snowflake-spike-module-analysis",
+  "private": true,
+  "type": "module",
+  "version": "0.0.1",
+  "description": "One-off spike: analyze stardust pages for module clustering / dedup",
+  "dependencies": {
+    "cheerio": "1.0.0-rc.12"
+  }
+}
