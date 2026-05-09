@@ -84,6 +84,11 @@ function buildAutoBlocks(main) {
  * @param {HTMLElement} main The main container element
  */
 function decorateButtons(main) {
+  // Stardust pages style their own CTAs with module-level CSS (`.btn`,
+  // `.aem-hero__ctas a`, etc.) and authors don't bold/italicize links to
+  // promote them, so this is a no-op there. Skipping early is consistency
+  // with the existing `body.stardust` early-out on `buildHeroBlock`.
+  if (document.body.classList.contains('stardust')) return;
   main.querySelectorAll('p a[href]').forEach((a) => {
     a.title = a.title || a.textContent;
     const p = a.closest('p');
@@ -144,7 +149,12 @@ function promoteMetadataBlock(main) {
         meta.content = value;
         document.head.append(meta);
       });
-      table.parentElement?.remove();
+      // Remove only the table, not its parent <div>: an author may have
+      // authored other content (a paragraph, a heading) in the same section
+      // as the metadata block, and removing the parent would discard it.
+      // An empty section div left behind is harmless — decorateSections
+      // wraps it as an empty `.section` with no visible content.
+      table.remove();
     });
 }
 
