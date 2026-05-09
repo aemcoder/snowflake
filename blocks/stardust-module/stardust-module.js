@@ -23,18 +23,19 @@ const templateCache = new Map();
 
 async function fetchTemplate(moduleId) {
   if (templateCache.has(moduleId)) {
-    return templateCache.get(moduleId).cloneNode(true);
+    return templateCache.get(moduleId).content.cloneNode(true);
   }
   const res = await fetch(`/canon/modules/${moduleId}.html`);
   if (!res.ok) {
     throw new Error(`Canon template fetch failed for ${moduleId}: HTTP ${res.status}`);
   }
   const html = await res.text();
-  const wrapper = document.createElement('div');
-  wrapper.innerHTML = html;
-  // Strip top-level HTML comments (provenance/slot list); keep elements only
-  templateCache.set(moduleId, wrapper);
-  return wrapper.cloneNode(true);
+  // Parse via <template> element so the inert document fragment doesn't eagerly
+  // load <img>/<picture> placeholders before slot-fill replaces them.
+  const tpl = document.createElement('template');
+  tpl.innerHTML = html;
+  templateCache.set(moduleId, tpl);
+  return tpl.content.cloneNode(true);
 }
 
 function moduleIdFromBlock(block) {
@@ -78,8 +79,19 @@ function fillSlot(target, cell) {
     return;
   }
 
-  // default: drop in inner HTML from the cell
-  target.innerHTML = cell.innerHTML;
+  // default: drop in inner HTML from the cell.
+  // EDS server-side conversion auto-wraps stray text in <p>; if the cell's
+  // only child is a <p>, unwrap it so we don't get nested <p><p>...</p></p>
+  // when the target element is itself a <p>/<h*>.
+  if (
+    cell.children.length === 1
+    && cell.firstElementChild.tagName === 'P'
+    && cell.firstElementChild.textContent.trim() === cell.textContent.trim()
+  ) {
+    target.innerHTML = cell.firstElementChild.innerHTML;
+  } else {
+    target.innerHTML = cell.innerHTML;
+  }
 }
 
 function expandList(canon, listName, itemRows) {
