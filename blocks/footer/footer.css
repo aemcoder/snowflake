@@ -1,20 +1,36 @@
-footer {
+/*
+ * Footer block CSS — boilerplate styles scoped to body:not(.stardust)
+ * per LEARNINGS § Boilerplate scoping pattern. On stardust pages, footer
+ * styling comes from /fragments/footer.html + /styles/fragments/chrome.css.
+ *
+ * The boilerplate's `footer .footer > div { padding: 40px 24px 24px }`
+ * specifically clobbers stardust's `.footer__main { padding: 64px 124px 0 }`
+ * — see LEARNINGS § Specific cascades that bite. Scoping here defends.
+ */
+
+body:not(.stardust) footer {
   background-color: var(--light-color);
   font-size: var(--body-font-size-xs);
 }
 
-footer .footer > div {
+body:not(.stardust) footer .footer > div {
   margin: auto;
   max-width: 1200px;
   padding: 40px 24px 24px;
 }
 
-footer .footer p {
+body:not(.stardust) footer .footer p {
   margin: 0;
 }
 
 @media (width >= 900px) {
-  footer .footer > div {
+  body:not(.stardust) footer .footer > div {
     padding: 40px 32px 24px;
   }
+}
+
+/* Force visibility for the stardust chrome's inner footer */
+body.stardust footer .footer,
+body.stardust footer .footer[data-block-status="initialized"] {
+  visibility: visible;
 }

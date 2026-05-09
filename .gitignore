@@ -8,6 +8,13 @@ helix-importer-ui
 *.bak
 .idea
 
+# DA workspace (initialized via `aem content clone`; not part of source code)
+content/
+
+# Local agent workspaces
+.agents/
+.claude/
+
 # Ensure these files are tracked
 !CLAUDE.md
 !AGENTS.md

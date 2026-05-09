@@ -1,0 +1,7 @@
+/*
+ * Generic stardust-module block has no styling of its own — visual rules
+ * come from the per-module stardust runtime CSS plus per-page CSS.
+ *
+ * The EDS-added wrappers (`.stardust-module-wrapper`, `.<id>-container`)
+ * are made layout-transparent in /styles/stardust/overrides.css.
+ */

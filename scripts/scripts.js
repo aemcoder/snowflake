@@ -17,6 +17,10 @@ import {
  * @param {Element} main The container element
  */
 function buildHeroBlock(main) {
+  // Stardust pages assemble their own heroes via the stardust-module decorator;
+  // boilerplate auto-blocking would create duplicates. Early-out per LEARNINGS.
+  if (document.body.classList.contains('stardust')) return;
+
   const h1 = main.querySelector('h1');
   const picture = main.querySelector('picture');
   // eslint-disable-next-line no-bitwise
@@ -29,6 +33,151 @@ function buildHeroBlock(main) {
     section.append(buildBlock('hero', { elems: [picture, h1] }));
     main.prepend(section);
   }
+}
+
+/**
+ * Convert in-body `<table>` block markup into `<div class="blockname options">…</div>`
+ * so that `decorateBlocks()` finds them.
+ *
+ * Polyfill for the dev-server path: the deployed `aem.page` backend does this
+ * server-side, but the dev proxy serves DA content as-authored. Idempotent —
+ * no-op when there are no `<table>` elements left (already transformed).
+ *
+ * Per DEC-005.
+ */
+function convertTablesToBlocks(main) {
+  const tables = [...main.querySelectorAll('table')];
+  tables.forEach((table) => {
+    const headerCell = table.querySelector('tr:first-child th, tr:first-child td');
+    const headerText = headerCell?.textContent.trim();
+    if (!headerText) return;
+
+    // "BlockName (option1, option2)" → blockname + options
+    const m = headerText.match(/^([^()]+?)(?:\s*\(([^)]*)\))?$/);
+    if (!m) return;
+    const blockName = m[1].trim().toLowerCase().replace(/\s+/g, '-');
+    const options = (m[2] || '')
+      .split(',')
+      .map((o) => o.trim().toLowerCase().replace(/\s+/g, '-'))
+      .filter(Boolean);
+    const classes = [blockName, ...options];
+
+    const blockDiv = document.createElement('div');
+    blockDiv.className = classes.join(' ');
+
+    // Skip header row, convert each remaining row to nested divs
+    const rows = table.querySelectorAll('tr:not(:first-child)');
+    rows.forEach((row) => {
+      const rowDiv = document.createElement('div');
+      const cells = row.querySelectorAll('td');
+      cells.forEach((cell) => {
+        const cellDiv = document.createElement('div');
+        while (cell.firstChild) cellDiv.append(cell.firstChild);
+        rowDiv.append(cellDiv);
+      });
+      blockDiv.append(rowDiv);
+    });
+
+    // Replace table with div block; wrap in <div> to match section shape
+    const wrapper = document.createElement('div');
+    wrapper.append(blockDiv);
+    // If the table was a child of a <div> section, just replace inline
+    if (table.parentElement?.tagName === 'DIV') {
+      table.replaceWith(blockDiv);
+    } else {
+      table.replaceWith(wrapper);
+    }
+  });
+}
+
+/**
+ * Move the in-body `Metadata` table contents to `<head>` `<meta>` tags
+ * (and `<title>`). Polyfill for the dev-server path; idempotent.
+ *
+ * Must run BEFORE `decorateTemplateAndTheme()` (which reads
+ * `<meta name="template">` to set `body.stardust`).
+ *
+ * Per DEC-005.
+ */
+function promoteMetadataBlock(main) {
+  const tables = [...main.querySelectorAll('table')];
+  tables.forEach((table) => {
+    const headerCell = table.querySelector('tr:first-child th, tr:first-child td');
+    const blockName = headerCell?.textContent.trim().toLowerCase();
+    if (blockName !== 'metadata') return;
+
+    const rows = table.querySelectorAll('tr:not(:first-child)');
+    rows.forEach((row) => {
+      const cells = row.querySelectorAll('td');
+      if (cells.length < 2) return;
+      const name = cells[0].textContent.trim().toLowerCase();
+      const value = cells[1].textContent.trim();
+      if (!name) return;
+      if (name === 'title') {
+        if (!document.head.querySelector('title')) {
+          const titleEl = document.createElement('title');
+          titleEl.textContent = value;
+          document.head.append(titleEl);
+        }
+      } else if (!document.head.querySelector(`meta[name="${name}"]`)) {
+        const meta = document.createElement('meta');
+        meta.setAttribute('name', name);
+        meta.setAttribute('content', value);
+        document.head.append(meta);
+      }
+    });
+
+    const parent = table.parentElement;
+    table.remove();
+    // Drop the now-empty wrapping <div> (DA section that held only metadata)
+    if (parent && parent.tagName === 'DIV' && !parent.children.length && !parent.textContent.trim()) {
+      parent.remove();
+    }
+  });
+}
+
+/**
+ * Load the stardust runtime JS (vendor + per-module scripts) on stardust pages.
+ * Runs after `loadSections()` so module DOM is in place when scripts attach.
+ *
+ * Vendor scripts load sequentially (gsap chain). Module scripts load in
+ * parallel; each is expected to be a no-op if its target elements aren't
+ * present, so we can load the union for all migrated pages.
+ */
+async function loadStardustRuntime() {
+  if (!document.body.classList.contains('stardust')) return;
+
+  const loadJs = (src) => new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = src;
+    script.onload = resolve;
+    script.onerror = () => reject(new Error(`Failed to load ${src}`));
+    document.head.append(script);
+  });
+
+  // Vendor (sequential — gsap → ScrollTrigger → ScrollSmoother)
+  const vendor = ['gsap.min.js', 'ScrollTrigger.min.js', 'ScrollSmoother.min.js', 'lenis.min.js'];
+  for (const v of vendor) {
+    try {
+      // eslint-disable-next-line no-await-in-loop
+      await loadJs(`/stardust/runtime/vendor/${v}`);
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error(err);
+    }
+  }
+
+  // Module scripts (parallel; each is expected to be self-contained)
+  const scripts = [
+    'faq-accordion.js', 'hub-router.js', 'hero-grid-mobile.js',
+    'stagger-reveal.js', 'text-animate.js', 'hero.js', 'hero-grid.js',
+    'mobile-nav.js', 'sticky-cta.js', 'mega-nav.js', 'reveal-tuner.js',
+    'hero-breakpoint-orchestrator.js', 'editorial.js',
+  ];
+  await Promise.all(scripts.map((s) => loadJs(`/stardust/runtime/scripts/${s}`).catch((err) => {
+    // eslint-disable-next-line no-console
+    console.error(err);
+  })));
 }
 
 /**
@@ -79,6 +228,10 @@ function buildAutoBlocks(main) {
  * @param {HTMLElement} main The main container element
  */
 function decorateButtons(main) {
+  // Stardust pages style their own CTAs via stardust runtime CSS; the
+  // boilerplate's button decoration would override class names. Early-out.
+  if (document.body.classList.contains('stardust')) return;
+
   main.querySelectorAll('p a[href]').forEach((a) => {
     a.title = a.title || a.textContent;
     const p = a.closest('p');
@@ -132,8 +285,13 @@ export function decorateMain(main) {
  */
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
-  decorateTemplateAndTheme();
   const main = doc.querySelector('main');
+  if (main) {
+    // Polyfills for the dev-server path (idempotent on deployed)
+    promoteMetadataBlock(main);
+    convertTablesToBlocks(main);
+  }
+  decorateTemplateAndTheme();
   if (main) {
     decorateMain(main);
     document.body.classList.add('appear');
@@ -168,6 +326,8 @@ async function loadLazy(doc) {
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
+
+  loadStardustRuntime();
 }
 
 /**

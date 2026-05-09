@@ -7,3 +7,46 @@
 <script nonce="aem" src="/scripts/aem.js" type="module"></script>
 <script nonce="aem" src="/scripts/scripts.js" type="module"></script>
 <link rel="stylesheet" href="/styles/styles.css"/>
+
+<!-- stardust overrides (display:contents on EDS wrappers, visibility forces) -->
+<link rel="stylesheet" href="/styles/stardust/overrides.css"/>
+
+<!-- stardust runtime CSS — globals + per-module union for the migrated set -->
+<link rel="stylesheet" href="/stardust/runtime/styles/global/reset.css"/>
+<link rel="stylesheet" href="/stardust/runtime/styles/global/grid.css"/>
+<link rel="stylesheet" href="/stardust/runtime/styles/global/typography.css"/>
+<link rel="stylesheet" href="/stardust/runtime/styles/page.css"/>
+<link rel="stylesheet" href="/stardust/runtime/styles/bizpro-tokens.css"/>
+
+<!-- nav -->
+<link rel="stylesheet" href="/stardust/runtime/styles/nav.css"/>
+<link rel="stylesheet" href="/stardust/runtime/styles/mega-nav.css"/>
+<link rel="stylesheet" href="/stardust/runtime/styles/mobile-nav.css"/>
+<link rel="stylesheet" href="/stardust/runtime/styles/nav-offer.css"/>
+
+<!-- per-module CSS (union for all 3 migrated pages) -->
+<link rel="stylesheet" href="/stardust/runtime/styles/rainbow-strip.css"/>
+<link rel="stylesheet" href="/stardust/runtime/styles/split-content.css"/>
+<link rel="stylesheet" href="/stardust/runtime/styles/acrobat-feature-3up.css"/>
+<link rel="stylesheet" href="/stardust/runtime/styles/faq-accordion.css"/>
+<link rel="stylesheet" href="/stardust/runtime/styles/hero.css"/>
+<link rel="stylesheet" href="/stardust/runtime/styles/hero-mobile.css"/>
+<link rel="stylesheet" href="/stardust/runtime/styles/hero-grid.css"/>
+<link rel="stylesheet" href="/stardust/runtime/styles/hero-hub-router.css"/>
+<link rel="stylesheet" href="/stardust/runtime/styles/inline-form.css"/>
+<link rel="stylesheet" href="/stardust/runtime/styles/editorial.css"/>
+<link rel="stylesheet" href="/stardust/runtime/styles/brands-strip.css"/>
+<link rel="stylesheet" href="/stardust/runtime/styles/sticky-cta.css"/>
+<link rel="stylesheet" href="/stardust/runtime/styles/offer-apps.css"/>
+
+<!-- vendor CSS (lenis smooth scroll) -->
+<link rel="stylesheet" href="/stardust/runtime/vendor/lenis.min.css"/>
+
+<!-- chrome (gnav + footer) — extracted from index.html inline <style> per DEC-008 -->
+<link rel="stylesheet" href="/styles/fragments/chrome.css"/>
+
+<!-- per-page CSS — extracted from each page's inline <style>; loaded eagerly
+     for the union (lazy-by-template is a BACKLOG item) -->
+<link rel="stylesheet" href="/styles/stardust/llm-optimizer-page.css"/>
+<link rel="stylesheet" href="/styles/stardust/brand-concierge-page.css"/>
+<link rel="stylesheet" href="/styles/stardust/index-page.css"/>

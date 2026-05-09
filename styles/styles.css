@@ -8,6 +8,10 @@
  * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
  * OF ANY KIND, either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
+ *
+ * Boilerplate styles scoped to body:not(.stardust) per LEARNINGS § Boilerplate
+ * scoping pattern. On stardust pages, typography and layout come from the
+ * stardust runtime CSS + per-page CSS, not from these rules.
  */
 
 :root {
@@ -70,18 +74,23 @@
   }
 }
 
+/* Universal body — display + appear flag apply on every page (FOUC prevention). */
 body {
   display: none;
   margin: 0;
   background-color: var(--background-color);
-  color: var(--text-color);
-  font-family: var(--body-font-family);
-  font-size: var(--body-font-size-m);
-  line-height: 1.6;
 }
 
 body.appear {
   display: block;
+}
+
+/* Boilerplate body typography only on non-stardust pages. */
+body:not(.stardust) {
+  color: var(--text-color);
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-m);
+  line-height: 1.6;
 }
 
 header {
@@ -98,12 +107,7 @@ footer .footer[data-block-status="loaded"] {
   visibility: visible;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+body:not(.stardust) :is(h1, h2, h3, h4, h5, h6) {
   margin-top: 0.8em;
   margin-bottom: 0.25em;
   font-family: var(--heading-font-family);
@@ -112,29 +116,23 @@ h6 {
   scroll-margin: 40px;
 }
 
-h1 { font-size: var(--heading-font-size-xxl); }
-h2 { font-size: var(--heading-font-size-xl); }
-h3 { font-size: var(--heading-font-size-l); }
-h4 { font-size: var(--heading-font-size-m); }
-h5 { font-size: var(--heading-font-size-s); }
-h6 { font-size: var(--heading-font-size-xs); }
+body:not(.stardust) h1 { font-size: var(--heading-font-size-xxl); }
+body:not(.stardust) h2 { font-size: var(--heading-font-size-xl); }
+body:not(.stardust) h3 { font-size: var(--heading-font-size-l); }
+body:not(.stardust) h4 { font-size: var(--heading-font-size-m); }
+body:not(.stardust) h5 { font-size: var(--heading-font-size-s); }
+body:not(.stardust) h6 { font-size: var(--heading-font-size-xs); }
 
-p,
-dl,
-ol,
-ul,
-pre,
-blockquote {
+body:not(.stardust) :is(p, dl, ol, ul, pre, blockquote) {
   margin-top: 0.8em;
   margin-bottom: 0.25em;
 }
 
-code,
-pre {
+body:not(.stardust) :is(code, pre) {
   font-size: var(--body-font-size-s);
 }
 
-pre {
+body:not(.stardust) pre {
   padding: 16px;
   border-radius: 8px;
   background-color: var(--light-color);
@@ -142,7 +140,7 @@ pre {
   white-space: pre;
 }
 
-main > div {
+body:not(.stardust) main > div {
   margin: 40px 16px;
 }
 
@@ -154,13 +152,13 @@ button {
 }
 
 /* links */
-a:any-link {
+body:not(.stardust) a:any-link {
   color: var(--link-color);
   text-decoration: none;
   overflow-wrap: break-word;
 }
 
-a:hover {
+body:not(.stardust) a:hover {
   color: var(--link-hover-color);
   text-decoration: underline;
 }
@@ -278,47 +276,46 @@ button.button.accent:disabled:focus-visible {
   color: var(--dark-color);
 }
 
-main img {
+body:not(.stardust) main img {
   max-width: 100%;
   width: auto;
   height: auto;
 }
 
-.icon {
+body:not(.stardust) .icon {
   display: inline-block;
   height: 24px;
   width: 24px;
 }
 
-.icon img {
+body:not(.stardust) .icon img {
   height: 100%;
   width: 100%;
 }
 
 /* sections */
-main > .section {
+body:not(.stardust) main > .section {
   margin: 40px 0;
 }
 
-main > .section > div {
+body:not(.stardust) main > .section > div {
   max-width: 1200px;
   margin: auto;
   padding: 0 24px;
 }
 
-main > .section:first-of-type {
+body:not(.stardust) main > .section:first-of-type {
   margin-top: 0;
 }
 
 @media (width >= 900px) {
-  main > .section > div {
+  body:not(.stardust) main > .section > div {
     padding: 0 32px;
   }
 }
 
 /* section metadata */
-main .section.light,
-main .section.highlight {
+body:not(.stardust) main :is(.section.light, .section.highlight) {
   background-color: var(--light-color);
   margin: 0;
   padding: 40px 0;
