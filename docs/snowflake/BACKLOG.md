@@ -75,10 +75,10 @@ Saves recreating the curl/script chain every time we add a module.
 
 ### DA-upload helper script
 
-The `aem content push` binary bug (LEARNINGS § External-bugs) means image uploads need a direct API call. Codify as `scripts/da-upload.sh <local-path> <da-path>`:
+The `aem content push` binary bug (LEARNINGS § External-bugs) means image uploads need a direct API call. Codify as `scripts/da-upload.sh <local-path> [<da-path>]`:
 - Read auth token from `.hlx/.da-token.json`
 - Detect MIME type from extension
-- PUT to `admin.da.live/source/<org>/<repo>/<da-path>`
+- PUT to `admin.da.live/source/<org>/<repo>/<da-path>` (default target: `/media/<site-slug>/<basename>` per DEC-011)
 - Echo back the `contentUrl` for the document to reference
 
 Once `aem content push` is fixed upstream this script becomes obsolete; until then it's the canonical way to upload binaries.
@@ -102,9 +102,9 @@ Lower priority — the prose works for now. Worth doing if a future iteration fi
 
 Saves recreating the curl chain every iteration. Branch coords (owner/repo) read from `content/.da-config.json`.
 
-### Migrate iter-002 body images from branch-relative URLs to DA dot-folders *(added: iter-002)*
+### Migrate iter-002 body images to DA `/media` folder *(added: iter-002, refined: iter-003)*
 
-Iter-002 referenced body images via `https://<branch>--<repo>--<owner>.aem.page/stardust/...` for autonomous-pace reasons. Site-level BACKLOG (afbs) tracks the migration to canonical DA dot-folders. Generic-level note: a small uploader script (see "DA-upload helper script" above) would mechanize this for future iterations that hit the same shortcut.
+Iter-002 referenced body images via `https://<branch>--<repo>--<owner>.aem.page/stardust/...` for autonomous-pace reasons. Iter-003 research surfaced that DA's canonical pattern for cross-document/cross-branch shared assets is the top-level `/media` folder — not per-document dot-folders, which are designed for per-doc author uploads (see LEARNINGS § Image storage — three patterns). Naming scheme codified in DEC-011: `/media/<site-slug>/<filename>`. Site-level BACKLOG (afbs) tracks the migration. Generic-level note: a small uploader script (see "DA-upload helper script" above) would mechanize this for future iterations that hit the same shortcut.
 
 ### Generalize per-page CSS extraction *(added: iter-002)*
 

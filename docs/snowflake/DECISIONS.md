@@ -189,4 +189,29 @@ Branch is created from `main`, then the previous iteration's branch is merged in
 
 ---
 
+## DEC-011: Migration-driven images stored in `/media/<site-slug>/<filename>`
+
+**Status:** Accepted (iter-003)
+
+**Context:** Iter-002 referenced body images via branch-relative URLs (`https://afbs-02--snowflake--aemcoder.aem.page/stardust/...`), making content tied to a specific branch's existence (afbs SITE-DEC-003 — explicit shortcut). Iter-003 research established that DA supports three image-storage patterns (LEARNINGS § Image storage — three patterns), of which the top-level `/media` shared folder produces branch-independent `content.da.live` URLs that can be referenced from any document, branch, or iteration.
+
+The remaining choice was the naming scheme inside `/media`:
+
+**Options considered:**
+- (a) Flat `/media/<filename>` — simplest URL, matches Adobe docs verbatim; cross-site filename collisions likely as more sites onboard.
+- (b) Per-site `/media/<site-slug>/<filename>` — one subfolder per migrated site; preserves provenance; avoids cross-site collisions.
+- (c) Per-site + per-page `/media/<site>/<page>/<filename>` — maximum provenance; verbose URLs; truly-shared assets (logos, icons used on multiple pages) need a separate `/media/<site>/shared/` subfolder, and naive migration scripts would upload duplicate binaries.
+
+**Decision:** (b). Migration-driven images go to `/media/<site-slug>/<filename>` where `<site-slug>` is the 4-character mnemonic from DEC-007 (e.g., `afbs`, `expm`). Author drag-drop uploads inside DA's editor remain in per-document dot-folders (the workflow `imageDrop.js` implements; LEARNINGS § Image storage). AEM Assets is a third option for orgs with AEMaaCS — out of scope today.
+
+**Consequences:**
+- `/media/<site-slug>/<file>` is stable across iterations of the same site (`afbs-02`, `afbs-03`, …); content references survive iteration cuts.
+- Cross-site filename collisions impossible by construction.
+- Intra-site collisions are theoretically possible but rare in practice — stardust scrape names like `img-001-hero-or-1.png` are effectively unique within a site. If hit, namespace that one case as `/media/<site>/<page>/<file>`. Don't preemptively over-namespace.
+- Truly shared assets (cross-site logos, etc.) — none today; if needed later, add `/media/shared/` as a sibling.
+- afbs SITE-DEC-003 (branch-relative URLs as iter-002 shortcut) is **superseded by this decision** for content that gets migrated. The afbs SITE-DEC-003 entry stays as-is per the append-only convention; iter-003's work executes the migration.
+- Iter-003 will execute the afbs migration into this scheme.
+
+---
+
 *New decisions go here. Append; don't rewrite.*

@@ -25,25 +25,39 @@ A document is a body fragment, not a full HTML page:
 ```
 Sections inside `<main>` are separated by `<div>` boundaries. Blocks are `<table>`s with a header row carrying the block name + options.
 
-### Image storage (the dot-folder convention)
-DA's editor uploads images for a document to a **dot-prefixed folder named after the document**:
+### Image storage — three patterns *(amended: iter-003)*
 
-| Document | Image storage |
-|---|---|
-| `/path/sites.html` | `/path/.sites/<filename>` |
-| `/blog/post-1.html` | `/blog/.post-1/<filename>` |
+DA officially documents three media patterns ([authoritative at docs.da.live/authors/guides/adding-media](https://docs.da.live/authors/guides/adding-media)):
 
-Authoritative source: `adobe/da-live` → `blocks/edit/prose/plugins/imageDrop.js`:
+| Pattern | Where binaries live | Reference URL | Use case |
+|---|---|---|---|
+| **AEM Assets** | External AEMaaCS DAM | AEM-managed | Curated/governed assets; requires AEMaaCS |
+| **Drag-and-drop dot-folder** | `/{parent}/.{docname}/<file>` | `https://content.da.live/{org}/{repo}/{parent}/.{docname}/<file>` | Author drops image into a doc; per-document isolation |
+| **`/media` shared folder** | `/media/<file>` (any depth allowed) | `https://content.da.live/{org}/{repo}/media/<file>` | Reused across docs / branches / iterations |
+
+#### Drag-and-drop dot-folder (per-document)
+
+DA's editor uploads dragged images to a dot-prefixed folder named after the document. Authoritative source: `adobe/da-live` → `blocks/edit/prose/plugins/imageDrop.js`:
 ```js
 const url = `${origin}/source${parent}/.${name}/${file.name}`;
 ```
 
-References in the document HTML use **absolute `content.da.live` URLs**, not relative paths:
+References in the document use absolute `content.da.live` URLs:
 ```html
 <img src="https://content.da.live/{org}/{repo}/{parent}/.{docname}/<filename>">
 ```
 
-Relative paths like `./assets/image.png` resolve against the editor URL (`da.live/edit#/...`), which doesn't host content — broken images in the editor view.
+Relative paths (`./assets/image.png`) resolve against the editor URL (`da.live/edit#/...`), which doesn't host content — broken images in the editor view.
+
+#### `/media` shared folder
+
+Per docs.da.live: "Simply create a top-level folder called 'media' and upload your content into it." Confirmed empirically (iter-003): direct PUT to `https://admin.da.live/source/{org}/{repo}/media/<file>` auto-creates the folder if missing; the asset is served at `https://content.da.live/{org}/{repo}/media/<file>` with no auth (for image types) and is **branch-independent** — the same DA path is reachable from any branch's `aem.page` host once previewed there.
+
+Use when assets are shared across documents, branches, or iterations. Cross-branch access deduplicates to a single Media Bus entry (same `media_<sha>.<ext>` content-addressed name on `main`, `afbs-02`, etc.).
+
+The DA editor's author-facing workflow is "open the media file → copy to clipboard → paste into doc"; programmatic uploads via direct PUT bypass this UX entirely.
+
+For migration-driven images in this project, see **DEC-011**: scheme is `/media/<site-slug>/<filename>`.
 
 ### Image upload via API
 - Endpoint: `PUT https://admin.da.live/source/{org}/{repo}/{path-to-image}`
@@ -81,6 +95,39 @@ curl -X POST -H "Authorization: Bearer $TOKEN" \
 
 In iter-001 the experience-manager content rendered at aem.page after just `aem content push`; we suspect a previous Sidekick session or background sync had already previewed it. Iter-002 surfaces the actual mechanism. (cross-ref: BACKLOG#cli-content-publish-helper)
 
+### Media format & size limits *(found: iter-003)*
+
+EDS enforces these limits via [aem.live/docs/limits](https://www.aem.live/docs/limits) and [aem.live/docs/media](https://www.aem.live/docs/media).
+
+**Supported types** (Content Bus + Media Bus delivery): HTML (extensionless), JSON, MP4, PDF, SVG, JPG/JPEG, PNG, AVIF, WEBP. Anything else needs Code Bus or 3rd-party hosting.
+
+**Per-file size caps:**
+
+| Type | Max | Notes |
+|---|---|---|
+| PNG / JPG / AVIF | 20 MB | per file |
+| **SVG** | **40 KB** | tight — complex illustrations often exceed |
+| WEBP | docs: "no upload"; empirically: works | see "WebP upload" external quirk |
+| MP4 | 36 MB | short videos only; long-form → AEM Assets / streaming |
+| PDF | 20 MB | |
+| Favicon (`.ico`) | 16 KB | |
+
+**Image rules:**
+- Extension MUST match content type — type is sniffed; renaming a webp to `.png` won't work.
+- Default delivery: 750px (mobile) + 2000px (desktop) variants in webp + original format.
+- EDS doesn't upscale beyond source dimensions — variants smaller than source get compression but no upscaling.
+- Recommended max source: 2000×2000 px.
+
+**Path constraints:**
+- Lowercase `a-z`, digits, dashes only.
+- Max 900 chars.
+
+**Other delivery limits worth knowing:**
+- Response payload: 6 MB compressed.
+- Rate limit: 200 req/sec per IP per hostname.
+- Pages per site: 1 M.
+- Files per Code Bus ref: 500.
+
 ---
 
 ## EDS pipeline
@@ -108,6 +155,23 @@ In `loadEager()`, `decorateTemplateAndTheme()` reads `<meta name="template">` fr
 - Per-block JS auto-loads from `/blocks/<block-name>/<block-name>.js` and runs `default(block)`.
 
 This convention conflicts with the bridge's choice to encode module ID as a block option — see "Module-id-as-class collision" below. *(See DEC-004: Single generic decorator, which is the choice that creates this conflict.)*
+
+### Media Bus vs Content Bus *(found: iter-003)*
+
+EDS routes media through two storage backends with distinct behaviors:
+
+| | Media Bus | Content Bus |
+|---|---|---|
+| **Used for** | PNG, JPG, AVIF, WEBP, MP4 | SVG, PDF, HTML, JSON |
+| **Naming** | content-addressed (`media_<sha256>.<ext>`) | path-addressed (e.g. `/media/foo.svg`) |
+| **Dedup** | yes — one binary per hash, regardless of how many docs reference it | no |
+| **Cache** | permanent (until hash changes) | follows preview/publish lifecycle |
+| **Delivery** | request `/path/foo.png` returns 301 to `/path/media_<sha>.png` | direct path serves the file |
+
+Practical implications:
+- Replacing a PNG/JPG/etc. in DA generates a new content hash → all referencing docs need re-preview to pick it up.
+- Replacing an SVG/PDF keeps the same path; standard re-preview/republish flow applies.
+- Cross-branch referencing of the same source `/media/<file>` deduplicates to ONE Media Bus entry — confirmed empirically: same `media_<sha>.png` returned on both `main` and `afbs-02` for the same DA upload.
 
 ---
 
@@ -211,6 +275,18 @@ Reproducible: `aem content add foo.png && aem content commit && aem content push
 
 ### Adobe Clean Display lazy-loads weights
 The font face declares weights 400, 700, 900. Only the weights actually requested by visible elements load eagerly; others remain in `unloaded` state per `document.fonts`. This causes mild text-shift between first paint and font-loaded paint. Stardust modules use `font-display: swap`, so it's visually graceful, but pixel-diff timing matters — wait for fonts before screenshot.
+
+### WebP upload — docs say no, empirically yes *(found: iter-003)*
+
+[aem.live/docs/media](https://www.aem.live/docs/media) states EDS "does not support the upload of such [webp] images." Empirically, end-to-end webp upload works:
+
+- Direct PUT to `admin.da.live/source/.../foo.webp` returns HTTP 201.
+- Preview returns HTTP 200 with redirect to a content-addressed name.
+- Reference from a doc renders as proper `<picture>` with srcset and correct width/height.
+- `aem.page` serves the webp content correctly (via 301 → content-addressed URL).
+- BUT: `content.da.live/<repo>/<path>.webp` returns HTTP 401 (PNG/SVG return 200) — `content.da.live` filters webp specifically.
+
+Likely interpretation: the docs reflect the DA editor's drag-drop UI (which probably refuses webp), not the underlying admin API. For migration scripts using direct PUT + the EDS pipeline, webp works. Don't waste cycles re-encoding existing webp assets.
 
 ---
 

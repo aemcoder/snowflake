@@ -6,11 +6,13 @@ Things to do specifically for this site. For generic bridge backlog, see `docs/s
 
 ## Up next
 
-### Migrate body images to DA dot-folders
+### Migrate body images to DA `/media` folder
 
-Today the 3 pages reference body images via branch-relative URLs (`https://afbs-02--snowflake--aemcoder.aem.page/stardust/...`). This is a known shortcut from iter-002 (SITE-DEC-003). Canonical pattern is per-document dot-folders (`content/afbs-02/.<docname>/<filename>`) referenced via absolute `content.da.live` URLs that are branch-independent.
+Today the 3 pages reference body images via branch-relative URLs (`https://afbs-02--snowflake--aemcoder.aem.page/stardust/...`). This is a known shortcut from iter-002 (SITE-DEC-003).
 
-Approach: walk each `content/afbs-02/<page>.html`, find `<img src>` references, upload each binary to the correct dot-folder via DA Source API (PUT, multipart/form-data with field `data`), rewrite the cell to use `content.da.live` URL. Per iter-001 LEARNINGS#image-storage. Per-page work is mechanical — could be scripted.
+Iter-003 research established that the canonical pattern for cross-document shared assets is the top-level `/media` folder (LEARNINGS § Image storage — three patterns), not per-document dot-folders. Dot-folders are designed for author drag-drop on a single doc; `/media` is designed for assets reused across documents — which describes our migration assets exactly. The `content.da.live/aemcoder/snowflake/media/<file>` URL is branch- and document-independent.
+
+Approach (per DEC-011): walk each `<page>.html`, find `<img src>` references, upload each binary to `/media/afbs/<filename>` via DA Source API (PUT, multipart/form-data with field `data`, see LEARNINGS § Image upload via API), rewrite the cell to use the `content.da.live/aemcoder/snowflake/media/afbs/...` URL. Per-page work is mechanical — should be scripted (cross-ref generic BACKLOG § DA-upload helper script).
 
 ### Pixel-fidelity check on each page
 

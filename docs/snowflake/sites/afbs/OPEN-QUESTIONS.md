@@ -26,13 +26,7 @@ Could they be unified to a single `product-hero` template with a variant qualifi
 
 For iter-002 we kept them separate (matches stardust source class naming). Worth revisiting once a 3rd product page lands.
 
-## SITE-Q3. What happens when DA content references stale image URLs?
-
-The image URLs in iter-002 content reference `https://afbs-02--snowflake--aemcoder.aem.page/...`. If `afbs-02` branch is deleted or renamed, those URLs return 404 (or redirect, if the host is reused). The DA-stored content keeps the broken references.
-
-Would a content auditor / link-check be useful? Or do we just commit to the dot-folder migration (BACKLOG) before that becomes a real risk?
-
-## SITE-Q4. Should the canonical chrome's "Sign In" + "Get started" buttons be hidden on product pages?
+## SITE-Q3. Should the canonical chrome's "Sign In" + "Get started" buttons be hidden on product pages?
 
 In real Adobe.com, product pages might not show a global Sign In button — the action is more product-specific. We applied the index chrome verbatim, which always shows both.
 
