@@ -1,0 +1,30 @@
+<!--
+  module:    split-content
+  extracted: stardust/products/llm-optimizer.html:460-515
+  slots:     items (list of {image, title, body, bullets, cta})
+  notes:     Per-row data-image-side attribute toggles left/right alignment via CSS.
+             First <article> is the per-item template; decorator clones it once per item row in DA.
+             The bullets slot is a single slot whose value is a <ul> from the cell.
+-->
+<section class="split-content">
+  <div class="split-content__inner" data-slot-list="items">
+
+    <article class="split-content__row anim-enter" data-image-side="left">
+      <div class="split-content__media">
+        <img src="llm-optimizer/assets/scraped/split-1-own-presence.png" alt="" width="2000" height="1500" data-slot="image">
+      </div>
+      <div class="split-content__copy">
+        <h3 class="split-content__title" data-slot="title">Own your presence within AI search and discovery.</h3>
+        <p class="split-content__body" data-slot="body">Ensure your brand, products, and content are visible and credible as customers turn to AI to make decisions.</p>
+        <ul class="split-content__bullets" data-slot="bullets">
+          <li class="split-content__bullet">Access an insights-backed database from Semrush, with millions of prompts informed by Google, ChatGPT, and other AI platform clickstream data.</li>
+          <li class="split-content__bullet">Understand if, how, and where your brand and content are showing up in AI search results.</li>
+          <li class="split-content__bullet">Track your AI search share-of-voice and AI-driven citations against competitors as well as industry benchmarks to identify gaps.</li>
+          <li class="split-content__bullet">Detect potential inaccuracies or hallucinations in AI answers that may be impacting brand perception and trust.</li>
+        </ul>
+        <a href="#" class="split-content__cta" data-slot="cta">Learn more</a>
+      </div>
+    </article>
+
+  </div>
+</section>

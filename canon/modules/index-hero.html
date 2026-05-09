@@ -1,0 +1,136 @@
+<!--
+  module:    index-hero
+  extracted: stardust/index.html:1183-1300
+  slots:     eyebrow (text), title (text), body (text), cta (link)
+  notes:     FROZEN INNER STRUCTURE per SITE-DEC-002. The 5×2 desktop mosaic
+             (hero-image-grid, 10 images), the mobile-only fixed-width grid
+             (hero-mobile-grid), and the 3-card hub-router (hero-hub-router)
+             are all part of the visual choreography — the runtime CSS animations
+             depend on the exact DOM shape, image counts, and data-* attributes.
+
+             Authoring slots cover only the top-level copy block (eyebrow/title/body/cta).
+             Adding/removing mosaic images or hub-router cards requires a code change.
+
+             The wrapping <div class="hero-pin-spacer"> is preserved verbatim because
+             the runtime hero-pin script keys off it. The synthesized class
+             "index-hero" is added to the inner <section> so the bridge can
+             match this canon template (the source uses id="hero" only).
+-->
+<div class="hero-pin-spacer">
+  <section id="hero" class="index-hero">
+
+    <div class="hero-text">
+      <div class="hero-app-id">
+        <span class="cx-mark" aria-hidden="true"></span>
+        <span class="t-eyebrow" data-slot="eyebrow">ADOBE FOR BUSINESS</span>
+      </div>
+      <h1 class="t-title-1" data-slot="title">Customer experience orchestration starts with Adobe CX Enterprise.</h1>
+      <p class="t-body-m" data-slot="body">Deliver personalized, on-brand content and experiences across the entire customer lifecycle with Adobe's end-to-end agentic system for CXO.</p>
+      <div class="hero-ctas">
+        <a href="#" class="btn btn--solid-white" data-slot="cta">Learn more</a>
+      </div>
+    </div>
+
+    <!-- Desktop mosaic: 5 cols × 2 cards (10 images) -->
+    <div class="hero-image-grid" aria-hidden="true">
+      <div class="grid-col" data-col="1">
+        <div class="grid-card" data-grid-slot="1"><img src="runtime/assets/images/hero/col-1_img-01.png" alt="" width="584" height="788"></div>
+        <div class="grid-card" data-grid-row="2"><img src="runtime/assets/images/hero/col-1_img-02.png" alt="" width="584" height="584"></div>
+      </div>
+      <div class="grid-col" data-col="2">
+        <div class="grid-card" data-grid-slot="2"><img src="runtime/assets/images/hero/col-2_img-01.png" alt="" width="584" height="584"></div>
+        <div class="grid-card" data-grid-row="2"><img src="runtime/assets/images/hero/col-2_img-02.png" alt="" width="584" height="584"></div>
+      </div>
+      <div class="grid-col" data-col="3">
+        <div class="grid-card" data-grid-slot="3"><img src="runtime/assets/images/hero/col-3_img-01.png" alt="" width="584" height="584"></div>
+        <div class="grid-card" data-grid-row="2"><img src="runtime/assets/images/hero/col-3_img-02.png" alt="" width="584" height="788"></div>
+      </div>
+      <div class="grid-col" data-col="4">
+        <div class="grid-card" data-grid-slot="4"><img src="runtime/assets/images/hero/col-4_img-01.png" alt="" width="584" height="584"></div>
+        <div class="grid-card" data-grid-row="2"><img src="runtime/assets/images/hero/col-4_img-02.png" alt="" width="584" height="788"></div>
+      </div>
+      <div class="grid-col" data-col="5">
+        <div class="grid-card"><img src="runtime/assets/images/hero/col-5_img-01.png" alt="" width="584" height="584"></div>
+        <div class="grid-card" data-grid-slot="5" data-grid-row="2"><img src="runtime/assets/images/hero/col-5_img-02.png" alt="" width="584" height="584"></div>
+      </div>
+    </div>
+
+    <!-- Mobile-only fixed-width grid -->
+    <div class="hero-mobile-grid" aria-hidden="true">
+      <div class="hmg-col hmg-col--outer-left">
+        <div class="hmg-card"><img src="runtime/assets/images/hero/col-1_img-01.png" alt="" width="584" height="788"></div>
+        <div class="hmg-card"><img src="runtime/assets/images/hero/col-1_img-02.png" alt="" width="584" height="584"></div>
+      </div>
+      <div class="hmg-col hmg-col--left">
+        <div class="hmg-card"><img src="runtime/assets/images/hero/col-2_img-01.png" alt="" width="584" height="584"></div>
+        <div class="hmg-card"><img src="runtime/assets/images/hero/col-2_img-02.png" alt="" width="584" height="584"></div>
+      </div>
+      <div class="hmg-col hmg-col--center">
+        <div class="hmg-card"><img src="runtime/assets/images/hero/col-3_img-01.png" alt="" width="584" height="584"></div>
+        <div class="hmg-slot--sales"></div>
+      </div>
+      <div class="hmg-col hmg-col--right">
+        <div class="hmg-card"><img src="runtime/assets/images/hero/col-4_img-01.png" alt="" width="584" height="584"></div>
+        <div class="hmg-card"><img src="runtime/assets/images/hero/col-4_img-02.png" alt="" width="584" height="788"></div>
+      </div>
+      <div class="hmg-col hmg-col--outer-right">
+        <div class="hmg-card"><img src="runtime/assets/images/hero/col-5_img-01.png" alt="" width="584" height="584"></div>
+        <div class="hmg-card"><img src="runtime/assets/images/hero/col-5_img-02.png" alt="" width="584" height="584"></div>
+      </div>
+    </div>
+
+    <!-- Hub-router — 3 cards from content_json.sections.hero.feature_cards.
+         Each card carries only the JSON's title + description + CTA. -->
+    <div class="hero-hub-router" aria-hidden="true">
+      <div class="hhub-track">
+
+        <div class="hhub-card" data-index="0" data-cx="brand-intelligence">
+          <div class="hhub-card-header">
+            <span class="hhub-card-label">Adobe Brand Intelligence</span>
+          </div>
+          <div class="hhub-card-media">
+            <img class="hhub-card-img" src="assets/gen/hub-brand-intelligence.jpeg" alt="" width="1200" height="900">
+          </div>
+          <div class="hhub-card-footer">
+            <div class="hhub-card-copy">
+              <p class="hhub-card-body">Create content with a continuously learning, agentic system that understands your full brand identity.</p>
+              <a href="#" class="hhub-card-learn">Learn more</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="hhub-card" data-index="1" data-cx="cx-coworker">
+          <div class="hhub-card-header">
+            <span class="hhub-card-label">Adobe CX Enterprise Coworker</span>
+          </div>
+          <div class="hhub-card-media">
+            <img class="hhub-card-img" src="assets/gen/hub-cx-coworker.jpeg" alt="" width="1200" height="900">
+          </div>
+          <div class="hhub-card-footer">
+            <div class="hhub-card-copy">
+              <p class="hhub-card-body">Execute complex, cross-system workflows using an AI agent that understands your business context.</p>
+              <a href="#" class="hhub-card-learn">Learn more</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="hhub-card" data-index="2" data-cx="cx-analytics">
+          <div class="hhub-card-header">
+            <span class="hhub-card-label">Adobe CX Analytics</span>
+          </div>
+          <div class="hhub-card-media">
+            <img class="hhub-card-img" src="assets/gen/hub-cx-analytics.jpeg" alt="" width="1200" height="900">
+          </div>
+          <div class="hhub-card-footer">
+            <div class="hhub-card-copy">
+              <p class="hhub-card-body">Bring your customer experience and enterprise data together, delivering fast insights and activation at scale.</p>
+              <a href="#" class="hhub-card-learn">Learn more</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </section>
+</div>

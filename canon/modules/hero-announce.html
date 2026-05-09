@@ -1,0 +1,25 @@
+<!--
+  module:    hero-announce
+  extracted: stardust/index.html:1161-1177
+  slots:     lockup (image), title (text), body (text), cta1 (link), cta2 (link)
+  notes:     Top announcement band (Adobe + Semrush). Two CTAs side-by-side; cta1
+             carries the primary modifier class (hero-announce__cta--primary).
+-->
+<section class="hero-announce">
+  <div class="hero-announce__panel">
+    <img class="hero-announce__lockup"
+         src="assets/lockups/adobe-semrush.svg"
+         alt="Adobe + Semrush"
+         width="290" height="22"
+         data-slot="lockup">
+
+    <div class="hero-announce__copy">
+      <p class="hero-announce__head" data-slot="title">Adobe completes the acquisition of Semrush.</p>
+      <p class="hero-announce__sub" data-slot="body">Access the world's most powerful data for AI search optimization.</p>
+    </div>
+    <div class="hero-announce__ctas">
+      <a href="#" class="hero-announce__cta hero-announce__cta--primary" data-slot="cta1">Learn about the product</a>
+      <a href="#" class="hero-announce__cta" data-slot="cta2">Read the announcement</a>
+    </div>
+  </div>
+</section>

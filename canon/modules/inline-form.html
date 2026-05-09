@@ -1,0 +1,33 @@
+<!--
+  module:    inline-form
+  extracted: stardust/products/brand-concierge.html:794-817
+  slots:     title (text)
+  notes:     FROZEN INNER STRUCTURE per SITE-DEC-002. The form (email + country
+             select + Next button + step counter) is decoration only — does not
+             submit. Only the top-level title is exposed; future iteration may
+             wire the form to an EDS form action and parameterize labels/options.
+-->
+<section class="inline-form">
+  <div class="inline-form__inner">
+    <h2 class="inline-form__title" data-slot="title">Let us show you the full power of Adobe Brand Concierge.</h2>
+    <form class="inline-form__form" novalidate>
+      <div class="inline-form__field">
+        <label for="if-email" class="inline-form__label">Business email</label>
+        <input id="if-email" class="inline-form__input" type="email" placeholder="Business email*" required>
+      </div>
+      <div class="inline-form__field">
+        <label for="if-country" class="inline-form__label">Country</label>
+        <select id="if-country" class="inline-form__select" required>
+          <option value="" disabled selected>Country*</option>
+          <option value="us">United States</option>
+          <option value="ca">Canada</option>
+          <option value="gb">United Kingdom</option>
+        </select>
+      </div>
+      <div class="inline-form__field inline-form__field--full">
+        <button type="submit" class="inline-form__submit">Next</button>
+      </div>
+    </form>
+    <p class="inline-form__step">Step 1 of 2</p>
+  </div>
+</section>

@@ -1,0 +1,26 @@
+<!--
+  module:    llm-hero
+  extracted: stardust/products/llm-optimizer.html:415-433
+  slots:     eyebrow (text), title (text), body (text), cta1 (link), cta2 (link), image (image)
+  notes:     Two-CTA hero. cta1 has an inline <svg> play icon that the link decorator preserves.
+             Source content is kept verbatim as the canon's placeholder; authors override via DA.
+-->
+<section class="llm-hero">
+  <div class="llm-hero__grid">
+    <div class="llm-hero__copy">
+      <p class="llm-hero__eyebrow" data-slot="eyebrow">ADOBE LLM OPTIMIZER</p>
+      <h1 class="llm-hero__title" data-slot="title">Drive brand authority in AI search and discovery.</h1>
+      <p class="llm-hero__body" data-slot="body">Stop speculating and optimize for AI search with clear direction. With Adobe LLM Optimizer, now infused with unmatched data from Semrush, enterprises can drive measurable visibility, qualified traffic, and influence at every stage of the customer journey.</p>
+      <div class="llm-hero__ctas">
+        <a href="#" class="btn btn--solid-white" data-slot="cta1">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M3 1.5l9 5.5-9 5.5z"/></svg>
+          Watch overview
+        </a>
+        <a href="#" class="btn btn--ghost-white" data-slot="cta2">Take a tour</a>
+      </div>
+    </div>
+    <div class="llm-hero__media" aria-hidden="true">
+      <img src="llm-optimizer/assets/scraped/img-001-hero-or-1.png" alt="" width="720" height="518" class="llm-hero__bg" data-slot="image">
+    </div>
+  </div>
+</section>

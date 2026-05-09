@@ -1,0 +1,29 @@
+<!--
+  module:    faq-accordion
+  extracted: stardust/products/llm-optimizer.html:638-753
+  slots:     title (text), items (list of {question, answer})
+  notes:     Shared module — also used on brand-concierge (8 items) and llm-optimizer (12 items).
+             The <ul> has data-slot-list="items"; the first <li> is the per-item template,
+             repeated once per "item" row in the DA block table.
+             Per-item slots: "question" (text inside the <button>'s first <span>) and
+             "answer" (text inside the <p class="faq-accordion__answer">).
+             Open/close behavior comes from /stardust/runtime/scripts/faq-accordion.js,
+             which queries .faq-accordion__trigger and binds clicks at runtime.
+-->
+<section class="faq-accordion">
+  <div class="faq-accordion__inner">
+    <h2 class="faq-accordion__title" data-slot="title">Questions? We have answers.</h2>
+
+    <ul class="faq-accordion__list" data-slot-list="items">
+      <li class="faq-accordion__item">
+        <button class="faq-accordion__trigger" type="button">
+          <span data-slot="question">What is Adobe LLM Optimizer?</span>
+          <span class="faq-accordion__icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq-accordion__panel">
+          <p class="faq-accordion__answer" data-slot="answer">Adobe LLM Optimizer is a generative AI search and discovery optimization solution that helps brands improve how their content is cited and surfaced in AI-powered search results. It provides automated insights, recommendations, and optimizations across major LLMs.</p>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>

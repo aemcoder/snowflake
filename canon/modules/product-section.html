@@ -1,0 +1,74 @@
+<!--
+  module:    product-section
+  extracted: stardust/index.html:1531-1656
+  slots:     title (text), pane-title (text), pane-body (text), list-heading (text),
+             items (list of {mark, mark-data, title, badge, body, image, link}),
+             cta (link)
+  notes:     FROZEN INNER STRUCTURE per SITE-DEC-002 for the 6-tab strip — tabs
+             are decorative-only, do not switch content; clicking them does not
+             swap the product grid. Tab labels are hard-coded in the template.
+             Future iteration may parameterize tabs + tab content.
+
+             The product-grid IS list-templated — first <div class="explore-card">
+             is the per-item template; decorator clones once per "item" row.
+             Per-card slots:
+               mark      → text inside the .explore-card-mark (2-letter abbrev)
+               mark-data → not slotted, frozen as data-mark on first clone
+               title     → text inside the <h3 class="title-4">
+               badge     → text inside the .explore-card-badge <span> (e.g. "NEW")
+                           — preserved verbatim if the row has no badge cell
+               body      → text inside the <p class="body-md">
+               image     → src on the background <img>
+               link      → href on the wrapping <a class="explore-card-link-container">
+-->
+<section class="product-section">
+  <div class="container">
+    <div class="product-section__header anim-enter">
+      <h2 class="title-2 product-section__title" data-slot="title">Explore all Adobe for Business products.</h2>
+    </div>
+
+    <!-- Centered scaffolding only — sits above the full-width grid. -->
+    <div class="product-section__scaffold">
+      <!-- Tab strip — content_json.sections.explore_products.tabs -->
+      <div class="product-section__tabs anim-enter">
+        <button type="button" class="product-section__tab is-active">AI &amp; agents</button>
+        <button type="button" class="product-section__tab">Content &amp; workflows</button>
+        <button type="button" class="product-section__tab">Creativity &amp; design</button>
+        <button type="button" class="product-section__tab">Data &amp; analytics</button>
+        <button type="button" class="product-section__tab">Campaigns</button>
+        <button type="button" class="product-section__tab">Documents</button>
+      </div>
+
+      <!-- Tab content header — JSON's tab_content.title + description -->
+      <div class="product-section__pane anim-enter">
+        <h3 class="title-4 product-section__pane-title" data-slot="pane-title">AI at Adobe.</h3>
+        <p class="product-section__pane-body" data-slot="pane-body">Give your teams the productivity tools and always-on insights to deliver true personalization at scale with Adobe's AI solutions.</p>
+      </div>
+    </div>
+
+    <p class="product-section__list-heading anim-enter" data-slot="list-heading">Explore products.</p>
+
+    <div class="product-grid" data-slot-list="items">
+
+      <div class="explore-card">
+        <div class="explore-card-container anim-enter">
+          <a class="explore-card-link-container" href="#" data-slot="link">
+            <div class="explore-card-content">
+              <div class="explore-card-mark" data-mark="bi" data-slot="mark">Bi</div>
+              <div class="explore-card-text">
+                <h3 class="title-4"><span data-slot="title">Brand Intelligence</span> <span class="explore-card-badge" data-slot="badge">NEW</span></h3>
+                <p class="body-md" data-slot="body">Measure and optimize how your brand shows up across channels and in AI search.</p>
+              </div>
+            </div>
+          </a>
+          <div class="explore-card-background"><img src="runtime/assets/images/hero/col-2_img-01.png" alt="" loading="lazy" data-slot="image"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="product-section__foot anim-enter">
+      <a href="#" class="btn btn--ghost-white" data-slot="cta">Explore all products</a>
+    </div>
+  </div>
+</section>

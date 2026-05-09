@@ -1,0 +1,33 @@
+<!--
+  module:    bc-try
+  extracted: stardust/products/brand-concierge.html:591-614
+  slots:     title (text), body (text)
+  notes:     FROZEN INNER STRUCTURE per SITE-DEC-002. The chip prompts, search bar,
+             and disclaimer link structure are all visual decoration only — the form
+             does not submit. Only the top-level title/body are exposed as slots;
+             future iteration may parameterize the chips list and disclaimer copy.
+-->
+<section class="bc-try">
+  <div class="bc-try__inner">
+    <h2 class="bc-try__title" data-slot="title">Try Brand Concierge for yourself.</h2>
+    <p class="bc-try__sub" data-slot="body">Choose a prompt or ask your own question about Adobe products to see it in action.</p>
+    <div class="bc-try__chips">
+      <button type="button" class="bc-try__chip">What is a brand Concierge?</button>
+      <button type="button" class="bc-try__chip">How does Brand Concierge improve customer experience?</button>
+      <button type="button" class="bc-try__chip">What are the benefits of using Adobe agents?</button>
+      <button type="button" class="bc-try__chip">How does Adobe LLM Optimizer work?</button>
+    </div>
+    <form class="bc-try__bar" onsubmit="event.preventDefault();">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <circle cx="7" cy="7" r="5"/><path d="M14 14L10.5 10.5" stroke-linecap="round"/>
+      </svg>
+      <input type="text" placeholder="Ask a question">
+      <button type="submit" aria-label="Send">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+          <path d="M2 8L14 8M9 3L14 8L9 13"/>
+        </svg>
+      </button>
+    </form>
+    <p class="bc-try__disclaimer">Use of this beta AI chatbot is subject to <a href="#">Privacy Policy</a>. Don't share sensitive data. AI responses are not your Content, may be inaccurate, and any offers provided are non-binding. <a href="#">Generative AI Terms</a>.</p>
+  </div>
+</section>

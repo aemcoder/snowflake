@@ -1,0 +1,40 @@
+<!--
+  module:    announce-carousel
+  extracted: stardust/index.html:1379-1434
+  slots:     title (text), items (list of {eyebrow, title, link})
+  notes:     FROZEN INNER STRUCTURE per SITE-DEC-002 for the surrounding chrome
+             (carousel viewport, track id="announceTrack", prev/next arrows with
+             SVGs and ids the runtime carousel script keys off).
+             The <article class="announce-card"> children inside the track ARE
+             list-templated — the first card is the per-item template; the
+             decorator clones it once per "item" row. Authors get title +
+             eyebrow + link slots per card.
+             Behavior comes from /stardust/runtime/scripts/announce-carousel.js
+             which queries #announceTrack, #announcePrev, #announceNext.
+-->
+<section class="announce-carousel">
+  <div class="announce-carousel__header anim-enter">
+    <h2 class="announce-carousel__title" data-slot="title">Recent announcements.</h2>
+  </div>
+
+  <div class="announce-carousel__viewport">
+    <div class="announce-carousel__track" id="announceTrack" data-slot-list="items">
+
+      <article class="announce-card anim-enter">
+        <p class="announce-card__eyebrow" data-slot="eyebrow">ADOBE ACQUIRES SEMRUSH</p>
+        <p class="announce-card__title" data-slot="title">Access the world's most powerful data for AI search optimization.</p>
+        <a href="/products/semrush" class="announce-card__cta" data-slot="link">Learn more</a>
+      </article>
+
+    </div>
+  </div>
+
+  <div class="announce-carousel__controls">
+    <button class="announce-carousel__arrow" id="announcePrev" type="button" aria-label="Previous">
+      <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M7.5 2L3.5 6L7.5 10"/></svg>
+    </button>
+    <button class="announce-carousel__arrow" id="announceNext" type="button" aria-label="Next">
+      <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4.5 2L8.5 6L4.5 10"/></svg>
+    </button>
+  </div>
+</section>
