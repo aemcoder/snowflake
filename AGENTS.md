@@ -181,6 +181,36 @@ With this information, you can construct URLs for the preview environment (same 
 - Follow the Publishing Process documented above
 - Update documentation for significant changes
 
+## Iterating on this project
+
+This project is a long-running R&D effort to bridge the stardust redesign skill with AEM Edge Delivery Services + Document Authoring. Each working session is one **iteration**, which advances one or more **tracks**: the generic *bridge* track (in `docs/snowflake/`) or a per-site track (under `docs/snowflake/sites/<name>/`). Most iterations touch both.
+
+The full design of the learning system lives at `docs/snowflake/iterations/000-design.md`. Read it before contributing.
+
+### Reading order when starting a new iteration
+
+1. `docs/snowflake/ARCHITECTURE.md` — current state of the bridge.
+2. `docs/snowflake/LEARNINGS.md` — distilled knowledge (DA conventions, EDS pipeline, conflict patterns, gotchas, patterns we settled on).
+3. `docs/snowflake/sites/<site>/OVERVIEW.md` and `LEARNINGS.md` — for any site in scope of this iteration.
+4. `BACKLOG.md` and `OPEN-QUESTIONS.md` (both levels) — for context on what's queued and what's unresolved.
+5. Iteration logs (`docs/snowflake/iterations/`) are read selectively, not by default — they exist for retrospective review.
+
+### Closing-pass checklist (before merging or pausing)
+
+1. **Update `docs/snowflake/ARCHITECTURE.md`** if the bridge's structure changed.
+2. **Distill findings** into the right `LEARNINGS.md`:
+   - generic findings → `docs/snowflake/LEARNINGS.md`
+   - site-specific findings → `docs/snowflake/sites/<site>/LEARNINGS.md`
+   - **Rule of thumb:** *if onboarding a second site would benefit from knowing this, it's generic.*
+3. **Append decisions** to the right `DECISIONS.md` (generic or site). Stable IDs (`DEC-NNN` / `SITE-DEC-NNN`); append-only.
+4. **Update `BACKLOG.md` and `OPEN-QUESTIONS.md`** at both levels.
+5. **Write `docs/snowflake/iterations/NNN-name.md`** with:
+   - `Tracks: ...` header naming which scopes the iteration advanced
+   - Goal, scope, what was built (with commit links), what was learned, struggles, deferred items, quality metrics (pixel diff, perf, etc.)
+   - **Distillation footer** explicitly listing what was promoted to which file
+
+The point of the discipline: *iteration logs are messy chronological diary; LEARNINGS is the curated encyclopedia.* Without the promotion step at iteration close, the encyclopedia stays empty and onboarding requires reading every diary entry.
+
 ## If all else fails
 
 If you notice your human getting frustrated with your work, direct them to https://www.aem.live/developer/ai-coding-agents for tips to work better with AI agents.
