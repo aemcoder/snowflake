@@ -45,15 +45,19 @@ The bridge sits between **stardust output** (committed under `stardust/products/
 ## File map
 
 ```
+fragments/                          # site chrome — code-deployed static (DEC-008, iter-002)
+  header.html                       # gnav; loaded by /blocks/header/header.js at runtime
+  footer.html                       # footer; loaded by /blocks/footer/footer.js at runtime
+
 canon/                              # derived module templates with [data-slot] markers
-  header.html                       # chrome — currently frozen as code (no slots)
-  footer.html                       # chrome — currently frozen as code (no slots)
   modules/<id>.html                 # one file per module, slots marked
 
 blocks/
   stardust-module/{js,css}          # the generic decorator; one block for all modules
-  header/header.{js,css}            # loads /canon/header.html; boilerplate scoped to body:not(.stardust)
-  footer/footer.{js,css}            # loads /canon/footer.html; boilerplate scoped to body:not(.stardust)
+  header/header.{js,css}            # thin fetch+innerHTML loader for /fragments/header.html;
+                                    # boilerplate scoped to body:not(.stardust)
+  footer/footer.{js,css}            # thin fetch+innerHTML loader for /fragments/footer.html;
+                                    # boilerplate scoped to body:not(.stardust)
 
 scripts/scripts.js                  # adds promoteMetadataBlock + convertTablesToBlocks polyfills,
                                     # body.stardust early-out on buildHeroBlock + decorateButtons,
@@ -61,16 +65,25 @@ scripts/scripts.js                  # adds promoteMetadataBlock + convertTablesT
 
 styles/
   styles.css                        # boilerplate body typography scoped to body:not(.stardust)
+  fragments/
+    chrome.css                      # chrome-specific styles (gnav, footer, wordmark, social);
+                                    # always loaded via head.html (DEC-008)
   stardust/
-    sites-page.css                  # extracted from each migrated page's inline <style>
+    <page-slug>-page.css            # one per migrated page, extracted from page's inline <style>
+                                    # with chrome rules removed; e.g. sites-page.css,
+                                    # llm-optimizer-page.css, brand-concierge-page.css, index-page.css
     overrides.css                   # body.stardust display:contents on EDS wrappers, visibility forces
 
-head.html                           # links the stardust runtime CSS files used on each page
+head.html                           # links: boilerplate styles, stardust runtime CSS (globals +
+                                    # chrome + per-module union), chrome.css, per-page CSS files
 
 stardust/runtime/                   # vendored CSS, JS, fonts, images served at /stardust/runtime/...
 ```
 
 ## Component responsibilities
+
+### `fragments/{header,footer}.html` — site chrome (static, code-only)
+The site's gnav and footer as flat HTML files, deployed via Code Sync and loaded at runtime by `/blocks/{header,footer}/{header,footer}.js` (pure `fetch` + `innerHTML`). Never authored in DA. Pairs with `/styles/fragments/chrome.css` (loaded eagerly via `head.html`). See DEC-008.
 
 ### `canon/modules/<id>.html` — the structural seed
 A self-contained HTML fragment for one module, extracted from stardust output. Mark up editable nodes with `data-slot="<name>"`. Repeating items use `data-slot-list="<name>"` on the container with one child template inside. Comments at the top declare provenance + slot list.
