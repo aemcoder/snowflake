@@ -1,0 +1,158 @@
+/* ============================================
+   Hub — Editorial section
+   "There's more to Acrobat than Acrobat."
+   Parallaxes beneath the hero's rounded bottom cap.
+   ============================================ */
+
+:root {
+  --editorial-bg: #f6f6f6;
+  --editorial-card-bg: #ffffff;
+  --editorial-radius: 16px;
+  --editorial-gap: 8px;
+  --editorial-margin: 24px;
+}
+
+/* ── Section container ────────────────────────
+   Sits behind the hero via z-index: 0 + a small negative
+   margin, so the hero's 32px rounded bottom corners reveal
+   the gray backdrop. .editorial-parallax is the layer we
+   scrub for a slower-than-scroll rise-in. */
+.editorial {
+  position: relative;
+  z-index: 0;
+  margin-top: -32px;          /* tuck behind hero's rounded bottom */
+  background: var(--editorial-bg);
+  overflow: hidden;           /* hide parallax overrun */
+}
+
+.editorial-parallax {
+  will-change: transform;
+  padding: 192px 0 120px;     /* 160 Figma + 32 overlap = 192 top */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+}
+
+/* ── Copy block (headline + sub) ─────────────── */
+.editorial-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: 0 var(--editorial-margin);
+}
+
+.editorial-title {
+  max-width: 22ch;              /* fits "Acrobat than Acrobat." on one line */
+  color: #1a1a1a;
+}
+
+.editorial-sub {
+  max-width: 60ch;
+  color: #4a4a4a;
+}
+
+/* ── Cards row ───────────────────────────────── */
+.editorial-cards {
+  display: flex;
+  gap: var(--editorial-gap);
+  width: 100%;
+  padding: 0 var(--editorial-margin);
+  align-items: flex-start;
+}
+
+.ed-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Left card — large square (892×892) with image + inset copy */
+.ed-card--left {
+  flex: 892 0 0;
+  aspect-ratio: 1 / 1;
+  background: var(--editorial-card-bg);
+  border-radius: var(--editorial-radius);
+  overflow: hidden;
+}
+
+.ed-card--left .ed-card-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.ed-card--left .ed-card-copy {
+  position: relative;
+  z-index: 1;
+  padding: 48px;
+  max-width: 499px;
+}
+
+/* Right card — shorter image card (492×493) + copy below on gray bg */
+.ed-card--right {
+  flex: 492 0 0;
+  background: transparent;
+}
+
+.ed-card--right .ed-card-media {
+  position: relative;
+  background: var(--editorial-card-bg);
+  border-radius: var(--editorial-radius);
+  overflow: hidden;
+  box-shadow: 0 4px 100px rgba(0, 0, 0, 0.25);    /* Figma drop shadow */
+}
+
+/* Image fills the container width; container height follows the image's
+   natural aspect ratio — swap the asset and the copy below reflows. */
+.ed-card--right .ed-card-img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.ed-card--right .ed-card-copy {
+  padding: 24px 24px 0;
+  max-width: 391px;
+}
+
+/* ── Inner card typography ───────────────────── */
+.ed-card-title {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 18px;
+  line-height: 18px;
+  letter-spacing: -0.01em;
+  color: #1a1a1a;
+  margin: 0 0 8px;
+}
+
+.ed-card-body {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 20px;
+  letter-spacing: 0.01em;
+  color: #4a4a4a;
+  margin: 0;
+}
+
+/* Left card copy overlays a photographic image — switch type to white for contrast. */
+.ed-card--left .ed-card-title,
+.ed-card--left .ed-card-body {
+  color: #fff;
+}
+
+/* ── Responsive ──────────────────────────────── */
+@media (max-width: 1023px) {
+  .editorial-parallax { padding: 120px 0 80px; gap: 32px; }
+  .editorial-cards { flex-direction: column; }
+  .ed-card--left,
+  .ed-card--right { flex: 1 1 auto; width: 100%; }
+  .ed-card--left .ed-card-copy { padding: 32px; }
+}

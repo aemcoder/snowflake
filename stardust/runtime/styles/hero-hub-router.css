@@ -1,0 +1,367 @@
+/* ============================================
+   Hub — Hero Hub Router
+   Flex-accordion card component (desktop ≥1024px)
+   Adapted from acom-home/styles/hub-router.css
+   ============================================ */
+
+/* ── Timing tokens ── */
+:root {
+  --hhub-duration: 600ms;
+  --hhub-ease:     cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Chrome reveal is fully scroll-driven from hero-grid.js — no CSS
+     timing. --hhub-reveal-slide is the hidden-state translateY for the
+     label (down) and copy (up); JS reads it to derive inline transforms. */
+  --hhub-reveal-slide: 16px;
+}
+
+/* ══════════════════════════════════════════
+   DESKTOP (≥1024px)
+   ══════════════════════════════════════════ */
+
+/* ── Hub router container: absolute, full-width band (JS positions track).
+   Explicit height so the vertical-center transform holds steady even when
+   all flex children are absolute-positioned during the flying phase. ── */
+.hero-hub-router {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(50% + var(--hhub-y-offset, 0px));
+  height: var(--hhub-card-h, 534px);
+  transform: translateY(-50%);
+  z-index: 3;                       /* above grid (z:2) — flying cards inherit this context */
+  pointer-events: none;             /* enabled via JS on ScrollTrigger onLeave */
+}
+
+/* Desktop only: hide until GSAP sets initial positions AND the chrome-reveal
+   clip-paths are applied. Gated on a class (.hhub-ready) added at the very
+   end of buildTimeline rather than an inline opacity toggle, so the hub
+   router cannot flash into view between opacity:1 and the clip-path write,
+   and a hard refresh that races the stylesheet can't leave the router
+   visible at its default flex-flow position (cards all in the carousel row
+   at the top of the viewport).
+
+   Mobile has its own gate via .hero-pin-spacer:not(.mobile-ready) in hero-mobile.css. */
+@media (min-width: 768px) {
+  .hero-hub-router:not(.hhub-ready) {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+/* ── Track: flex row of cards ── */
+.hhub-track {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  transition: transform var(--hhub-duration) var(--hhub-ease);
+  will-change: transform;
+}
+
+/* ── Card — transparent so the grey "grows in" from the header + footer
+   clipPath reveal (the grey bg IS what unmasks the text). ── */
+.hhub-card {
+  flex: 0 0 291px;
+  position: relative;
+  isolation: isolate;                /* card-local stacking context so .hhub-card-bg's z:-1 stays behind siblings but does not escape to the root */
+  border-radius: 16px;
+  overflow: hidden;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition:
+    flex-basis       var(--hhub-duration) var(--hhub-ease),
+    background-color var(--hhub-duration) var(--hhub-ease);
+}
+
+/* ── Unified grey card background ──
+   One solid #f6f6f6 layer per card, sitting behind chrome + image. JS
+   writes a clip-path each frame: at rp=0 the clip is inset by headerH
+   (top) and footerH (bottom) with 16px rounded corners, so only the image
+   area is grey — and since the clip's rounded corners match the image's
+   own 16px corners exactly, there's no grey halo at the image corners
+   during the grid phase. At rp=1 the clip is inset 0 with 16px rounded
+   outer corners, so the whole card is grey and the image's transparent
+   rounded corners show grey through (giving the "image sits inside a
+   unified card" look, with no white gap at the chrome/image join).
+
+   During flight the card itself is sized to just the image, so the bg
+   extends above by headerH and below by footerH to cover where chrome
+   will sit. In the settled flex-flow state the card is full-height and
+   the bg fills it edge-to-edge. Either way the clip-path formula is the
+   same, because in both cases bg-height = headerH + imageH + footerH. */
+.hhub-card-bg {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: -1;                        /* stays behind media/image/chrome (card has isolation:isolate so this stays card-local) */
+  background: #f6f6f6;
+  border-radius: 16px;
+  pointer-events: none;
+  /* clip-path written every frame by hero-grid.js applyChromeReveal */
+}
+.hhub-card--flying .hhub-card-bg {
+  top:    calc(-1 * var(--hhub-header-h, 56px));
+  bottom: calc(-1 * var(--hhub-footer-h, 80px));
+}
+.hhub-card:not(.hhub-card--flying) .hhub-card-bg {
+  top: 0;
+  bottom: 0;
+}
+
+/* ── Flying state (during the scroll-driven grid animation) ──
+   The card is absolutely positioned in the hero coordinate space and GSAP
+   controls its x/y/width/height via transforms just like a grid image.
+   Chrome stays in the DOM but is pulled OUT of layout (absolute, sitting
+   above/below the card at its final viewport position) so scroll-driven
+   clip-path reveal can start during the flight without changing the card's
+   height. At settle, --flying is removed and chrome re-enters flex flow
+   in the exact same viewport position — the clip-path value carries across
+   the handoff unchanged, so there is no visual jump. JS (hero-grid.js)
+   sets --hhub-header-h / --hhub-footer-h so the flying chrome sizes match
+   the settled chrome. overflow: visible lets the chrome paint outside the
+   image bounds.
+
+   No z-index here — we let the default stacking order apply so flying hub
+   cards paint alongside top-row grid cards, matching the original grid
+   behavior (top-row cards can freely pass over/under as they rise). */
+.hhub-card--flying {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: visible;
+  pointer-events: none;
+  will-change: transform;
+}
+.hhub-card--flying .hhub-card-header {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  height: var(--hhub-header-h, 56px);
+}
+.hhub-card--flying .hhub-card-footer {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: var(--hhub-footer-h, 80px);
+}
+/* height:100% fills the GSAP-controlled card height (= mediaH at settle);
+   padding and radius intentionally match the settled state so clearProps
+   causes zero visual shift in image geometry. */
+.hhub-card--flying .hhub-card-media  { height: 100%; }
+
+/* ── Card header ──
+   Initial state is clipped to zero height at the bottom; as the reveal plays,
+   it grows UP from the image edge with a rounded top leading edge. The
+   16px top-corner round matches the card's natural radius, so the final
+   state is visually identical to no clip. clip-path is JS-driven each frame
+   (hero-grid.js), so no transition on it here. */
+.hhub-card-header {
+  display: flex;
+  align-items: center;
+  padding: 24px;
+  flex-shrink: 0;
+  background: transparent;            /* grey comes from .hhub-card-bg */
+  border-radius: 16px 16px 0 0;
+  clip-path: inset(100% 0 0 0 round 16px 16px 0 0);
+  transition: background-color var(--hhub-duration) var(--hhub-ease);
+}
+
+/* Figma: Adobe Clean Display Black, 18/18, 0px tracking
+   Starts translated down (toward the image edge) so that as the header
+   unmasks upward the label appears to slide out from behind the image.
+   transform is JS-driven each frame. */
+.hhub-card-label {
+  font-family: var(--font-display, system-ui, sans-serif);
+  font-size: 18px;
+  font-weight: 900;
+  color: #1a1a1a;
+  letter-spacing: 0;
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transform: translateY(var(--hhub-reveal-slide));
+  transition: color var(--hhub-duration) var(--hhub-ease);
+}
+
+/* ── Card media ──
+   Image fills the media slot edge-to-edge (no inset). The image has its own
+   16px border-radius so its corners round inward at all four corners,
+   sitting visually between the header band and the footer band. Background
+   is transparent during the scroll transition so grid images (z:2) remain
+   visible through the chrome (z:3); JS flips it to the card colour on
+   settle for fallback. */
+.hhub-card-media {
+  flex-shrink: 0;
+  height: var(--hhub-media-h, 394px);
+  background: transparent;
+  overflow: hidden;
+  transition: background-color var(--hhub-duration) var(--hhub-ease);
+}
+
+.hhub-card-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 16px;
+}
+
+/* ── Card footer ──
+   Mirrors the header: initial clip hides it into zero height at the top, so
+   the reveal grows DOWN from the image edge with a rounded bottom leading
+   edge that matches the card's 16px bottom radius. clip-path is JS-driven
+   each frame. */
+.hhub-card-footer {
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 24px;
+  background: transparent;            /* grey comes from .hhub-card-bg */
+  border-radius: 0 0 16px 16px;
+  clip-path: inset(0 0 100% 0 round 0 0 16px 16px);
+  transition: background-color var(--hhub-duration) var(--hhub-ease);
+}
+
+/* Starts translated up (toward the image edge) so tagline + body appear to
+   slide out from behind the image as the footer unmasks downward. transform
+   is JS-driven each frame. */
+.hhub-card-copy {
+  flex: 1;
+  min-width: 0;
+  transform: translateY(calc(-1 * var(--hhub-reveal-slide)));
+}
+
+/* Figma: Bold, 16/120%, -1% tracking */
+.hhub-card-tagline {
+  font-family: var(--font-body, system-ui, sans-serif);
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a1a1a;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color var(--hhub-duration) var(--hhub-ease);
+}
+
+.hhub-card-body {
+  font-family: var(--font-body, system-ui, sans-serif);
+  font-size: 16px;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.56);
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+  margin: 0;
+  /* Pin to the active-state copy width (active card 491 − 2×24 padding − 12 gap − 48 CTA)
+     so lines don't re-wrap as the card widens during hover. Card has overflow:hidden,
+     so the excess is clipped while max-height keeps the body invisible at rest. */
+  width: 383px;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  /* Starts translated DOWN so on hover the copy rises into place — feels like
+     it's emerging from beyond the card's bottom edge. Card overflow:hidden
+     clips the portion that hasn't yet crossed the edge. */
+  transform: translateY(20px);
+  transition:
+    max-height var(--hhub-duration) var(--hhub-ease),
+    opacity    var(--hhub-duration) var(--hhub-ease),
+    transform  var(--hhub-duration) var(--hhub-ease),
+    color      var(--hhub-duration) var(--hhub-ease);
+}
+
+/* ── CTA — 48×48 container, white plus icon on 18% white fill.
+   Hidden by default so the footer collapses to tight 24px-above/below
+   padding around just the tagline; revealed when the card is active. ── */
+.hhub-card-cta {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 7px;
+  background-color: rgba(255, 255, 255, 0.18);
+  background-image: url('../assets/icons/icon_plus.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  border: 0;
+  display: none;
+}
+
+/* ══════════════════════════════════════════
+   ACTIVE STATE
+   ══════════════════════════════════════════ */
+
+/* Settled state: fill the media too so the grey extends behind the image
+   corners (belt-and-suspenders with the card's own bg). */
+.hero-hub-router.is-settled .hhub-card-media { background: #f6f6f6; }
+
+/* Chrome reveal (clip-path + label/copy translateY) is JS-driven each frame
+   from hero-grid.js onUpdate — no .is-settled rules needed here. */
+
+.hhub-card--active {
+  flex-basis: calc(291px + 200px);
+}
+
+.hhub-card--active .hhub-card-bg,
+.hhub-card--active .hhub-card-header,
+.hhub-card--active .hhub-card-footer,
+.hero-hub-router.is-settled .hhub-card--active .hhub-card-media { background: #000; }
+
+.hhub-card--active .hhub-card-label   { color: #fff; }
+.hhub-card--active .hhub-card-tagline { color: #fff; }
+.hhub-card--active .hhub-card-body {
+  max-height: 80px;
+  opacity: 1;
+  transform: translateY(0);
+  color: rgba(255, 255, 255, 0.64);
+}
+.hhub-card--active .hhub-card-cta     { display: block; }
+
+/* ── Hub title: sits 40px above the settled carousel, scroll-fades in.
+   Shares --hhub-y-offset with .hero-hub-router so the pair shifts down as
+   a unit when the viewport is short enough that the centered position
+   would overlap the nav. Offset is added to the carousel's `top` and
+   subtracted from the title's `bottom` — same downward delta either way.
+   Opacity/transform on the per-line spans are written by hero-grid.js. ── */
+.hero-hub-title {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(50% + var(--hhub-card-h, 534px) / 2 + 40px - var(--hhub-y-offset, 0px));
+  z-index: 3;
+  margin: 0;
+  padding: 0 24px;
+  text-align: center;
+  color: #000;
+  opacity: 0;                     /* JS-driven fade */
+  pointer-events: none;
+}
+
+/* ══════════════════════════════════════════
+   S BREAKPOINT (< 768px)
+   The full grid + hub-router animation assumes
+   M+. On S, hero-mobile.css takes over.
+   ══════════════════════════════════════════ */
+
+@media (max-width: 767px) {
+  .hero-hub-router  { display: none; }
+  .hero-hub-title   { display: none; }
+  .hero-image-grid  { display: none; }
+
+  .hero-pin-spacer  { height: auto; }
+
+  #hero {
+    position: relative;
+    height: auto;
+    min-height: 100vh;
+    overflow: hidden;
+  }
+}

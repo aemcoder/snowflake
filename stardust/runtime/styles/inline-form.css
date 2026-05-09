@@ -1,0 +1,145 @@
+/* ============================================
+   Inline form
+   ----
+   Centered headline + a 2-column form row (email + country) +
+   primary submit button + step indicator. Designed for top-of-funnel
+   lead capture (newsletter, demo request, contact) where the form
+   sits inside a page section, not in a modal.
+
+   This is the "step 1 of N" variant — multi-step wizards can reuse
+   the same module by re-rendering the step indicator and field set.
+   The form fields are intentionally minimal here (2 fields); for
+   richer forms, build a dedicated wizard module.
+
+   Tokens:
+     --if-bg          : transparent  — section background (lets the
+                                       page surface show through)
+     --if-text        : #1a1a1a       — title and labels
+     --if-text-subtle : rgba(0,0,0,0.64) — step indicator
+     --if-input-bg    : #ffffff       — input/select background
+     --if-input-border: rgba(0,0,0,0.18) — input/select border
+     --if-input-text  : #1a1a1a       — input text color
+     --if-cta-bg      : #3b63fb       — submit button bg
+     --if-cta-text    : #ffffff       — submit button text
+
+   Spec: stardust/target/modules/inline-form.md
+   ============================================ */
+
+:root {
+  --if-bg:           transparent;
+  --if-text:         #1a1a1a;
+  --if-text-subtle:  rgba(0, 0, 0, 0.64);
+  --if-input-bg:     #ffffff;
+  --if-input-border: rgba(0, 0, 0, 0.18);
+  --if-input-text:   #1a1a1a;
+  --if-cta-bg:       #3b63fb;
+  --if-cta-text:     #ffffff;
+}
+
+.inline-form {
+  background: var(--if-bg, transparent);
+  padding-block: var(--s2a-spacing-6xl, 96px);
+}
+
+.inline-form__inner {
+  max-width: 720px;
+  margin-inline: auto;
+  padding-inline: var(--grid-margin-sm, 24px);
+  text-align: center;
+}
+
+.inline-form__title {
+  font-family: var(--font-display, 'Adobe Clean Display', sans-serif);
+  font-weight: 900;
+  font-size: clamp(28px, 3.5vw, 48px);
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  color: var(--if-text, #1a1a1a);
+  margin-bottom: var(--s2a-spacing-2xl, 40px);
+}
+
+.inline-form__form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+@media (max-width: 767px) {
+  .inline-form__form { grid-template-columns: 1fr; }
+}
+
+.inline-form__field { display: flex; flex-direction: column; }
+.inline-form__field--full { grid-column: 1 / -1; }
+
+.inline-form__label {
+  /* Visually hidden — the input's placeholder carries the label
+     visually. The label remains in the DOM for screen readers. */
+  position: absolute;
+  width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0);
+  white-space: nowrap; border: 0;
+}
+
+.inline-form__input,
+.inline-form__select {
+  height: 56px;
+  padding: 0 20px;
+  border-radius: 8px;
+  border: 1.5px solid var(--if-input-border, rgba(0, 0, 0, 0.18));
+  background: var(--if-input-bg, #ffffff);
+  color: var(--if-input-text, #1a1a1a);
+  font-family: var(--font-body, 'Adobe Clean', sans-serif);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.3;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  width: 100%;
+}
+.inline-form__input::placeholder { color: var(--if-text-subtle, rgba(0, 0, 0, 0.55)); }
+.inline-form__input:focus,
+.inline-form__select:focus {
+  outline: none;
+  border-color: var(--if-cta-bg, #3b63fb);
+  box-shadow: 0 0 0 3px rgba(59, 99, 251, 0.15);
+}
+
+.inline-form__select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8' fill='none' stroke='%231a1a1a' stroke-width='1.5'><path d='M1 1l5 5 5-5'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 20px center;
+  background-size: 12px 8px;
+  padding-right: 48px;
+}
+
+.inline-form__submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  padding: 0 32px;
+  border-radius: 999px;
+  border: none;
+  background: var(--if-cta-bg, #3b63fb);
+  color: var(--if-cta-text, #fff);
+  font-family: var(--font-body, 'Adobe Clean', sans-serif);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 18px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  margin-top: 8px;
+}
+.inline-form__submit:hover { background: #274dea; }
+.inline-form__submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.inline-form__step {
+  margin-top: 16px;
+  font-family: var(--font-body, 'Adobe Clean', sans-serif);
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--if-text-subtle, rgba(0, 0, 0, 0.64));
+}

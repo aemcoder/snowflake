@@ -1,0 +1,206 @@
+/* ============================================
+   GLOBAL NAV (GNAV)
+   Fixed to viewport — lives OUTSIDE #smooth-wrapper
+   so GSAP's transform on #smooth-content doesn't
+   break position:fixed.
+
+   Two states:
+     Default  — transparent pill, white text/icons
+     Scrolled — frosted glass pill (.gnav--scrolled),
+                dark text/icons
+   ============================================ */
+
+#gnav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 8px;
+  /* No background on the outer shell — only the pill gets it */
+}
+
+/* ── Nav Bar (pill) ── */
+.gnav-inner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  padding: 0 16px;
+  /* Pill fills the browser width (minus #gnav's 8px padding on each side) and
+     stops growing at 1904px — so the total width including the 8px gaps is
+     capped at 1920px, matching the site grid max. */
+  max-width: 1904px;
+  margin: 0 auto;
+  border-radius: 16px;
+}
+
+/* Always-present pill background — invisible by default so both scroll states
+   share the same expansion anchor. Opacity is the only difference.
+   z-index: -1 keeps it behind the nav content (backdrop-filter creates a stacking
+   context that would otherwise paint over the links/logo/button). */
+.gnav-inner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.51);
+  backdrop-filter: blur(64px);
+  -webkit-backdrop-filter: blur(64px);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+
+/* ── Scrolled: show the frosted glass pill ── */
+#gnav.gnav--scrolled .gnav-inner::before {
+  opacity: 1;
+}
+
+/* ============================================
+   LEFT — Logo + primary links
+   ============================================ */
+.gnav-left {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  height: 100%;
+  padding-left: 4px;
+}
+
+/* Logo pair — swap between states */
+.gnav-logo,
+.gnav-logo-black {
+  display: block;
+  width: 67px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.gnav-logo-black { display: none; }
+#gnav.gnav--scrolled .gnav-logo       { display: none;  }
+#gnav.gnav--scrolled .gnav-logo-black { display: block; }
+
+/* Nav links container */
+.gnav-links {
+  display: none; /* mobile: hidden */
+  align-items: center;
+  gap: 24px;
+  height: 100%;
+}
+
+/* Individual nav item */
+.gnav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-body);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-label-weight);
+  line-height: var(--type-label-lh);
+  letter-spacing: var(--type-label-ls);
+  color: #fff;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.35s ease, opacity 0.15s ease;
+}
+
+#gnav.gnav--scrolled .gnav-link { color: #000; }
+
+/* Closed-state hover: dim non-hovered links to 65% */
+#gnav:not(.gnav--open) .gnav-links:has(.gnav-link:hover) .gnav-link { opacity: 0.65; }
+#gnav:not(.gnav--open) .gnav-links:has(.gnav-link:hover) .gnav-link:hover { opacity: 1; }
+
+/* Dropdown chevron — SVG uses currentColor, inherits link color */
+.gnav-chevron {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  line-height: 0;
+}
+
+/* ============================================
+   RIGHT — App switcher + Sign In
+   ============================================ */
+.gnav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* App switcher icon button */
+.gnav-apps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.gnav-apps img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* Force icon white over dark hero */
+  filter: brightness(0) invert(1);
+  transition: filter 0.35s ease;
+}
+
+/* Flip icon dark in scrolled state */
+#gnav.gnav--scrolled .gnav-apps img {
+  filter: brightness(0);
+}
+
+/* Sign In button */
+.gnav-signin {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding: 0 24px;
+  background: transparent;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 75px;
+  font-family: var(--font-body);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-label-weight);
+  line-height: var(--type-label-lh);
+  letter-spacing: var(--type-label-ls);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  backdrop-filter: blur(16.5px);
+  -webkit-backdrop-filter: blur(16.5px);
+  transition:
+    color        0.35s ease,
+    border-color 0.35s ease,
+    background   0.2s  ease;
+}
+
+#gnav.gnav--scrolled .gnav-signin {
+  color: #000;
+  border-color: rgba(0, 0, 0, 0.7);
+}
+
+.gnav-signin:hover                        { background: rgba(255, 255, 255, 0.15); }
+#gnav.gnav--scrolled .gnav-signin:hover   { background: rgba(0, 0, 0, 0.06); }
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+/* Tablet + desktop (≥ 768px): show primary nav links */
+@media (min-width: 768px) {
+  .gnav-links {
+    display: flex;
+  }
+}

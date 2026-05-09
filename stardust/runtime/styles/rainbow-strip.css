@@ -1,0 +1,84 @@
+/* ============================================
+   Rainbow strip — thin announcement band
+   ----
+   A full-bleed horizontal strip with a multi-stop rainbow gradient
+   background, a single-line announcement on the left, and a small
+   pill CTA on the right. Fits between the hero and the next section
+   to surface a feature/agent/product-launch announcement.
+
+   Tokens (all overridable per-page at :root):
+     --rs-height       : 56px       — strip height
+     --rs-radius       : 0          — set to 999px for a "pill" feel
+     --rs-text         : #ffffff    — announcement text color
+     --rs-cta-bg       : #ffffff    — CTA pill background
+     --rs-cta-text     : #1a1a1a    — CTA pill text color
+     --rs-gradient     : the canonical 6-stop rainbow (red→purple)
+
+   Spec: stardust/target/modules/rainbow-strip.md
+   ============================================ */
+
+:root {
+  --rs-height:    56px;
+  --rs-radius:    0;
+  --rs-text:      #ffffff;
+  --rs-cta-bg:    #ffffff;
+  --rs-cta-text:  #1a1a1a;
+  --rs-gradient:  linear-gradient(90deg,
+    #FE3600  0%,
+    #FF7B02 16%,
+    #FAD220 34%,
+    #81DA42 58%,
+    #318EFF 81%,
+    #8B68E8 100%);
+}
+
+.rainbow-strip {
+  position: relative;
+  min-height: var(--rs-height, 56px);
+  background: var(--rs-gradient);
+  border-radius: var(--rs-radius, 0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s2a-spacing-lg, 24px);
+  padding-inline: var(--grid-margin-md, 8.333vw);
+  color: var(--rs-text, #fff);
+  text-align: center;
+}
+@media (max-width: 1023px) { .rainbow-strip { padding-inline: var(--grid-margin-sm, 24px); } }
+
+.rainbow-strip__msg {
+  font-family: var(--font-body, 'Adobe Clean', sans-serif);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--rs-text, #fff);
+}
+
+.rainbow-strip__cta {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: var(--rs-cta-bg, #fff);
+  color: var(--rs-cta-text, #1a1a1a);
+  font-family: var(--font-body, 'Adobe Clean', sans-serif);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.rainbow-strip__cta:hover {
+  background: rgba(255, 255, 255, 0.85);
+}
+
+@media (max-width: 767px) {
+  .rainbow-strip {
+    flex-direction: column;
+    gap: 12px;
+    padding-block: 16px;
+  }
+}

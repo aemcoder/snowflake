@@ -1,0 +1,159 @@
+/* ============================================
+   Acrobat-feature 3-up
+   ----
+   Centered eyebrow + headline + body, then an optional full-width
+   "wide" card, then a 3-column grid of feature cards (image top,
+   copy below). Promoted from inline CSS in the home page build to a
+   shared runtime file so multiple pages can <link> instead of
+   copy-pasting.
+
+   This version adds **surface theme tokens** so the same module can
+   render on white, gray, or any branded surface (e.g. light teal for
+   the AEM Sites integrations section) without overriding selectors.
+
+   Tokens:
+     --af-bg            : surface bg
+     --af-eyebrow       : eyebrow color
+     --af-title         : title color
+     --af-body          : body subdued color
+     --af-card-bg       : card asset placeholder bg
+     --af-card-title    : card title color
+     --af-card-body     : card body color
+     --af-cta           : "Learn more" link color
+
+   Defaults match the home-page light-on-white usage.
+   Spec: stardust/target/modules/acrobat-feature-3up.md
+   ============================================ */
+
+:root {
+  --af-bg:         var(--s2a-color-background-default, #ffffff);
+  --af-eyebrow:    var(--s2a-color-content-background-subtle, #505050);
+  --af-title:      #000000;
+  --af-body:       var(--s2a-color-content-subtle, rgba(0, 0, 0, 0.64));
+  --af-card-bg:    #eceae7;
+  --af-card-title: #000000;
+  --af-card-body:  rgba(0, 0, 0, 0.64);
+  --af-cta:        #000000;
+}
+
+.acrobat-feature {
+  position: relative;
+  background: var(--af-bg);
+  padding-block: var(--s2a-spacing-6xl, 96px);
+}
+
+.acrobat-feature__header {
+  text-align: center;
+  margin-bottom: var(--s2a-spacing-5xl, 80px);
+  padding-inline: var(--s2a-spacing-lg, 24px);
+}
+
+.acrobat-feature__eyebrow { color: var(--af-eyebrow); margin-bottom: var(--s2a-spacing-md, 16px); }
+.acrobat-feature__title   { color: var(--af-title);   margin-bottom: var(--s2a-spacing-md, 16px); }
+.acrobat-feature__body {
+  color: var(--af-body);
+  max-width: 80ch;
+  margin-inline: auto;
+}
+
+.acrobat-wide { margin-bottom: var(--s2a-spacing-4xl, 64px); }
+.acrobat-wide__img {
+  background: var(--af-card-bg);
+  border-radius: var(--s2a-border-radius-md, 16px);
+  overflow: hidden;
+  aspect-ratio: 1068 / 480;
+  position: relative;
+}
+.acrobat-wide__img img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+.acrobat-wide__bottom {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  padding: var(--s2a-spacing-lg, 24px) var(--s2a-spacing-lg, 24px) 0;
+  gap: var(--s2a-spacing-md, 16px);
+}
+.acrobat-wide__copy {
+  max-width: 60ch;
+  display: flex; flex-direction: column;
+  gap: var(--s2a-spacing-xs, 8px);
+}
+.acrobat-wide__cta { display: flex; align-items: center; flex-shrink: 0; }
+
+.acrobat-cards {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s2a-spacing-xs, 8px);
+}
+@media (max-width: 767px) { .acrobat-cards { grid-template-columns: 1fr; } }
+
+.acrobat-card { display: flex; flex-direction: column; }
+.acrobat-card__asset {
+  aspect-ratio: 488 / 366;
+  background: var(--af-card-bg);
+  border-radius: var(--s2a-border-radius-md, 16px);
+  overflow: hidden; position: relative; flex-shrink: 0;
+}
+.acrobat-card__asset img,
+.acrobat-card__photo {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+}
+.acrobat-card__copy {
+  display: flex; flex-direction: column;
+  gap: var(--s2a-spacing-lg, 24px);
+  padding: var(--s2a-spacing-lg, 24px) var(--s2a-spacing-lg, 24px) 0;
+}
+.acrobat-card__text {
+  display: flex; flex-direction: column;
+  gap: var(--s2a-spacing-xs, 8px);
+}
+.acrobat-card__title {
+  font-family: var(--font-display, 'Adobe Clean Display', sans-serif);
+  font-weight: 900;
+  font-size: 24px;
+  line-height: 24px;
+  letter-spacing: -0.48px;
+  color: var(--af-card-title);
+}
+.acrobat-card__body {
+  font-family: var(--font-body, 'Adobe Clean', sans-serif);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 20px;
+  color: var(--af-card-body);
+}
+
+.acrobat-cta {
+  display: inline-flex; align-items: center; gap: var(--s2a-spacing-xs, 8px);
+  font-family: var(--font-body, 'Adobe Clean', sans-serif);
+  font-weight: 700; font-size: 14px;
+  color: var(--af-cta);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.acrobat-cta:hover { opacity: 0.7; }
+.acrobat-cta svg { width: 6px; height: 12px; }
+
+/* ───── Pre-built surface variants
+   Pages can opt into a named theme via a wrapper class on the
+   section, or set the tokens at :root for a one-off. */
+.acrobat-feature--teal {
+  --af-bg:        #e6f4f5;
+  --af-card-bg:   #ffffff;
+  /* text colors stay dark-on-light by default */
+}
+.acrobat-feature--gray {
+  --af-bg:        var(--s2a-color-background-subtle, #f8f8f8);
+  --af-card-bg:   #ffffff;
+}
+.acrobat-feature--dark {
+  --af-bg:         #0c0820;
+  --af-eyebrow:    rgba(255, 255, 255, 0.55);
+  --af-title:      #ffffff;
+  --af-body:       rgba(255, 255, 255, 0.78);
+  --af-card-bg:    rgba(255, 255, 255, 0.08);
+  --af-card-title: #ffffff;
+  --af-card-body:  rgba(255, 255, 255, 0.72);
+  --af-cta:        #ffffff;
+}

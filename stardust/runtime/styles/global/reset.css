@@ -1,0 +1,22 @@
+/* ============================================
+   ACOM Reset
+   Shared across all prototypes
+   ============================================ */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #2c2c2c;
+  background: #fff;
+  scrollbar-gutter: stable;
+}
+
+body {
+  /* clip (not hidden) — clips overflow without creating a new scroll container,
+     so position:sticky on #hero continues to work correctly */
+  overflow-x: clip;
+}
