@@ -1,0 +1,327 @@
+/* ============================================
+   STICKY CTA — morphing pill → modal
+   Single container (#cta-container) grows from
+   a 279×56 pill into a full pricing modal.
+   All size/color/position transitions are driven
+   by GSAP; CSS only owns static/initial state.
+   z-index stack: backdrop=101, container=102
+   ============================================ */
+
+/* ── Backdrop ── */
+#offer-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 101;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  opacity: 0;
+  pointer-events: none;
+  /* opacity animated by GSAP */
+}
+
+#sticky-cta.cta--open #offer-backdrop {
+  pointer-events: auto;
+}
+
+/* ── Morphing container ── */
+#cta-container {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  /* translateX(-50%) keeps it centered as width changes */
+  transform: translateX(-50%);
+  z-index: 102;
+
+  /* Pill dimensions — GSAP expands these on open */
+  width: 279px;
+  height: 56px;
+
+  /* Pill appearance */
+  background: #000;
+  border-radius: 16px;
+  /* First shadow is the grow-hint spread, starts at 0 so GSAP can interpolate */
+  box-shadow: 0 0 0 0px #000000, 0 8px 32px rgba(0, 0, 0, 0.24), 0 2px 8px rgba(0, 0, 0, 0.12);
+
+  /* overflow:hidden clips modal content while pill is collapsed,
+     and gives the morph its shape-reveal quality */
+  overflow: hidden;
+
+  cursor: pointer;
+
+  /* Visibility — entrance/exit driven by GSAP (clip-path mask + opacity) */
+  opacity: 0;
+  pointer-events: none;
+}
+
+#sticky-cta.cta--visible #cta-container {
+  pointer-events: auto;
+}
+
+/* ── Pill label ── */
+.cta-pill-label {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+  /* opacity animated by GSAP */
+}
+
+.cta-pill-icon {
+  width: 32px;
+  height: 32px;
+  display: block;
+  flex-shrink: 0;
+}
+
+.cta-pill-text {
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: #fff;
+  /* color animated by GSAP on hover */
+}
+
+/* ── Pricing cards ── */
+/* Absolutely fill the container interior, leaving 72px at the bottom
+   for the toggle button (20px gap + 32px button + 20px gap). */
+.offer-modal-cards {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  right: 24px;
+  bottom: 72px;
+  display: flex;
+  gap: 12px;
+  opacity: 0;
+  pointer-events: none;
+  /* opacity animated by GSAP */
+}
+
+#sticky-cta.cta--open .offer-modal-cards {
+  pointer-events: auto;
+}
+
+/* ── Plan card ── */
+.plan-card {
+  flex: 1;
+  min-width: 0;
+  background: rgb(248, 248, 248);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.plan-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 24px 0;
+  flex-shrink: 0;
+}
+
+.plan-card-name {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 900;
+  color: #000;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.plan-card-icon {
+  width: 24px;
+  height: 24px;
+  display: block;
+  flex-shrink: 0;
+}
+
+.plan-card-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 24px 24px;
+  gap: 20px;
+}
+
+.plan-price-row {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.plan-price {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 900;
+  color: #000;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.plan-billing {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 400;
+  color: #4a4a4a;
+  line-height: 1.3;
+  margin: 0;
+}
+
+.plan-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.btn-plan-trial {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  background: #3B63FB;
+  color: #fff;
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.btn-plan-trial:hover {
+  opacity: 0.88;
+}
+
+.btn-plan-buy {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  background: transparent;
+  color: #1a1a1a;
+  border: 1.5px solid #1a1a1a;
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.btn-plan-buy:hover {
+  background: #1a1a1a;
+  color: #fff;
+}
+
+/* Feature list — scrolls when viewport is short */
+.plan-features {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
+}
+
+.plan-features::-webkit-scrollbar { width: 3px; }
+.plan-features::-webkit-scrollbar-track { background: transparent; }
+.plan-features::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 2px;
+}
+
+.plan-features li {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 400;
+  color: #2c2c2c;
+  line-height: 1.4;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* ── Toggle button ── */
+/* Position and all animated properties are set/driven by GSAP.
+   Only structural/non-animated properties live in CSS. */
+.cta-toggle-btn {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  /* background, color, left, top — all set by GSAP */
+}
+
+/* SVG icon — GSAP rotates 0° (plus) → 45° (cross) on open */
+.cta-icon-plus {
+  display: block;
+}
+
+/* ── Mobile: horizontal swipe carousel ── */
+@media (max-width: 1023px) {
+  .offer-modal-cards {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .offer-modal-cards::-webkit-scrollbar {
+    display: none;
+  }
+
+  .plan-card {
+    flex: 0 0 100%; /* full width per card on mobile, no peek needed */
+    scroll-snap-align: start;
+  }
+}
+
+@media (max-width: 767px) {
+  #cta-container {
+    bottom: 16px;
+  }
+
+  .plan-card-header {
+    padding: 20px 20px 0;
+  }
+
+  .plan-card-body {
+    padding: 16px 20px 20px;
+    gap: 16px;
+  }
+
+  .plan-card-name,
+  .plan-price {
+    font-size: 20px;
+  }
+}

@@ -1,0 +1,786 @@
+/* ============================================
+   MEGA NAV — Products dropdown panel
+   ============================================ */
+
+/* ── Dim overlay ── */
+.mega-nav-dim {
+  position: fixed;
+  inset: 0;
+  z-index: 97;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.mega-nav-dim.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ── Panel ── */
+.mega-nav-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 98;
+
+  /* Transparent by default — the pill bg comes from gnav-inner::before when scrolled.
+     When opening, this fades to #f8f8f8 so the background becomes opaque. */
+  background: rgba(248, 248, 248, 0);
+
+  /* Only bottom corners rounded; top edge is flush with browser frame when open */
+  border-radius: 0 0 18px 18px;
+
+  /* padding-top: panel is now at top:0 (was top:8px), so add 8px to keep content
+     visually in the same position: 64px nav + 8px gnav padding + 8px top offset + 8px gap */
+  padding-top: 88px;
+  overflow: hidden;
+
+  /* Closed — clipped to match the pill shape exactly:
+     8px inset from all sides, only the pill's 64px height revealed, 16px corners */
+  clip-path: inset(8px 8px calc(100% - 72px) 8px round 16px);
+  pointer-events: none;
+
+  /* CLOSE transition — background starts fading at ~0.18s and reaches fully
+     transparent right as the clip-path finishes at 0.48s. */
+  transition:
+    clip-path 0.48s cubic-bezier(0.4, 0, 0.2, 1),
+    background 0.3s ease 0.18s;
+}
+
+.mega-nav-panel.is-open {
+  /* Expands to fill the full browser frame — flush top/sides, rounded bottom corners */
+  clip-path: inset(0 0 0 0 round 0 0 18px 18px);
+  background: #f8f8f8;
+  pointer-events: auto;
+
+  /* OPEN transition — background fades in quickly as the clip-path expands.
+     Overrides the close transition above while this class is present. */
+  transition:
+    clip-path 0.48s cubic-bezier(0.4, 0, 0.2, 1),
+    background 0.22s ease;
+}
+
+/* ── Panes ── */
+.mnav-pane {
+  transition: opacity 0.15s ease;
+}
+
+.mnav-pane--exiting {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.mnav-pane--hidden {
+  display: none;
+}
+
+/* Height transition when switching panes */
+.mega-nav-panel.is-height-transitioning {
+  transition:
+    clip-path 0.48s cubic-bezier(0.4, 0, 0.2, 1),
+    background 0.3s ease 0.18s,
+    height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.mega-nav-panel.is-open.is-height-transitioning {
+  transition:
+    clip-path 0.48s cubic-bezier(0.4, 0, 0.2, 1),
+    background 0.22s ease,
+    height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Body layout: filter list + product grid ── */
+.mega-nav-body {
+  display: flex;
+  gap: 8px;
+  /* Match the pill's content edges: #gnav 8px padding + gnav-inner 16px padding = 24px.
+     Cap at 1920px to match the site grid max. */
+  max-width: 1920px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 24px 32px;
+}
+
+@keyframes mnav-body-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Re-fires on pane show (display:none removal) and on initial open */
+.mega-nav-panel.is-open .mnav-pane:not(.mnav-pane--hidden) .mega-nav-body {
+  animation: mnav-body-in 0.35s ease both 0.18s;
+}
+
+/* Tab switch — panel already open, no delay needed */
+.mega-nav-panel.is-open .mnav-pane.mnav-pane--switching .mega-nav-body {
+  animation: mnav-body-in 0.25s ease both;
+}
+
+/* ── Staggered fade-in for filters + cards ── */
+
+@keyframes mnav-item-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Filters and cards start hidden */
+.mega-nav-panel .mnav-filter,
+.mega-nav-panel .mnav-card {
+  opacity: 0;
+}
+
+/* Filter buttons — animation handles the stagger fade-in; transition handles
+   hover/active background + color only. Keeping them separate means transition-delay
+   from the stagger never bleeds into hover/active state changes. */
+.mega-nav-panel .mnav-filter { transition: background 0.2s ease, color 0.2s ease; }
+
+.mega-nav-panel.is-open .mnav-filter:nth-child(1) { animation: mnav-item-in 0.18s ease forwards 0.20s; }
+.mega-nav-panel.is-open .mnav-filter:nth-child(2) { animation: mnav-item-in 0.18s ease forwards 0.23s; }
+.mega-nav-panel.is-open .mnav-filter:nth-child(3) { animation: mnav-item-in 0.18s ease forwards 0.26s; }
+.mega-nav-panel.is-open .mnav-filter:nth-child(4) { animation: mnav-item-in 0.18s ease forwards 0.29s; }
+.mega-nav-panel.is-open .mnav-filter:nth-child(5) { animation: mnav-item-in 0.18s ease forwards 0.32s; }
+.mega-nav-panel.is-open .mnav-filter:nth-child(6) { animation: mnav-item-in 0.18s ease forwards 0.35s; }
+.mega-nav-panel.is-open .mnav-filter:nth-child(7) { animation: mnav-item-in 0.18s ease forwards 0.38s; }
+.mega-nav-panel.is-open .mnav-filter:nth-child(8) { animation: mnav-item-in 0.18s ease forwards 0.41s; }
+
+/* Product tiles — CSS animation so the stagger re-fires on every category switch.
+   CSS animations restart whenever the rule begins matching fresh, which happens
+   both on panel open (is-open added) and on category switch (display:none removed).
+   25ms stagger; initial open base delay matches panel expansion timing. */
+.mega-nav-panel.is-open .mnav-category:not(.mnav-category--hidden) .mnav-card:nth-child(1) { animation: mnav-item-in 0.18s ease forwards 0.20s; }
+.mega-nav-panel.is-open .mnav-category:not(.mnav-category--hidden) .mnav-card:nth-child(2) { animation: mnav-item-in 0.18s ease forwards 0.225s; }
+.mega-nav-panel.is-open .mnav-category:not(.mnav-category--hidden) .mnav-card:nth-child(3) { animation: mnav-item-in 0.18s ease forwards 0.25s; }
+.mega-nav-panel.is-open .mnav-category:not(.mnav-category--hidden) .mnav-card:nth-child(4) { animation: mnav-item-in 0.18s ease forwards 0.275s; }
+.mega-nav-panel.is-open .mnav-category:not(.mnav-category--hidden) .mnav-card:nth-child(5) { animation: mnav-item-in 0.18s ease forwards 0.30s; }
+.mega-nav-panel.is-open .mnav-category:not(.mnav-category--hidden) .mnav-card:nth-child(6) { animation: mnav-item-in 0.18s ease forwards 0.325s; }
+.mega-nav-panel.is-open .mnav-category:not(.mnav-category--hidden) .mnav-card:nth-child(7) { animation: mnav-item-in 0.18s ease forwards 0.35s; }
+.mega-nav-panel.is-open .mnav-category:not(.mnav-category--hidden) .mnav-card:nth-child(8) { animation: mnav-item-in 0.18s ease forwards 0.375s; }
+.mega-nav-panel.is-open .mnav-category:not(.mnav-category--hidden) .mnav-card:nth-child(9) { animation: mnav-item-in 0.18s ease forwards 0.40s; }
+
+/* Category switch — .mnav-category added to match base rule's (0,6,0) specificity;
+   placed after so document order wins. 0s base delay, stagger starts immediately. */
+.mega-nav-panel.is-open .mnav-category.mnav-category--switching .mnav-card:nth-child(1) { animation: mnav-item-in 0.18s ease forwards 0s; }
+.mega-nav-panel.is-open .mnav-category.mnav-category--switching .mnav-card:nth-child(2) { animation: mnav-item-in 0.18s ease forwards 0.025s; }
+.mega-nav-panel.is-open .mnav-category.mnav-category--switching .mnav-card:nth-child(3) { animation: mnav-item-in 0.18s ease forwards 0.05s; }
+.mega-nav-panel.is-open .mnav-category.mnav-category--switching .mnav-card:nth-child(4) { animation: mnav-item-in 0.18s ease forwards 0.075s; }
+.mega-nav-panel.is-open .mnav-category.mnav-category--switching .mnav-card:nth-child(5) { animation: mnav-item-in 0.18s ease forwards 0.10s; }
+.mega-nav-panel.is-open .mnav-category.mnav-category--switching .mnav-card:nth-child(6) { animation: mnav-item-in 0.18s ease forwards 0.125s; }
+.mega-nav-panel.is-open .mnav-category.mnav-category--switching .mnav-card:nth-child(7) { animation: mnav-item-in 0.18s ease forwards 0.15s; }
+.mega-nav-panel.is-open .mnav-category.mnav-category--switching .mnav-card:nth-child(8) { animation: mnav-item-in 0.18s ease forwards 0.175s; }
+.mega-nav-panel.is-open .mnav-category.mnav-category--switching .mnav-card:nth-child(9) { animation: mnav-item-in 0.18s ease forwards 0.20s; }
+
+/* ── Filter list (left column) ── */
+.mega-nav-filters {
+  flex: 1;
+  min-width: 200px; /* widest filter label + padding; prevents tile overlap */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding-top: 4px;
+}
+
+/* Filter pill */
+.mnav-filter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 40px;
+  padding: 0 18px;
+  border-radius: 75px;
+  font-family: var(--font-body);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-label-weight);
+  letter-spacing: var(--type-label-ls);
+  line-height: var(--type-label-lh);
+  background: rgba(0, 0, 0, 0.04);
+  color: #1a1a1a;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  text-align: left;
+  transition: background 0.2s ease, color 0.2s ease;
+  white-space: nowrap;
+}
+
+.mnav-filter:hover:not(.mnav-filter--active) {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.mnav-filter--active {
+  background: #000;
+  color: #fff;
+}
+
+/* "All products →" link — no pill bg */
+.mnav-filter--all {
+  background: transparent;
+  color: #1a1a1a;
+  margin-top: 4px;
+  padding-left: 18px;
+}
+
+.mnav-filter--all:hover {
+  background: transparent;
+  opacity: 0.7;
+}
+
+/* ── Product grid (right column) ── */
+.mega-nav-grid-wrap {
+  flex: 3;
+  min-width: 0;
+  /* Hold the 3-row height so the panel doesn't resize between categories */
+  min-height: calc(3 * 160px + 2 * 8px);
+}
+
+.mnav-category {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.mnav-category--hidden {
+  display: none;
+}
+
+/* ── Product card ── */
+.mnav-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px;
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.mnav-card:hover {
+  background: #1a1a1a;
+}
+
+/* Card top row: icon + badges */
+.mnav-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: auto;
+}
+
+.mnav-card-icon {
+  width: 24px;
+  height: 24px;
+  display: block;
+  flex-shrink: 0;
+}
+
+.mnav-card-badges {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* Badge — outlined "New" */
+.mnav-badge--new {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 8px;
+  border-radius: 100px;
+  border: 1px solid rgba(0, 0, 0, 0.35);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  color: #1a1a1a;
+  white-space: nowrap;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.mnav-card:hover .mnav-badge--new {
+  border-color: rgba(255, 255, 255, 0.45);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Badge — solid "Save X%" */
+.mnav-badge--save {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 8px;
+  border-radius: 100px;
+  background: #1a1a1a;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.mnav-card:hover .mnav-badge--save {
+  background: #fff;
+  color: #1a1a1a;
+}
+
+/* Card bottom: name + description */
+.mnav-card-bottom {
+  padding-top: 16px;
+}
+
+.mnav-card-name {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a1a1a;
+  line-height: 1.25;
+  margin: 0 0 4px;
+  transition: color 0.2s ease;
+}
+
+.mnav-card:hover .mnav-card-name { color: #fff; }
+
+.mnav-card-desc {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.56);
+  line-height: 1.45;
+  margin: 0;
+  transition: color 0.2s ease;
+}
+
+.mnav-card:hover .mnav-card-desc { color: rgba(255, 255, 255, 0.64); }
+
+/* "View all" card — matches standard product tile with arrow as the icon */
+.mnav-card--all-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  font-size: 18px;
+  color: #1a1a1a;
+  line-height: 1;
+  flex-shrink: 0;
+  transition: color 0.2s ease;
+}
+
+.mnav-card:hover .mnav-card--all-arrow {
+  color: #fff;
+}
+
+/* ============================================
+   NAV BAR — forced dark state when panel open
+   Mirrors .gnav--scrolled but without the glass pill bg
+   ============================================ */
+/* When mega nav is open, fade the pill bg out — the panel's #f8f8f8 background
+   extends into the nav bar area (panel is behind gnav at z:98), so the panel
+   provides the background. Fading the pill out avoids a double-layered bg. */
+#gnav.gnav--open .gnav-inner::before {
+  opacity: 0;
+}
+
+#gnav.gnav--open .gnav-link { color: #000; }
+#gnav.gnav--open .gnav-logo       { display: none; }
+#gnav.gnav--open .gnav-logo-black { display: block; }
+#gnav.gnav--open .gnav-apps img   { filter: brightness(0); }
+#gnav.gnav--open .gnav-signin {
+  color: #000;
+  border-color: rgba(0, 0, 0, 0.7);
+}
+
+/* Active nav link (Products when dropdown open) */
+.gnav-link--active {
+  color: #000 !important;
+  position: relative;
+}
+
+
+/* Open-state: dim inactive links to 60% */
+#gnav.gnav--open .gnav-link:not(.gnav-link--active) {
+  opacity: 0.6;
+}
+
+/* Hovering an inactive link: full opacity */
+#gnav.gnav--open .gnav-link:not(.gnav-link--active):hover {
+  opacity: 1;
+}
+
+/* Chevron rotation */
+.gnav-link--active .gnav-chevron svg {
+  transform: rotate(180deg);
+  transition: transform 0.3s ease;
+}
+
+.gnav-chevron svg {
+  transition: transform 0.3s ease;
+}
+
+/* ============================================
+   USE CASES PANE
+   ============================================ */
+
+/* ── 5-col grid ── */
+.ucnav-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  width: 100%;
+  padding-bottom: 8px;
+}
+
+/* ── Card ── */
+.ucnav-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px 20px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  min-height: 340px;
+}
+
+.ucnav-card:hover {
+  background: #1a1a1a;
+}
+
+/* ── Card inner (top content) ── */
+.ucnav-card-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.ucnav-label {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.45);
+  margin: 0;
+  transition: color 0.2s ease;
+}
+
+.ucnav-card:hover .ucnav-label {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.ucnav-title {
+  font-family: var(--font-display);
+  font-size: var(--type-title-4-size);
+  font-weight: var(--type-title-4-weight);
+  line-height: var(--type-title-4-lh);
+  letter-spacing: var(--type-title-4-ls);
+  color: #1a1a1a;
+  margin: 0;
+  transition: color 0.2s ease;
+}
+
+.ucnav-card:hover .ucnav-title {
+  color: #fff;
+}
+
+.ucnav-desc {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.56);
+  line-height: 1.45;
+  margin: 0;
+  transition: color 0.2s ease;
+}
+
+.ucnav-card:hover .ucnav-desc {
+  color: rgba(255, 255, 255, 0.56);
+}
+
+/* ── "See plans ›" link ── */
+.ucnav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a1a1a;
+  text-decoration: none;
+  margin-top: 4px;
+  transition: color 0.2s ease;
+}
+
+.ucnav-card:hover .ucnav-link {
+  color: #fff;
+}
+
+.ucnav-chevron {
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+/* ── "Explore" CTA button ── */
+.ucnav-btn {
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding: 10px 0;
+  border-radius: 75px;
+  background: #1a1a1a;
+  font-family: var(--font-body);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-label-weight);
+  letter-spacing: var(--type-label-ls);
+  color: #fff;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.ucnav-card:hover .ucnav-btn {
+  background: #fff;
+  color: #1a1a1a;
+}
+
+/* ── Stagger fade-in (same mechanism as product tiles) ── */
+.mega-nav-panel .ucnav-card {
+  opacity: 0;
+}
+
+.mega-nav-panel.is-open .mnav-pane:not(.mnav-pane--hidden) .ucnav-card:nth-child(1) { animation: mnav-item-in 0.18s ease forwards 0.20s; }
+.mega-nav-panel.is-open .mnav-pane:not(.mnav-pane--hidden) .ucnav-card:nth-child(2) { animation: mnav-item-in 0.18s ease forwards 0.225s; }
+.mega-nav-panel.is-open .mnav-pane:not(.mnav-pane--hidden) .ucnav-card:nth-child(3) { animation: mnav-item-in 0.18s ease forwards 0.25s; }
+.mega-nav-panel.is-open .mnav-pane:not(.mnav-pane--hidden) .ucnav-card:nth-child(4) { animation: mnav-item-in 0.18s ease forwards 0.275s; }
+.mega-nav-panel.is-open .mnav-pane:not(.mnav-pane--hidden) .ucnav-card:nth-child(5) { animation: mnav-item-in 0.18s ease forwards 0.30s; }
+
+/* Tab switch — same specificity, placed after so document order wins; 0s base delay */
+.mega-nav-panel.is-open .mnav-pane.mnav-pane--switching .ucnav-card:nth-child(1) { animation: mnav-item-in 0.18s ease forwards 0s; }
+.mega-nav-panel.is-open .mnav-pane.mnav-pane--switching .ucnav-card:nth-child(2) { animation: mnav-item-in 0.18s ease forwards 0.025s; }
+.mega-nav-panel.is-open .mnav-pane.mnav-pane--switching .ucnav-card:nth-child(3) { animation: mnav-item-in 0.18s ease forwards 0.05s; }
+.mega-nav-panel.is-open .mnav-pane.mnav-pane--switching .ucnav-card:nth-child(4) { animation: mnav-item-in 0.18s ease forwards 0.075s; }
+.mega-nav-panel.is-open .mnav-pane.mnav-pane--switching .ucnav-card:nth-child(5) { animation: mnav-item-in 0.18s ease forwards 0.10s; }
+
+/* Product grid — 2 cols at S breakpoint */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .mnav-category {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ── Wrap to 3 cols at MD breakpoint ── */
+@media (max-width: 1023px) {
+  .ucnav-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ============================================
+   LIST NAV — Solutions & Learn & Support panes
+   ============================================ */
+
+/* ── Column ── */
+.lnav-col {
+  flex: 1;
+  background: #fff;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 420px;
+  min-width: 0;
+}
+
+/* Auto-height variant (stacked cards in L&S third col) */
+.lnav-col--auto {
+  height: auto;
+  flex: 1;
+}
+
+/* Third-column stack for Learn & Support */
+.lnav-col-stack {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+/* ── List section ── */
+.lnav-list {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.lnav-heading {
+  font-family: var(--font-display);
+  font-size: var(--type-title-4-size);
+  font-weight: var(--type-title-4-weight);
+  line-height: var(--type-title-4-lh);
+  letter-spacing: var(--type-title-4-ls);
+  color: #000;
+  margin: 0;
+}
+
+.lnav-items {
+  display: flex;
+  flex-direction: column;
+}
+
+.lnav-item {
+  display: flex;
+  align-items: center;
+  height: 34px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 18px;
+  letter-spacing: 0.01em;
+  color: #000;
+  text-decoration: none;
+  transition: opacity 0.15s ease;
+  white-space: nowrap;
+}
+
+.lnav-item:hover {
+  opacity: 0.6;
+}
+
+/* ── Column footer (Contact us button) ── */
+.lnav-col-footer {
+  padding: 16px;
+  flex-shrink: 0;
+}
+
+.lnav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 40px;
+  border: 1px solid #000;
+  border-radius: 75px;
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-label-weight);
+  letter-spacing: var(--type-label-ls);
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.lnav-btn:hover {
+  background: #000;
+  color: #fff;
+}
+
+/* ── Feature area (Solutions third column) ── */
+.lnav-feature {
+  flex: 1;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  min-width: 0;
+  height: 420px;
+}
+
+.lnav-feature-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.lnav-feature-top {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.lnav-feature-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.lnav-feature-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.lnav-feature-price {
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.lnav-feature-name {
+  font-family: var(--font-display);
+  font-size: var(--type-title-4-size);
+  font-weight: var(--type-title-4-weight);
+  line-height: var(--type-title-4-lh);
+  letter-spacing: var(--type-title-4-ls);
+  color: #fff;
+  margin: 0;
+}
+
+.lnav-feature-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding: 0 24px;
+  background: #fff;
+  border-radius: 75px;
+  font-family: var(--font-body);
+  font-size: var(--type-label-size);
+  font-weight: var(--type-label-weight);
+  letter-spacing: var(--type-label-ls);
+  color: #303030;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.lnav-feature-btn:hover {
+  opacity: 0.85;
+}
+
+/* ============================================
+   RESPONSIVE — hide mega nav below 768px
+   (gnav-links are hidden on mobile anyway)
+   ============================================ */
+@media (max-width: 767px) {
+  .mega-nav-panel,
+  .mega-nav-dim {
+    display: none;
+  }
+}

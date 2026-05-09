@@ -1,0 +1,156 @@
+/* ============================================
+   Split content
+   ----
+   3-row stack of 50/50 image + copy blocks where the image side
+   alternates left/right per row. Each row carries: image, headline,
+   body, bullet list, and an optional CTA. Designed for product-page
+   "feature beats" where a section has 3 deep capabilities each
+   warranting their own image and proof points.
+
+   The module ships **content density** (typography, list styling,
+   CTA position) — pages provide the images and copy. Mirror layout
+   per row via `data-image-side="left|right"` on the row element.
+
+   Tokens (overridable per page):
+     --sc-bg          : section bg
+     --sc-title       : row headline color
+     --sc-body        : row body color
+     --sc-bullet-text : bullet text color
+     --sc-bullet-mark : bullet glyph color
+     --sc-cta         : CTA link color
+     --sc-row-gap     : space between rows (default 96px)
+     --sc-col-gap     : space between image and copy columns (default 64px)
+
+   Spec: stardust/target/modules/split-content.md
+   ============================================ */
+
+:root {
+  --sc-bg:           #ffffff;
+  --sc-title:        #1a1a1a;
+  --sc-body:         rgba(0, 0, 0, 0.78);
+  --sc-bullet-text:  rgba(0, 0, 0, 0.78);
+  --sc-bullet-mark:  #1a1a1a;
+  --sc-cta:          #1a1a1a;
+  --sc-row-gap:      96px;
+  --sc-col-gap:      64px;
+}
+
+.split-content {
+  background: var(--sc-bg);
+  padding-block: var(--s2a-spacing-6xl, 96px);
+}
+
+.split-content__inner {
+  max-width: 1280px;
+  margin-inline: auto;
+  padding-inline: var(--grid-margin-md, 8.333vw);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sc-row-gap);
+}
+@media (max-width: 1023px) { .split-content__inner { padding-inline: var(--grid-margin-sm, 24px); gap: 64px; } }
+
+.split-content__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sc-col-gap);
+  align-items: center;
+}
+@media (max-width: 1023px) { .split-content__row { grid-template-columns: 1fr; gap: 32px; } }
+
+/* Image-on-right rows (default is image-left); flips column order
+   via data attribute, not via a structural sibling — markup stays
+   identical for every row. */
+.split-content__row[data-image-side="right"] .split-content__media { order: 2; }
+.split-content__row[data-image-side="right"] .split-content__copy  { order: 1; }
+@media (max-width: 1023px) {
+  .split-content__row[data-image-side="right"] .split-content__media { order: 0; }
+  .split-content__row[data-image-side="right"] .split-content__copy  { order: 0; }
+}
+
+.split-content__media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--s2a-border-radius-md, 16px);
+  overflow: hidden;
+  background: var(--s2a-color-background-subtle, #f8f8f8);
+}
+.split-content__media img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+}
+
+.split-content__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.split-content__title {
+  font-family: var(--font-display, 'Adobe Clean Display', sans-serif);
+  font-weight: 900;
+  font-size: clamp(28px, 3.2vw, 40px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--sc-title);
+  max-width: 22ch;
+}
+
+.split-content__body {
+  font-family: var(--font-body, 'Adobe Clean', sans-serif);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--sc-body);
+  max-width: 56ch;
+}
+
+.split-content__bullets {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.split-content__bullet {
+  position: relative;
+  padding-left: 24px;
+  font-family: var(--font-body, 'Adobe Clean', sans-serif);
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--sc-bullet-text);
+}
+.split-content__bullet::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 8px;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--sc-bullet-mark);
+}
+
+.split-content__cta {
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1.5px solid var(--sc-cta);
+  background: transparent;
+  color: var(--sc-cta);
+  font-family: var(--font-body, 'Adobe Clean', sans-serif);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease;
+  margin-top: 8px;
+  align-self: flex-start;
+}
+.split-content__cta:hover {
+  background: var(--sc-cta);
+  color: var(--sc-bg);
+}

@@ -1,0 +1,404 @@
+/* ============================================
+   Hero — Mobile scroll sequence — S breakpoint (< 768px)
+
+   Phase 1: 3-column grid exits; center col row 2
+     (Sales hub card) clip-expands to full card.
+   Phase 2: Marketing → Legal → HR stack in.
+
+   Loaded AFTER hero-hub-router.css so mobile rules
+   override the desktop defaults.
+   ============================================ */
+
+/* Mobile-only elements hidden on desktop */
+.hero-mobile-grid { display: none; }
+
+@media (max-width: 767px) {
+
+  /* ── Tokens ── */
+  :root {
+    --hero-scroll-distance-mobile: 360vh;
+    --hmg-gap: 40px;           /* column + in-column row gap */
+    --hmg-col-w: 164px;        /* fixed column width */
+    --hmg-col-step: 40px;      /* each step outward drops this much */
+
+    /* Mobile still uses the CSS-transition-based reveal driven by the
+       .is-settled class (hero-grid-mobile.js). Desktop's scroll-driven
+       rewrite dropped these from the shared :root; keep them scoped here
+       so mobile transitions stay intact. */
+    --hhub-reveal-duration: 300ms;
+    --hhub-reveal-ease:     cubic-bezier(0.52, 0.13, 0, 0.85);
+    --hhub-reveal-stagger:  80ms;
+  }
+
+  .hhub-card:nth-child(1) { --hhub-reveal-delay: 0ms; }
+  .hhub-card:nth-child(2) { --hhub-reveal-delay: calc(1 * var(--hhub-reveal-stagger)); }
+  .hhub-card:nth-child(3) { --hhub-reveal-delay: calc(2 * var(--hhub-reveal-stagger)); }
+  .hhub-card:nth-child(4) { --hhub-reveal-delay: calc(3 * var(--hhub-reveal-stagger)); }
+
+  /* ── Undo hero-hub-router.css mobile collapse ── */
+  .hero-image-grid  { display: none !important; }
+  .hero-hub-router  { display: block; }
+  .hero-pin-spacer  { height: var(--hero-scroll-distance-mobile); }
+
+  /* ── Hero viewport ── */
+  #hero {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    min-height: 0;
+    overflow: hidden;
+    padding-top: 104px;
+    border-radius: 0;
+  }
+
+  /* Hide until JS sets positions */
+  .hero-pin-spacer:not(.mobile-ready) .hero-mobile-grid,
+  .hero-pin-spacer:not(.mobile-ready) .hero-hub-router {
+    opacity: 0;
+  }
+
+  /* ══════════════════════════════════════════
+     HERO TEXT
+     ══════════════════════════════════════════ */
+  .hero-text {
+    position: relative;
+    padding: 0 24px;
+    will-change: transform, opacity;
+  }
+  .hero-text h1 { max-width: 18ch; }
+  .hero-text p  { max-width: 40ch; }
+
+  /* ══════════════════════════════════════════
+     MOBILE GRID
+     5 fixed-width columns centered in the viewport.
+     Center col is highest; each step outward drops
+     --hmg-col-step lower (0 → 40 → 80 from center).
+     Outermost cols bleed off-screen on narrow widths.
+     JS sets `top` to 40px below the CTA buttons.
+     ══════════════════════════════════════════ */
+  .hero-mobile-grid {
+    display: grid;
+    grid-template-columns: repeat(5, var(--hmg-col-w));
+    column-gap: var(--hmg-gap);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: auto;          /* JS sets this */
+    z-index: 2;
+    overflow: visible;
+    align-items: start;
+  }
+
+  .hmg-col {
+    display: flex;
+    flex-direction: column;
+    gap: var(--hmg-gap);
+  }
+
+  /* Stair-step drop: center highest, each outward column +40px */
+  .hmg-col--left,
+  .hmg-col--right        { padding-top: var(--hmg-col-step); }
+  .hmg-col--outer-left,
+  .hmg-col--outer-right  { padding-top: calc(var(--hmg-col-step) * 2); }
+
+  /* Cards: border-radius, overflow, object-fit cover */
+  .hmg-card {
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    flex-shrink: 0;
+    will-change: transform, opacity;
+  }
+
+  .hmg-card img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Outer column cards: tall portrait crops (all 4 flanking cols) */
+  .hmg-col--outer-left  .hmg-card,
+  .hmg-col--left        .hmg-card,
+  .hmg-col--right       .hmg-card,
+  .hmg-col--outer-right .hmg-card {
+    aspect-ratio: 3 / 5;
+  }
+
+  /* Show the inner-facing edge of each flanking column's image */
+  .hmg-col--outer-left  .hmg-card img,
+  .hmg-col--left        .hmg-card img { object-position: right center; }
+  .hmg-col--right       .hmg-card img,
+  .hmg-col--outer-right .hmg-card img { object-position: left center; }
+
+  /* Center row 1: portrait ratio matching the rounded asset */
+  .hmg-col--center .hmg-card {
+    aspect-ratio: 291 / 394;
+  }
+
+  /* Sales slot: invisible placeholder — maintains grid row 2 height.
+     JS measures this to know where to start the flying Sales card. */
+  .hmg-slot--sales {
+    width: 100%;
+    aspect-ratio: 594 / 788;  /* portrait — matches natural image ratio; animation expands to landscape */
+    visibility: hidden;
+  }
+
+  /* ══════════════════════════════════════════
+     HUB ROUTER — mobile layout
+     ══════════════════════════════════════════ */
+  .hero-hub-router {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    right: auto;
+    width: min(calc(100vw - 16px), 500px);
+    height: var(--hhub-card-h, 480px);
+    transform: translateX(-50%) translateY(-50%);
+    z-index: 5;
+    pointer-events: none;
+  }
+
+  .hhub-track {
+    display: block;
+    position: relative;
+    height: 100%;
+    gap: 0;
+    transform: none;
+    transition: none;
+    will-change: auto;
+  }
+
+  /* Hub cards: stacked absolutely. Background transparent so the card body
+     never flashes black at clearProps — the visible black comes only from the
+     header and footer as they grow out from the image edges via clip-path. */
+  .hhub-card {
+    flex: unset;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border-radius: 16px;
+    will-change: transform, opacity;
+  }
+
+  /* Unified black card background — overrides the desktop grey (#f6f6f6).
+     Mobile's card frame is always black, so the bg layer behind the image
+     + chrome is black too. Sales card (data-index="0") scroll-scrubs the
+     clip-path off --hhub-reveal-p so the black grows in from the image
+     edges in lockstep with the header/footer clip-path — matching desktop's
+     applyChromeReveal bg behavior, just with black instead of grey. Non-
+     sales cards stay fully unclipped (always visible) since they land
+     settled via the stack animation. */
+  .hhub-card-bg { background: #000; }
+
+  .hhub-card[data-index="0"] .hhub-card-bg {
+    clip-path: inset(
+      calc((1 - var(--hhub-reveal-p, 0)) * var(--hhub-header-h, 56px)) 0
+      calc((1 - var(--hhub-reveal-p, 0)) * var(--hhub-footer-h, 80px)) 0
+      round 16px
+    );
+    transition: none;
+  }
+
+  /* Sales card image visible from initial state (chrome hidden via clip-path until settled) */
+  .hhub-card[data-index="0"] { opacity: 1; }
+
+  /* ── Flying mode: keep chrome in DOM so clip-path reverse-transition plays on back-scrub.
+     position:absolute removes them from flex flow (media still fills height:100%).
+     They're clipped invisible by default; only visible during settle/unsettle transitions. ── */
+  .hhub-card--flying .hhub-card-header {
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+  }
+  .hhub-card--flying .hhub-card-footer {
+    display: flex;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+  }
+
+  /* ── Chrome — BLACK, clip-path reveal enabled ── */
+  .hhub-card-header {
+    background: #000;
+    border-radius: 16px 16px 0 0;
+    clip-path: inset(100% 0 0 0 round 16px 16px 0 0);
+    transition: clip-path var(--hhub-reveal-duration) var(--hhub-reveal-ease)
+                var(--hhub-reveal-delay, 0ms);
+  }
+
+  .hhub-card-label {
+    color: #fff;
+    transform: translateY(var(--hhub-reveal-slide));
+    transition: transform var(--hhub-reveal-duration) var(--hhub-reveal-ease)
+                var(--hhub-reveal-delay, 0ms);
+  }
+
+  .hhub-card-footer {
+    background: #000;
+    border-radius: 0 0 16px 16px;
+    clip-path: inset(0 0 100% 0 round 0 0 16px 16px);
+    transition: clip-path var(--hhub-reveal-duration) var(--hhub-reveal-ease)
+                var(--hhub-reveal-delay, 0ms);
+  }
+
+  .hhub-card-copy {
+    transform: translateY(calc(-1 * var(--hhub-reveal-slide)));
+    transition: transform var(--hhub-reveal-duration) var(--hhub-reveal-ease)
+                var(--hhub-reveal-delay, 0ms);
+  }
+
+  /* Body copy and CTA always visible on mobile (no active-only gate) */
+  .hhub-card-tagline { color: #fff; }
+
+  .hhub-card-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .hhub-card-body {
+    color: rgba(255, 255, 255, 0.64);
+    width: auto;
+    max-height: 80px;
+    opacity: 1;
+    transform: translateY(0);
+    transition: none;
+  }
+
+  .hhub-card-cta { display: block; }
+
+  /* Selector matches specificity of desktop's `.hero-hub-router.is-settled
+     .hhub-card-media { background: #f6f6f6 }` rule, which is not scoped to
+     desktop and would otherwise flip the media grey on settle — revealing
+     itself through the image's 12px rounded corners and the 4px side
+     padding. Later in cascade so mobile wins. */
+  .hero-hub-router .hhub-card-media {
+    background: #000;
+    height: var(--hhub-media-h, 340px);
+    padding: 0;
+    transition: padding var(--hhub-reveal-duration) var(--hhub-reveal-ease) var(--hhub-reveal-delay, 0ms);
+  }
+
+
+  /* 12px matches Figma. Same value in flying + settled so clearProps causes no radius jump.
+     object-position: center — landscape image centered so subjects stay in frame
+     during the portrait → landscape crop expansion. */
+  .hhub-card-img {
+    border-radius: 12px;
+    object-position: center;
+  }
+
+  /* ── Scroll-driven chrome reveal for the sales card ──
+     GSAP scrubs --hhub-reveal-p (0 = closed, 1 = open) on the hub router
+     over the SETTLE_TIME → PHASE_1_END range. Clip-path / transforms /
+     media padding derive directly from this variable, so reveal and close
+     are both scroll-position driven — no CSS time-transition, no opacity
+     fade. The scroll-up close tracks the sales-card shrink tween exactly.
+
+     These rules override the base .hhub-card-* transitions above for the
+     sales card only (data-index="0"); other stacked cards stay on their
+     CSS-transition-based reveal. ── */
+  .hero-hub-router { --hhub-reveal-p: 0; }
+
+  .hhub-card[data-index="0"] .hhub-card-header {
+    clip-path: inset(calc((1 - var(--hhub-reveal-p, 0)) * 100%) 0 0 0 round 16px 16px 0 0);
+    transition: none;
+  }
+  .hhub-card[data-index="0"] .hhub-card-footer {
+    clip-path: inset(0 0 calc((1 - var(--hhub-reveal-p, 0)) * 100%) 0 round 0 0 16px 16px);
+    transition: none;
+  }
+  .hhub-card[data-index="0"] .hhub-card-label {
+    transform: translateY(calc((1 - var(--hhub-reveal-p, 0)) * var(--hhub-reveal-slide)));
+    transition: none;
+  }
+  .hhub-card[data-index="0"] .hhub-card-copy {
+    transform: translateY(calc((1 - var(--hhub-reveal-p, 0)) * var(--hhub-reveal-slide) * -1));
+    transition: none;
+  }
+  .hhub-card[data-index="0"] .hhub-card-media {
+    padding: 0 calc(var(--hhub-reveal-p, 0) * 4px);
+    transition: none;
+  }
+
+  /* Stack cards (index > 0) still use the .is-settled class toggle for reveal */
+  .hero-hub-router.is-settled .hhub-card:not([data-index="0"]) .hhub-card-header {
+    clip-path: inset(0 0 0 0 round 16px 16px 0 0);
+  }
+  .hero-hub-router.is-settled .hhub-card:not([data-index="0"]) .hhub-card-label {
+    transform: translateY(0);
+  }
+  .hero-hub-router.is-settled .hhub-card:not([data-index="0"]) .hhub-card-footer {
+    clip-path: inset(0 0 0 0 round 0 0 16px 16px);
+  }
+  .hero-hub-router.is-settled .hhub-card:not([data-index="0"]) .hhub-card-copy {
+    transform: translateY(0);
+  }
+  .hero-hub-router.is-settled .hhub-card:not([data-index="0"]) .hhub-card-media {
+    background: #000;
+    padding: 0 4px;
+  }
+
+  /* Paint order: later cards render on top */
+  .hhub-card[data-index="0"] { z-index: 1; }
+  .hhub-card[data-index="1"] { z-index: 2; }
+  .hhub-card[data-index="2"] { z-index: 3; }
+  .hhub-card[data-index="3"] { z-index: 4; }
+
+  /* Dim overlay for burial depth (white over black → dark grey) */
+  .hhub-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: #ffffff;
+    opacity: var(--hhub-dim, 0);
+    pointer-events: none;
+    border-radius: 16px;
+    z-index: 20;
+  }
+
+  /* ── Hard visibility gates (bypass GSAP scrub lag) ── */
+  /* Stack cards are always full opacity — no gate needed */
+
+  /* ══════════════════════════════════════════
+     REDUCED MOTION — static fallback
+     ══════════════════════════════════════════ */
+  @media (prefers-reduced-motion: reduce) {
+    .hero-pin-spacer  { height: auto; }
+    #hero {
+      position: relative;
+      height: auto;
+      min-height: 100svh;
+      padding-top: 104px;
+    }
+    .hero-mobile-grid { display: none; }
+    .hero-hub-router {
+      position: static;
+      transform: none;
+      margin-top: 48px;
+      height: auto;
+    }
+    .hhub-card {
+      position: relative;
+      height: auto;
+      opacity: 1;
+    }
+    .hhub-card[data-index="1"],
+    .hhub-card[data-index="2"],
+    .hhub-card[data-index="3"] { display: none; }
+    /* Show chrome in reduced motion */
+    .hhub-card-header { clip-path: none; }
+    .hhub-card-footer { clip-path: none; }
+    .hhub-card-label  { transform: none; }
+    .hhub-card-copy   { transform: none; }
+  }
+}

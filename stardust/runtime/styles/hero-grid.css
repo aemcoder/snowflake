@@ -1,0 +1,41 @@
+/* ============================================
+   Hub — Hero Image Grid
+   ============================================ */
+
+/* ── Tunable parameter ── */
+:root {
+  --hero-grid-initial-gap: 97px;
+}
+
+/* ── Grid container: absolute overlay, overflow visible for off-screen images. ── */
+.hero-image-grid {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+  z-index: 2;                       /* above .hero-text (z:1) */
+  pointer-events: none;
+  opacity: 0;                       /* shown by JS after initial positioning */
+}
+
+/* ── Column: semantic wrapper only — GSAP positions children directly ── */
+.grid-col {
+  position: static;
+}
+
+/* ── Card: absolutely positioned by GSAP ── */
+.grid-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  border-radius: 16px;
+  /* width, height, x, y set by GSAP */
+}
+
+/* ── Images: fill their card container ── */
+.grid-card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

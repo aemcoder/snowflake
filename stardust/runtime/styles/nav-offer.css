@@ -1,0 +1,29 @@
+/* ============================================
+   Offer page — nav color overrides
+   Forces dark text/icons in the default (pre-scroll)
+   state since the page has a white background.
+   Pill visibility behavior is unchanged.
+   ============================================ */
+
+/* Links */
+#gnav .gnav-link { color: #000; }
+
+/* Logo — show black wordmark, hide white */
+#gnav .gnav-logo       { display: none; }
+#gnav .gnav-logo-black { display: block; }
+
+/* App switcher icon */
+#gnav .gnav-apps img { filter: brightness(0); }
+
+/* Sign In button */
+#gnav .gnav-signin {
+  color: #000;
+  border-color: rgba(0, 0, 0, 0.7);
+}
+
+/* Mobile: sm logo — show black, hide white */
+@media (max-width: 767px) {
+  #gnav .gnav-logo-sm       { display: none  !important; }
+  #gnav .gnav-logo-sm-black { display: block !important; }
+  #gnav .gnav-hamburger { color: #1a1a1a; }
+}
