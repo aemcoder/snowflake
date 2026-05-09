@@ -1,8 +1,14 @@
-# Proposal: a learning system for the stardust↔EDS bridge
+# Iteration 000 — Design of the learning system
 
-**Status:** Draft, awaiting review.
+> **Note:** this file was originally written as a *proposal* during iteration 001 — a design document presented for review. It's preserved verbatim here as the **chronological seed** of the iteration log. The structure it describes is now in place (see [`../README.md`](../README.md) for the table of contents and [`../../../AGENTS.md`](../../../AGENTS.md) § *Iterating on this project* for the closing-pass discipline). Treat it as historical reasoning, not a current proposal.
+
+---
+
+## Original framing (preserved)
+
+**Status:** Draft, awaiting review. *(Now: closed — system scaffolded in iter-001.)*
 **Author:** Iteration 001 retrospective.
-**Will become:** Once approved, this file is moved to `docs/snowflake/iterations/000-design.md` (preserving the reasoning), and the actual structure described below gets scaffolded.
+**Will become:** Once approved, this file is moved to `docs/snowflake/iterations/000-design.md` (preserving the reasoning), and the actual structure described below gets scaffolded. *(Now: done.)*
 
 ---
 

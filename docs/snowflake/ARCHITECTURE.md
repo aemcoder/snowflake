@@ -2,6 +2,25 @@
 
 The current state of the stardust↔EDS bridge. This file is a snapshot, not a history — see `iterations/` for how it evolved and `DECISIONS.md` for why.
 
+## Glossary
+
+Terms used throughout this documentation, defined once here so the rest of the docs can reference them without re-explaining.
+
+- **Bridge** — the integration layer this project builds. Sits between stardust output and the EDS rendering pipeline. Made up of: derived canon templates, a generic block decorator, dev-prod parity polyfills, and boilerplate scoping rules.
+- **Stardust** — the upstream skill that generates redesigned static HTML for an existing site. Produces sectioned HTML pages plus shared runtime CSS/JS. Lives in `.claude/skills/stardust/` (out-of-repo) and outputs into `stardust/` (in-repo). [See aem.live → stardust docs.]
+- **Module** — one stardust section. A self-contained visual unit (hero, FAQ, footer, …) identified by a BEM-style class on a `<section>` element. The bridge unit of authoring: one module = one DA block table.
+- **Slot** — an editable content position inside a module template, marked with `data-slot="<name>"`. The decorator fills slots from cells in the DA block table at render time. Three types are handled specially: text (default), link (`<a>`), and image (`<img>`/`<picture>`). A repeating list of slots is marked with `data-slot-list="<name>"`.
+- **Canon template** — the per-module HTML fragment at `/canon/modules/<id>.html` with `data-slot` markers. Derived once from stardust output (committed to repo, not generated at build time). The template the decorator fills.
+- **Block** (EDS) — the unit of authored content in EDS. Authored as a `<table>` with the block name in the header row; rendered as `<div class="<block-name>">` with options as additional classes. The `stardust-module` block (under `/blocks/stardust-module/`) is the only block this bridge defines.
+- **Decorator** — the JS function that runs per block. EDS auto-loads `/blocks/<name>/<name>.js` and calls its default export. The bridge's decorator (`/blocks/stardust-module/stardust-module.js`) reads the module ID from the block's option class, fetches the canon template, fills slots from the block table.
+- **Site** — one migrated website. Has its own DA org/repo, its own GitHub repo, its own `docs/snowflake/sites/<name>/` folder. Today only `experience-manager` exists; future iterations may onboard more.
+- **Track** — the scope of an iteration: either *bridge* (generic improvements that apply to all sites) or *<site-name>* (per-site work). Most iterations advance both at once.
+- **Iteration** — one working session, captured as `docs/snowflake/iterations/NNN-name.md`. Closes with the documentation pass described in `AGENTS.md`.
+- **DA** — Adobe Document Authoring (`da.live`). Word/Google-Docs-shaped CMS where authors edit content. Stores content as HTML body fragments at `admin.da.live`; serves at `content.da.live`; renders through EDS.
+- **EDS** — Edge Delivery Services. The rendering pipeline that takes DA-stored content + repo code and serves the final page. Has a server-side phase (run on `aem.page` / `aem.live`) and a client-side phase (the `aem.js` decoration steps). The bridge primarily plugs into the client-side phase.
+
+
+
 ## What the bridge does
 
 It lets a page authored in Document Authoring (`da.live`) render through the AEM Edge Delivery Services pipeline with stardust's exact CSS, no per-block hand-coding. Authors edit slot values in DA's familiar table-based UI; the served page matches stardust's static HTML output pixel-for-pixel.
