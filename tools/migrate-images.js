@@ -40,6 +40,11 @@ const SOURCES = [
   'stardust/assets/solutions',
   'stardust/assets/live',
   'stardust/assets/gen',
+  // Runtime hero mosaic images — referenced as DA slot values on the
+  // index page's product-section cards. Originally /stardust/runtime/...
+  // paths but EDS Media Bus can't resolve those when in DA content,
+  // so we upload to /media/afbs/ per DEC-011 (cross-ref iter-003 fixes).
+  'stardust/runtime/assets/images/hero',
 ];
 
 const IMG_EXT = /\.(png|jpe?g|svg|webp|avif|gif)$/i;

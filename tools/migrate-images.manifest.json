@@ -164,7 +164,8 @@
   {
     "hash": "01fd4be8",
     "sources": [
-      "stardust/assets/cta/portrait.png"
+      "stardust/assets/cta/portrait.png",
+      "stardust/runtime/assets/images/hero/human-resources.png"
     ],
     "dst": "media/afbs/portrait.png",
     "daUrl": "https://content.da.live/aemcoder/snowflake/media/afbs/portrait.png"
@@ -248,5 +249,109 @@
     ],
     "dst": "media/afbs/solution-customer-engagement.jpeg",
     "daUrl": "https://content.da.live/aemcoder/snowflake/media/afbs/solution-customer-engagement.jpeg"
+  },
+  {
+    "hash": "7019573e",
+    "sources": [
+      "stardust/runtime/assets/images/hero/col-1_img-01.png"
+    ],
+    "dst": "media/afbs/col-1_img-01.png",
+    "daUrl": "https://content.da.live/aemcoder/snowflake/media/afbs/col-1_img-01.png"
+  },
+  {
+    "hash": "7f4f3b1c",
+    "sources": [
+      "stardust/runtime/assets/images/hero/col-1_img-02.png"
+    ],
+    "dst": "media/afbs/col-1_img-02.png",
+    "daUrl": "https://content.da.live/aemcoder/snowflake/media/afbs/col-1_img-02.png"
+  },
+  {
+    "hash": "f26121f4",
+    "sources": [
+      "stardust/runtime/assets/images/hero/col-2_img-01.png"
+    ],
+    "dst": "media/afbs/col-2_img-01.png",
+    "daUrl": "https://content.da.live/aemcoder/snowflake/media/afbs/col-2_img-01.png"
+  },
+  {
+    "hash": "db94dc56",
+    "sources": [
+      "stardust/runtime/assets/images/hero/col-2_img-02.png"
+    ],
+    "dst": "media/afbs/col-2_img-02.png",
+    "daUrl": "https://content.da.live/aemcoder/snowflake/media/afbs/col-2_img-02.png"
+  },
+  {
+    "hash": "f25c41db",
+    "sources": [
+      "stardust/runtime/assets/images/hero/col-3_img-01.png"
+    ],
+    "dst": "media/afbs/col-3_img-01.png",
+    "daUrl": "https://content.da.live/aemcoder/snowflake/media/afbs/col-3_img-01.png"
+  },
+  {
+    "hash": "8067f31f",
+    "sources": [
+      "stardust/runtime/assets/images/hero/col-3_img-02.png"
+    ],
+    "dst": "media/afbs/col-3_img-02.png",
+    "daUrl": "https://content.da.live/aemcoder/snowflake/media/afbs/col-3_img-02.png"
+  },
+  {
+    "hash": "972af591",
+    "sources": [
+      "stardust/runtime/assets/images/hero/col-4_img-01.png"
+    ],
+    "dst": "media/afbs/col-4_img-01.png",
+    "daUrl": "https://content.da.live/aemcoder/snowflake/media/afbs/col-4_img-01.png"
+  },
+  {
+    "hash": "88243235",
+    "sources": [
+      "stardust/runtime/assets/images/hero/col-4_img-02.png"
+    ],
+    "dst": "media/afbs/col-4_img-02.png",
+    "daUrl": "https://content.da.live/aemcoder/snowflake/media/afbs/col-4_img-02.png"
+  },
+  {
+    "hash": "dd084b7b",
+    "sources": [
+      "stardust/runtime/assets/images/hero/col-5_img-01.png"
+    ],
+    "dst": "media/afbs/col-5_img-01.png",
+    "daUrl": "https://content.da.live/aemcoder/snowflake/media/afbs/col-5_img-01.png"
+  },
+  {
+    "hash": "7dfaa01d",
+    "sources": [
+      "stardust/runtime/assets/images/hero/col-5_img-02.png"
+    ],
+    "dst": "media/afbs/col-5_img-02.png",
+    "daUrl": "https://content.da.live/aemcoder/snowflake/media/afbs/col-5_img-02.png"
+  },
+  {
+    "hash": "2cbf9baf",
+    "sources": [
+      "stardust/runtime/assets/images/hero/legal.png"
+    ],
+    "dst": "media/afbs/legal.png",
+    "daUrl": "https://content.da.live/aemcoder/snowflake/media/afbs/legal.png"
+  },
+  {
+    "hash": "d885d4ff",
+    "sources": [
+      "stardust/runtime/assets/images/hero/marketing.png"
+    ],
+    "dst": "media/afbs/marketing.png",
+    "daUrl": "https://content.da.live/aemcoder/snowflake/media/afbs/marketing.png"
+  },
+  {
+    "hash": "ea150df5",
+    "sources": [
+      "stardust/runtime/assets/images/hero/sales.png"
+    ],
+    "dst": "media/afbs/sales.png",
+    "daUrl": "https://content.da.live/aemcoder/snowflake/media/afbs/sales.png"
   }
 ]
