@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Adobe Brand Concierge — turn conversations into conversions (bolder)</title>
+  <link rel="icon" type="image/svg+xml" href="../../runtime/assets/adobe-logo-red.svg">
+
+  <link rel="stylesheet" href="../../runtime/styles/global/reset.css">
+  <link rel="stylesheet" href="../../runtime/styles/global/grid.css">
+  <link rel="stylesheet" href="../../runtime/styles/global/typography.css">
+  <link rel="stylesheet" href="../../runtime/styles/page.css">
+  <link rel="stylesheet" href="../../runtime/styles/nav.css">
+  <link rel="stylesheet" href="../../runtime/styles/mega-nav.css">
+  <link rel="stylesheet" href="../../runtime/styles/mobile-nav.css">
+  <link rel="stylesheet" href="../../runtime/styles/faq-accordion.css">
+
+  <style>
+    :root {
+      --s2a-color-blue-900: #3b63fb;
+      --s2a-spacing-md: 16px; --s2a-spacing-lg: 24px;
+      --s2a-spacing-xl: 32px; --s2a-spacing-2xl: 40px;
+      --s2a-spacing-3xl: 48px; --s2a-spacing-4xl: 64px;
+      --s2a-spacing-5xl: 80px; --s2a-spacing-6xl: 96px;
+      --s2a-layout-lg: 124px;
+      --s2a-easing-default: cubic-bezier(0.42, 0, 0, 1);
+      --grid-margin-sm: 24px; --grid-margin-md: 8.333vw;
+      --gradient-warm: linear-gradient(135deg, #FF7A40 0%, #E84C8B 100%);
+    }
+
+    body { background: #fff; overflow-x: clip; }
+
+    .container { width: 100%; padding-inline: var(--grid-margin-sm); }
+    @media (min-width: 768px) { .container { padding-inline: var(--grid-margin-md); } }
+
+    /* Buttons (same as bold) */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      height: 48px; padding: 0 28px;
+      border-radius: 999px;
+      font-family: var(--font-body); font-size: 14px; font-weight: 700; line-height: 18px;
+      border: 1.5px solid transparent; text-decoration: none;
+      transition: transform 0.25s var(--s2a-easing-default), background 0.2s, border-color 0.2s, color 0.2s;
+      white-space: nowrap; cursor: pointer; will-change: transform;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn--solid-white { background: #fff; color: #000; }
+    .btn--solid-white:hover { background: #f0f0f0; }
+    .btn--ghost-white { background: transparent; color: #fff; border-color: rgba(255,255,255,0.7); backdrop-filter: blur(16px); }
+    .btn--ghost-white:hover { background: rgba(255,255,255,0.08); border-color: #fff; }
+    .btn--outline { background: transparent; color: #1a1a1a; border-color: #1a1a1a; }
+    .btn--outline:hover { background: #1a1a1a; color: #fff; }
+
+    .gnav-cta {
+      display: inline-flex; align-items: center; height: 40px;
+      padding: 0 20px; background: #fff; color: #000;
+      border-radius: 999px;
+      font-family: var(--font-body); font-size: 14px; font-weight: 700; line-height: 18px;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.2s;
+      margin-left: 4px;
+    }
+    .gnav-cta:hover { background: #e8e8e8; transform: translateY(-1px); }
+    .gnav-subbrand {
+      font-family: var(--font-body); font-size: 16px; font-weight: 700; color: #fff;
+      letter-spacing: -0.01em; padding-left: 8px; margin-left: 4px;
+      border-left: 1px solid rgba(255,255,255,0.24);
+      align-self: center; line-height: 18px; white-space: nowrap;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    #gnav.gnav--scrolled .gnav-subbrand { color: #1a1a1a; border-left-color: rgba(0,0,0,0.16); }
+    @media (max-width: 767px) { .gnav-subbrand { display: none; } }
+
+    /* ═══════════════════════════════════════════════════════════════
+       SCROLL-DRIVEN PRIMITIVES
+       Each primitive has BOTH entry and exit phases via separate
+       animations stacked on the same element. Entry runs from
+       view-entry to cover-30%; exit runs from cover-70% to view-exit.
+       ═══════════════════════════════════════════════════════════════ */
+
+    /* Big horizontal slide from left edge (used on titles, copy blocks) */
+    .slide-in-left {
+      animation:
+        slide-in-from-left 1ms linear both,
+        slide-out-to-top 1ms linear both;
+      animation-timeline: view(), view();
+      animation-range: entry 0% cover 30%, cover 75% exit 100%;
+    }
+    @keyframes slide-in-from-left {
+      from { opacity: 0; transform: translateX(-200px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes slide-out-to-top {
+      from { opacity: 1; transform: translateY(0); }
+      to   { opacity: 0.3; transform: translateY(-80px); }
+    }
+
+    /* Big horizontal slide from right edge */
+    .slide-in-right {
+      animation:
+        slide-in-from-right 1ms linear both,
+        slide-out-to-top 1ms linear both;
+      animation-timeline: view(), view();
+      animation-range: entry 0% cover 30%, cover 75% exit 100%;
+    }
+    @keyframes slide-in-from-right {
+      from { opacity: 0; transform: translateX(200px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    /* Slide up from below */
+    .slide-in-up {
+      animation:
+        slide-in-from-bottom 1ms linear both,
+        slide-out-to-top-soft 1ms linear both;
+      animation-timeline: view(), view();
+      animation-range: entry 0% cover 30%, cover 75% exit 100%;
+    }
+    @keyframes slide-in-from-bottom {
+      from { opacity: 0; transform: translateY(120px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slide-out-to-top-soft {
+      from { transform: translateY(0); }
+      to   { transform: translateY(-40px); opacity: 0.5; }
+    }
+
+    /* Mask-wipe reveal — white bar sweeps across to reveal text */
+    .mask-wipe {
+      position: relative;
+      display: inline-block;
+      overflow: hidden;
+      clip-path: inset(0 100% 0 0);
+      animation: mask-wipe-in 1ms linear both;
+      animation-timeline: view();
+      animation-range: entry 5% cover 35%;
+    }
+    @keyframes mask-wipe-in { to { clip-path: inset(0 0% 0 0); } }
+
+    /* Stagger reveal for lists — each child slides in from left with delay */
+    .stagger > * {
+      opacity: 0;
+      transform: translateX(-80px);
+      animation: stagger-in 1ms linear both;
+      animation-timeline: view();
+      animation-range: entry 5% cover 50%;
+    }
+    .stagger > *:nth-child(1) { animation-delay: 0ms; }
+    .stagger > *:nth-child(2) { animation-delay: 80ms; }
+    .stagger > *:nth-child(3) { animation-delay: 160ms; }
+    .stagger > *:nth-child(4) { animation-delay: 240ms; }
+    .stagger > *:nth-child(5) { animation-delay: 320ms; }
+    .stagger > *:nth-child(6) { animation-delay: 400ms; }
+    @keyframes stagger-in {
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    /* Word-by-word slide in (for hero title) */
+    .word-slide { display: inline-block; }
+    .word-slide > .word {
+      display: inline-block;
+      opacity: 0;
+      transform: translateX(-80px);
+      animation: word-slide-in 0.95s var(--s2a-easing-default) both;
+    }
+    .word-slide > .word:nth-child(1) { animation-delay: 0.10s; }
+    .word-slide > .word:nth-child(2) { animation-delay: 0.22s; }
+    .word-slide > .word:nth-child(3) { animation-delay: 0.34s; }
+    .word-slide > .word:nth-child(4) { animation-delay: 0.46s; }
+    @keyframes word-slide-in {
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       HERO — animated mesh + huge horizontal title slides
+       ═══════════════════════════════════════════════════════════════ */
+    .bc-hero {
+      position: relative;
+      overflow: hidden; isolation: isolate;
+      background: #0c0820; color: #fff;
+      padding: 140px var(--grid-margin-md, 8.333vw) 96px;
+      min-height: 100vh;
+    }
+    @media (max-width: 1023px) { .bc-hero { padding-inline: var(--grid-margin-sm); padding-top: 120px; } }
+    .bc-hero__mesh { position: absolute; inset: -10%; z-index: 0; pointer-events: none; filter: blur(60px); }
+    .bc-hero__blob { position: absolute; width: 60vmin; height: 60vmin; border-radius: 50%; mix-blend-mode: screen; opacity: 0.7; }
+    .bc-hero__blob--1 { background: #8B68E8; animation: blob-drift-1 22s ease-in-out infinite alternate; }
+    .bc-hero__blob--2 { background: #E84C8B; animation: blob-drift-2 28s ease-in-out infinite alternate; }
+    .bc-hero__blob--3 { background: #5B7BFF; animation: blob-drift-3 26s ease-in-out infinite alternate; }
+    .bc-hero__blob--4 { background: #FF7A40; animation: blob-drift-4 32s ease-in-out infinite alternate; opacity: 0.45; }
+    @keyframes blob-drift-1 { 0%{top:-10%;left:-8%;transform:scale(1);} 100%{top:30%;left:25%;transform:scale(1.2);} }
+    @keyframes blob-drift-2 { 0%{top:20%;right:-10%;transform:scale(0.9);} 100%{top:55%;right:15%;transform:scale(1.15);} }
+    @keyframes blob-drift-3 { 0%{bottom:-8%;left:30%;transform:scale(1.1);} 100%{bottom:20%;left:5%;transform:scale(0.95);} }
+    @keyframes blob-drift-4 { 0%{bottom:5%;right:20%;transform:scale(1);} 100%{bottom:35%;right:-5%;transform:scale(1.25);} }
+
+    .bc-hero__grid { position: relative; z-index: 2; display: grid; grid-template-columns: 1fr 1.1fr; gap: 80px; align-items: center; max-width: 1920px; margin-inline: auto; }
+    @media (max-width: 1023px) { .bc-hero__grid { grid-template-columns: 1fr; gap: 48px; } }
+    .bc-hero__copy { display: flex; flex-direction: column; gap: 28px; }
+    .bc-hero__eyebrow {
+      font-family: var(--font-body); font-weight: 700;
+      font-size: 14px; letter-spacing: 0.16em; text-transform: uppercase;
+      color: rgba(255,255,255,0.65);
+      animation: hero-eyebrow-in 0.8s var(--s2a-easing-default) 0.05s both;
+    }
+    @keyframes hero-eyebrow-in {
+      from { opacity: 0; transform: translateX(-40px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    .bc-hero__title {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(40px, 5vw, 72px);
+      line-height: 0.94; letter-spacing: -0.04em;
+      max-width: 18ch;
+    }
+    .bc-hero__title .word--accent {
+      background: linear-gradient(120deg, #FF7A40 0%, #E84C8B 50%, #8B68E8 100%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .bc-hero__body {
+      font-family: var(--font-body); font-size: 19px; line-height: 1.5;
+      color: rgba(255,255,255,0.78); max-width: 56ch;
+      animation: hero-body-in 0.95s var(--s2a-easing-default) 0.7s both;
+    }
+    @keyframes hero-body-in {
+      from { opacity: 0; transform: translateX(-50px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    .bc-hero__cta-wrap {
+      animation: hero-body-in 0.95s var(--s2a-easing-default) 0.9s both;
+    }
+
+    .bc-hero__media {
+      position: relative;
+      aspect-ratio: 4/5; max-width: 540px; justify-self: center;
+      width: 100%; border-radius: 32px; overflow: hidden;
+      transform-style: preserve-3d;
+      transform: perspective(1200px)
+                 rotateY(calc(var(--mx, 0) * 6deg))
+                 rotateX(calc(var(--my, 0) * -6deg))
+                 translateZ(0);
+      transition: transform 0.6s cubic-bezier(0.2, 0, 0, 1);
+      box-shadow: 0 40px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06) inset;
+      animation: portrait-in 1.3s var(--s2a-easing-default) 0.4s both;
+    }
+    @keyframes portrait-in {
+      from { opacity: 0; transform: perspective(1200px) translateX(120px) scale(0.92); }
+      to   { opacity: 1; }
+    }
+    .bc-hero__bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+    .bc-hero__chat {
+      position: absolute; z-index: 3; max-width: 65%;
+      padding: 14px 18px;
+      background: rgba(255,255,255,0.92); color: #1a1a1a;
+      border-radius: 22px;
+      font-family: var(--font-body); font-size: 14px; line-height: 1.4; font-weight: 600;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.25);
+      backdrop-filter: blur(10px);
+      animation: chat-slide-in 0.85s var(--s2a-easing-default) both;
+    }
+    @keyframes chat-slide-in {
+      from { opacity: 0; transform: translateX(80px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    .bc-hero__chat--1 { top: 8%;  right: -2%; animation-delay: 1.05s; }
+    .bc-hero__chat--2 { top: 28%; right: 5%;  animation-delay: 1.4s; }
+    .bc-hero__chat--3 { bottom: 28%; right: -4%; animation-delay: 1.75s; background: rgba(255,224,180,0.96); }
+    .bc-hero__chat--4 { bottom: 8%;  right: 2%;  animation-delay: 2.1s;  background: rgba(216,255,228,0.96); }
+    .bc-hero__chat::before {
+      content: ''; position: absolute; bottom: -4px; right: 22px;
+      width: 14px; height: 14px; background: inherit;
+      transform: rotate(45deg); border-radius: 0 0 3px 0;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       MARQUEE — kinetic strip between hero and Try Brand Concierge
+       Auto-scrolls horizontally; reverses direction on alternate rows.
+       ═══════════════════════════════════════════════════════════════ */
+    .bc-marquee {
+      position: relative;
+      background: #0c0820;
+      color: #fff;
+      padding-block: 32px;
+      overflow: hidden;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .bc-marquee__track {
+      display: flex; gap: 48px;
+      width: max-content;
+      animation: marquee-scroll 40s linear infinite;
+    }
+    .bc-marquee__track--reverse { animation: marquee-scroll-reverse 50s linear infinite; }
+    @keyframes marquee-scroll          { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    @keyframes marquee-scroll-reverse  { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+    .bc-marquee__item {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(30px, 4vw, 60px);
+      letter-spacing: -0.03em;
+      line-height: 1;
+      color: rgba(255,255,255,0.18);
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: color 0.3s;
+    }
+    .bc-marquee__item--accent {
+      background: linear-gradient(120deg, #FF7A40, #E84C8B, #8B68E8);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .bc-marquee__sep {
+      font-family: var(--font-display); font-size: clamp(30px, 4vw, 60px);
+      color: #FF7A40;
+      flex-shrink: 0;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       TRY BRAND CONCIERGE — title mask-wipe; chips fly in from sides
+       ═══════════════════════════════════════════════════════════════ */
+    .bc-try {
+      position: relative;
+      background:
+        radial-gradient(ellipse 80% 100% at 0% 50%, rgba(255,182,193,0.65), transparent 60%),
+        radial-gradient(ellipse 80% 100% at 100% 50%, rgba(255,206,158,0.50), transparent 60%),
+        radial-gradient(ellipse 60% 80% at 50% 110%, rgba(232,76,139,0.30), transparent 60%),
+        #fff5f0;
+      padding-block: var(--s2a-spacing-6xl);
+      text-align: center; overflow: hidden;
+    }
+    .bc-try__inner {
+      position: relative; z-index: 1;
+      max-width: 880px; margin: 0 auto;
+      padding-inline: var(--grid-margin-sm);
+      display: flex; flex-direction: column; gap: var(--s2a-spacing-xl); align-items: center;
+    }
+    .bc-try__title {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(28px, 3.2vw, 44px); line-height: 1.05;
+      letter-spacing: -0.03em; color: #1a1a1a;
+    }
+    .bc-try__sub {
+      font-family: var(--font-body); font-size: 17px; line-height: 1.4;
+      color: rgba(0,0,0,0.7);
+    }
+    .bc-try__chips { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; max-width: 760px; }
+    .bc-try__chip {
+      padding: 12px 18px;
+      border: 1px solid rgba(0,0,0,0.18);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(10px);
+      font-family: var(--font-body); font-size: 13px; font-weight: 500; color: #1a1a1a;
+      cursor: pointer;
+      transition: all 0.3s var(--s2a-easing-default);
+    }
+    .bc-try__chip:hover {
+      background: #fff; transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+    /* Chips slide in from alternating sides on scroll-in */
+    .bc-try__chip {
+      opacity: 0;
+      animation: chip-fly-in 0.85s var(--s2a-easing-default) both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 35%;
+    }
+    .bc-try__chip:nth-child(1) { transform: translateX(-200px); animation-delay: 0ms;   }
+    .bc-try__chip:nth-child(2) { transform: translateX(200px);  animation-delay: 80ms;  }
+    .bc-try__chip:nth-child(3) { transform: translateX(-200px); animation-delay: 160ms; }
+    .bc-try__chip:nth-child(4) { transform: translateX(200px);  animation-delay: 240ms; }
+    @keyframes chip-fly-in {
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    /* Search bar grows from center on scroll-in */
+    .bc-try__bar {
+      width: 100%; max-width: 760px; height: 64px;
+      background: rgba(255,255,255,0.96);
+      border: 2px solid rgba(0,0,0,0.08);
+      border-radius: 999px;
+      display: flex; align-items: center; gap: 14px;
+      padding: 0 12px 0 28px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+      transform-origin: center;
+      transform: scaleX(0);
+      animation: bar-grow 1ms linear both;
+      animation-timeline: view();
+      animation-range: entry 5% cover 40%;
+    }
+    @keyframes bar-grow { to { transform: scaleX(1); } }
+    .bc-try__bar svg { color: rgba(0,0,0,0.5); flex-shrink: 0; }
+    .bc-try__bar input {
+      flex: 1; background: transparent; border: none; outline: none;
+      font-family: var(--font-body); font-size: 16px; color: #1a1a1a;
+    }
+    .bc-try__bar button {
+      width: 44px; height: 44px; border: none;
+      background: var(--gradient-warm); color: #fff;
+      border-radius: 50%; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.2s;
+    }
+    .bc-try__bar button:hover { transform: scale(1.08); }
+    .bc-try__disclaimer {
+      font-family: var(--font-body); font-size: 12px; line-height: 1.5;
+      color: rgba(0,0,0,0.5); max-width: 720px; margin-top: 12px;
+    }
+    .bc-try__disclaimer a { color: rgba(0,0,0,0.7); text-decoration: underline; }
+
+    /* ═══════════════════════════════════════════════════════════════
+       INTRO — mask-wipe headline
+       ═══════════════════════════════════════════════════════════════ */
+    .bc-intro {
+      background: #fff;
+      padding: var(--s2a-spacing-6xl) var(--grid-margin-sm) var(--s2a-spacing-3xl);
+      text-align: center;
+    }
+    .bc-intro__title {
+      max-width: 980px; margin-inline: auto;
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(28px, 3.2vw, 44px); line-height: 1.1;
+      letter-spacing: -0.025em; color: #1a1a1a;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       SPLIT — image clip-path reveals + bullet stagger from edge
+       ═══════════════════════════════════════════════════════════════ */
+    .bc-split { background: #fff; padding-block: var(--s2a-spacing-6xl); }
+    .bc-split__inner {
+      max-width: 1280px; margin-inline: auto;
+      padding-inline: var(--grid-margin-md, 8.333vw);
+      display: flex; flex-direction: column; gap: 160px;
+    }
+    @media (max-width: 1023px) { .bc-split__inner { padding-inline: var(--grid-margin-sm); gap: 100px; } }
+    .bc-split__row {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: center;
+    }
+    @media (max-width: 1023px) { .bc-split__row { grid-template-columns: 1fr; gap: 32px; } }
+    .bc-split__row[data-side="right"] .bc-split__media { order: 2; }
+    .bc-split__row[data-side="right"] .bc-split__copy  { order: 1; }
+    @media (max-width: 1023px) {
+      .bc-split__row[data-side="right"] .bc-split__media,
+      .bc-split__row[data-side="right"] .bc-split__copy { order: 0; }
+    }
+
+    /* Image — clip-path reveal that grows diagonally from one corner */
+    .bc-split__media {
+      position: relative;
+      aspect-ratio: 4/3; border-radius: 24px; overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+      clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+      animation: clip-reveal-left 1ms linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 40%;
+    }
+    .bc-split__row[data-side="right"] .bc-split__media {
+      clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%);
+      animation-name: clip-reveal-right;
+    }
+    @keyframes clip-reveal-left  { to { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); } }
+    @keyframes clip-reveal-right { to { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); } }
+    .bc-split__media img {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; display: block;
+      transform: scale(1.1);
+      animation: media-zoom-out 1ms linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 50%;
+    }
+    @keyframes media-zoom-out { to { transform: scale(1); } }
+
+    .bc-split__copy { display: flex; flex-direction: column; gap: 22px; }
+    .bc-split__title {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(26px, 2.8vw, 38px); line-height: 1.1;
+      letter-spacing: -0.025em; color: #1a1a1a; max-width: 22ch;
+      opacity: 0; transform: translateX(-100px);
+      animation: split-title-in 1ms linear both;
+      animation-timeline: view();
+      animation-range: entry 5% cover 35%;
+    }
+    .bc-split__row[data-side="right"] .bc-split__title { transform: translateX(100px); }
+    @keyframes split-title-in { to { opacity: 1; transform: translateX(0); } }
+
+    .bc-split__body {
+      font-family: var(--font-body); font-weight: 400;
+      font-size: 17px; line-height: 1.5; color: rgba(0,0,0,0.75); max-width: 56ch;
+      opacity: 0; transform: translateX(-60px);
+      animation: split-body-in 1ms linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 40%;
+    }
+    .bc-split__row[data-side="right"] .bc-split__body { transform: translateX(60px); }
+    @keyframes split-body-in { to { opacity: 1; transform: translateX(0); } }
+
+    .bc-split__bullets {
+      list-style: none; padding: 0; margin: 0;
+      display: flex; flex-direction: column; gap: 14px;
+    }
+    .bc-split__bullet {
+      position: relative; padding-left: 32px;
+      font-family: var(--font-body); font-weight: 400;
+      font-size: 15px; line-height: 1.5; color: rgba(0,0,0,0.78);
+      opacity: 0; transform: translateX(-80px);
+      animation: bullet-slide-in 1ms linear both;
+      animation-timeline: view();
+      animation-range: entry 15% cover 50%;
+    }
+    .bc-split__row[data-side="right"] .bc-split__bullet { transform: translateX(80px); }
+    .bc-split__bullets > .bc-split__bullet:nth-child(1) { animation-delay: 0ms; }
+    .bc-split__bullets > .bc-split__bullet:nth-child(2) { animation-delay: 100ms; }
+    .bc-split__bullets > .bc-split__bullet:nth-child(3) { animation-delay: 200ms; }
+    .bc-split__bullets > .bc-split__bullet:nth-child(4) { animation-delay: 300ms; }
+    @keyframes bullet-slide-in { to { opacity: 1; transform: translateX(0); } }
+    .bc-split__bullet::before {
+      content: ''; position: absolute; left: 0; top: 6px;
+      width: 18px; height: 18px;
+      background: var(--gradient-warm);
+      border-radius: 50%;
+      box-shadow: 0 2px 8px rgba(232,76,139,0.4);
+    }
+    .bc-split__bullet::after {
+      content: '✓'; position: absolute; left: 4px; top: 4px;
+      width: 10px; height: 10px;
+      color: #fff; font-size: 10px; font-weight: 900;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .bc-split__cta {
+      display: inline-flex; align-items: center; gap: 8px;
+      align-self: flex-start;
+      height: 44px; padding: 0 24px;
+      background: #1a1a1a; color: #fff;
+      border-radius: 999px;
+      font-family: var(--font-body); font-size: 14px; font-weight: 700;
+      text-decoration: none;
+      transition: transform 0.2s, background 0.2s;
+    }
+    .bc-split__cta:hover { transform: translateY(-2px); background: #2a2a2a; }
+    .bc-split__cta::after { content: '→'; transition: transform 0.2s; }
+    .bc-split__cta:hover::after { transform: translateX(4px); }
+
+    /* ═══════════════════════════════════════════════════════════════
+       USE CASES — divergent layout; cards swing in from 3 directions
+       ═══════════════════════════════════════════════════════════════ */
+    .bc-use-cases {
+      position: relative;
+      background: #f5f0ec;
+      padding-block: 140px;
+      overflow: hidden;
+    }
+    .bc-use-cases::before {
+      content: ''; position: absolute;
+      width: 800px; height: 800px;
+      top: -300px; right: -200px;
+      background: radial-gradient(circle, rgba(255,122,64,0.20), transparent 60%);
+      pointer-events: none;
+    }
+    .bc-use-cases__header {
+      max-width: 720px; margin: 0 auto 96px;
+      text-align: center; padding-inline: var(--grid-margin-sm);
+      position: relative; z-index: 1;
+    }
+    .bc-use-cases__title {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(28px, 3.2vw, 44px); line-height: 1.05;
+      letter-spacing: -0.03em; color: #1a1a1a;
+    }
+    .bc-use-cases__grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      max-width: 1200px; margin: 0 auto;
+      padding-inline: var(--grid-margin-md, 8.333vw);
+      position: relative; z-index: 1;
+    }
+    @media (max-width: 1023px) { .bc-use-cases__grid { grid-template-columns: 1fr; gap: 32px; } }
+    .bc-use-case {
+      position: relative;
+      padding: 36px 28px 32px;
+      background: #fff; border-radius: 24px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.08);
+      transition: transform 0.5s var(--s2a-easing-default), box-shadow 0.5s, opacity 0.4s;
+      will-change: transform;
+    }
+    /* Each card swings in from a different direction with rotation, settling into divergent rest pose */
+    .bc-use-case--1 {
+      opacity: 0; transform: translate(-300px, 80px) rotate(-20deg);
+      animation: case-swing-1 1ms linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 35%;
+    }
+    .bc-use-case--2 {
+      opacity: 0; transform: translate(0, 200px) rotate(15deg);
+      animation: case-swing-2 1ms linear both;
+      animation-timeline: view();
+      animation-range: entry 5% cover 40%;
+    }
+    .bc-use-case--3 {
+      opacity: 0; transform: translate(300px, 80px) rotate(20deg);
+      animation: case-swing-3 1ms linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 45%;
+    }
+    @keyframes case-swing-1 { to { opacity: 1; transform: translate(0, 0) rotate(-2.5deg); } }
+    @keyframes case-swing-2 { to { opacity: 1; transform: translate(0, -32px) rotate(1.5deg); } }
+    @keyframes case-swing-3 { to { opacity: 1; transform: translate(0, 16px) rotate(-1deg); } }
+    @media (max-width: 1023px) {
+      .bc-use-case--1, .bc-use-case--2, .bc-use-case--3 {
+        animation: none; opacity: 1; transform: none;
+      }
+    }
+    /* Hover: target card straightens + scales; siblings fade slightly */
+    .bc-use-cases__grid:hover .bc-use-case { opacity: 0.55; }
+    .bc-use-cases__grid .bc-use-case:hover {
+      transform: rotate(0) translateY(-12px) scale(1.04) !important;
+      opacity: 1;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.18);
+      z-index: 2;
+    }
+    .bc-use-case__icon {
+      width: 64px; height: 64px;
+      border-radius: 18px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 30px; color: #fff;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+    .bc-use-case--1 .bc-use-case__icon { background: var(--gradient-warm); }
+    .bc-use-case--2 .bc-use-case__icon { background: linear-gradient(135deg, #5B7BFF, #8B68E8); }
+    .bc-use-case--3 .bc-use-case__icon { background: linear-gradient(135deg, #2EBF98, #4FB6E8); }
+    .bc-use-case__title {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: 22px; line-height: 1.15;
+      letter-spacing: -0.02em; color: #1a1a1a;
+      margin-bottom: 12px;
+    }
+    .bc-use-case__body {
+      font-family: var(--font-body); font-weight: 400;
+      font-size: 15px; line-height: 1.5; color: rgba(0,0,0,0.65);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       WHY ADOBE — 4 cards alternating slide direction (L/R/L/R)
+       ═══════════════════════════════════════════════════════════════ */
+    .bc-why { background: #fff; padding-block: var(--s2a-spacing-6xl); overflow: hidden; }
+    .bc-why__header {
+      max-width: 720px; margin: 0 auto 80px;
+      text-align: center; padding-inline: var(--grid-margin-sm);
+    }
+    .bc-why__title {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(28px, 3.2vw, 44px); line-height: 1.05;
+      letter-spacing: -0.03em; color: #1a1a1a;
+    }
+    .bc-why__grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 16px; max-width: 1320px; margin: 0 auto;
+      padding-inline: var(--grid-margin-md, 8.333vw);
+    }
+    @media (max-width: 1279px) { .bc-why__grid { grid-template-columns: repeat(2, 1fr); gap: 24px; } }
+    @media (max-width: 767px)  { .bc-why__grid { grid-template-columns: 1fr; } }
+    .bc-why-card {
+      position: relative;
+      padding: 28px;
+      border-radius: 24px; overflow: hidden;
+      transition: transform 0.4s var(--s2a-easing-default), box-shadow 0.4s;
+      will-change: transform;
+    }
+    .bc-why-card:hover {
+      transform: translateY(-8px) !important;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+    }
+    .bc-why-card--1 { background: linear-gradient(160deg, #FFE5D6 0%, #FFCFB5 100%); min-height: 380px; }
+    .bc-why-card--2 { background: linear-gradient(160deg, #DCE7FF 0%, #B8C9FF 100%); min-height: 460px; margin-top: -32px; }
+    .bc-why-card--3 { background: linear-gradient(160deg, #E5DCFF 0%, #C5B5FF 100%); min-height: 380px; }
+    .bc-why-card--4 { background: linear-gradient(160deg, #DCF5E5 0%, #B5E0C5 100%); min-height: 460px; margin-top: -32px; }
+    @media (max-width: 1279px) {
+      .bc-why-card--2, .bc-why-card--4 { margin-top: 0; }
+    }
+    /* Alternating slide direction: 1 from left, 2 from right, 3 from left, 4 from right */
+    .bc-why-card--1 { opacity: 0; transform: translateX(-200px); animation: why-in-left 1ms linear both;  animation-timeline: view(); animation-range: entry 0% cover 35%; }
+    .bc-why-card--2 { opacity: 0; transform: translateX(200px);  animation: why-in-right 1ms linear both; animation-timeline: view(); animation-range: entry 5% cover 40%; }
+    .bc-why-card--3 { opacity: 0; transform: translateX(-200px); animation: why-in-left 1ms linear both;  animation-timeline: view(); animation-range: entry 10% cover 45%; }
+    .bc-why-card--4 { opacity: 0; transform: translateX(200px);  animation: why-in-right 1ms linear both; animation-timeline: view(); animation-range: entry 15% cover 50%; }
+    @keyframes why-in-left  { to { opacity: 1; transform: translateX(0); } }
+    @keyframes why-in-right { to { opacity: 1; transform: translateX(0); } }
+    .bc-why-card__media {
+      aspect-ratio: 4/3; border-radius: 16px; overflow: hidden;
+      margin-bottom: 20px;
+      background: rgba(255,255,255,0.4);
+    }
+    .bc-why-card__media img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      transition: transform 0.6s var(--s2a-easing-default);
+    }
+    .bc-why-card:hover .bc-why-card__media img { transform: scale(1.06); }
+    .bc-why-card__title {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: 19px; line-height: 1.15;
+      letter-spacing: -0.02em; color: #1a1a1a;
+      margin-bottom: 12px;
+    }
+    .bc-why-card__body {
+      font-family: var(--font-body); font-weight: 400;
+      font-size: 14px; line-height: 1.5; color: rgba(0,0,0,0.7);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       CONVERSATIONS — diagram with scroll-driven line drawing
+       ═══════════════════════════════════════════════════════════════ */
+    .bc-conversations {
+      background: #d6e8f0;
+      padding-block: var(--s2a-spacing-6xl);
+      overflow: hidden;
+    }
+    .bc-conversations__grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: center;
+      max-width: 1280px; margin: 0 auto;
+      padding-inline: var(--grid-margin-md, 8.333vw);
+    }
+    @media (max-width: 1023px) { .bc-conversations__grid { grid-template-columns: 1fr; gap: 48px; padding-inline: var(--grid-margin-sm); } }
+    .bc-conversations__title {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(28px, 3.2vw, 44px); line-height: 1.05;
+      letter-spacing: -0.03em; color: #1a1a1a;
+      margin-bottom: 20px; max-width: 18ch;
+    }
+    .bc-conversations__body {
+      font-family: var(--font-body); font-weight: 400;
+      font-size: 17px; line-height: 1.5; color: rgba(0,0,0,0.65);
+      margin-bottom: 32px; max-width: 56ch;
+    }
+    .bc-conversations__diagram {
+      position: relative; aspect-ratio: 1/1; max-width: 480px; margin: 0 auto;
+    }
+    .bc-conv-prompt {
+      position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+      background: #1a1a1a; color: #fff;
+      padding: 12px 18px; border-radius: 999px;
+      font-family: var(--font-body); font-size: 13px; font-weight: 600;
+      white-space: nowrap;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      animation: prompt-float 4s ease-in-out infinite;
+      opacity: 0;
+      animation: prompt-in 0.7s var(--s2a-easing-default) both, prompt-float 4s ease-in-out infinite 0.7s;
+      animation-timeline: view(), auto;
+      animation-range: entry 5% cover 30%, auto;
+    }
+    @keyframes prompt-in { to { opacity: 1; } }
+    @keyframes prompt-float { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, -8px); } }
+    .bc-conv-center {
+      position: absolute; top: 35%; left: 50%; transform: translate(-50%, -50%) scale(0);
+      width: 120px; height: 120px; border-radius: 50%;
+      background: var(--gradient-warm);
+      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display); font-weight: 900; font-size: 16px;
+      box-shadow: 0 0 40px rgba(232,76,139,0.4);
+      animation: center-pop 1ms linear both, pulse-glow 2.5s ease-in-out infinite 0.6s;
+      animation-timeline: view(), auto;
+      animation-range: entry 10% cover 35%, auto;
+    }
+    @keyframes center-pop { to { transform: translate(-50%, -50%) scale(1); } }
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 40px rgba(232,76,139,0.4); }
+      50%      { box-shadow: 0 0 60px rgba(232,76,139,0.8); }
+    }
+    .bc-conv-leaves {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      display: flex; justify-content: space-around; gap: 12px;
+    }
+    .bc-conv-leaf {
+      padding: 14px 18px;
+      background: #fff;
+      border-radius: 14px;
+      font-family: var(--font-body); font-weight: 700;
+      font-size: 12px; color: #1a1a1a; text-align: center;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      flex: 1; max-width: 130px;
+      opacity: 0; transform: translateY(60px);
+      animation: leaf-rise 1ms linear both, leaf-bob 4s ease-in-out infinite 1s;
+      animation-timeline: view(), auto;
+      animation-range: entry 15% cover 45%, auto;
+    }
+    .bc-conv-leaf:nth-child(1) { animation-delay: 0ms,    0s; }
+    .bc-conv-leaf:nth-child(2) { animation-delay: 100ms,  0.5s; }
+    .bc-conv-leaf:nth-child(3) { animation-delay: 200ms,  1s; }
+    @keyframes leaf-rise { to { opacity: 1; transform: translateY(0); } }
+    @keyframes leaf-bob  { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+    /* SVG dashed lines that DRAW on scroll progress */
+    .bc-conv-lines {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+    }
+    .bc-conv-lines path {
+      fill: none; stroke: rgba(0,0,0,0.25); stroke-width: 2;
+      stroke-dasharray: 200;
+      stroke-dashoffset: 200;
+      animation: line-draw 1ms linear both;
+      animation-timeline: view();
+      animation-range: entry 12% cover 50%;
+    }
+    .bc-conv-lines path:nth-child(1) { animation-delay: 0ms; }
+    .bc-conv-lines path:nth-child(2) { animation-delay: 80ms; }
+    .bc-conv-lines path:nth-child(3) { animation-delay: 160ms; }
+    @keyframes line-draw { to { stroke-dashoffset: 0; } }
+
+    /* ═══════════════════════════════════════════════════════════════
+       FAQ — section title mask-wipe + each row slides in from left
+       ═══════════════════════════════════════════════════════════════ */
+    .faq-accordion__list .faq-accordion__item {
+      opacity: 0; transform: translateX(-80px);
+      animation: faq-row-in 1ms linear both;
+      animation-timeline: view();
+      animation-range: entry 5% cover 50%;
+    }
+    .faq-accordion__list .faq-accordion__item:nth-child(1) { animation-delay: 0ms; }
+    .faq-accordion__list .faq-accordion__item:nth-child(2) { animation-delay: 60ms; }
+    .faq-accordion__list .faq-accordion__item:nth-child(3) { animation-delay: 120ms; }
+    .faq-accordion__list .faq-accordion__item:nth-child(4) { animation-delay: 180ms; }
+    .faq-accordion__list .faq-accordion__item:nth-child(5) { animation-delay: 240ms; }
+    .faq-accordion__list .faq-accordion__item:nth-child(6) { animation-delay: 300ms; }
+    @keyframes faq-row-in { to { opacity: 1; transform: translateX(0); } }
+
+    /* ═══════════════════════════════════════════════════════════════
+       FINAL CTA — title slides from left, portrait from right, glowing CTA
+       ═══════════════════════════════════════════════════════════════ */
+    .bc-final-cta {
+      position: relative;
+      background: radial-gradient(ellipse 80% 100% at 30% 50%, rgba(232,76,139,0.18), transparent 60%), #000;
+      padding-block: var(--s2a-spacing-6xl);
+      overflow: hidden;
+    }
+    .bc-final-cta__grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: center;
+      max-width: 1280px; margin: 0 auto;
+      padding-inline: var(--grid-margin-md, 8.333vw);
+    }
+    @media (max-width: 1023px) { .bc-final-cta__grid { grid-template-columns: 1fr; gap: 48px; padding-inline: var(--grid-margin-sm); } }
+    .bc-final-cta__title {
+      color: #fff;
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(32px, 4vw, 52px); line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 32px;
+      max-width: 16ch;
+    }
+    .bc-final-cta__cta {
+      position: relative;
+      display: inline-flex; align-items: center; gap: 8px;
+      height: 52px; padding: 0 32px;
+      background: var(--gradient-warm);
+      color: #fff; border-radius: 999px;
+      font-family: var(--font-body); font-size: 15px; font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 0 0 0 rgba(232,76,139,0.5);
+      animation: cta-glow 3s ease-in-out infinite;
+      transition: transform 0.2s;
+    }
+    .bc-final-cta__cta:hover { transform: translateY(-3px); }
+    @keyframes cta-glow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(232,76,139,0.4); }
+      50%      { box-shadow: 0 0 0 16px rgba(232,76,139,0); }
+    }
+    .bc-final-cta__cta::after { content: '→'; }
+    .bc-final-cta__media {
+      position: relative;
+      aspect-ratio: 4/3; border-radius: 24px; overflow: hidden;
+      transform-style: preserve-3d;
+      transform: perspective(1200px)
+                 rotateY(calc(var(--mx, 0) * 5deg))
+                 rotateX(calc(var(--my, 0) * -5deg));
+      transition: transform 0.6s cubic-bezier(0.2, 0, 0, 1);
+    }
+    .bc-final-cta__bg {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+
+    /* Footer (verbatim) */
+    .footer { position: relative; background: #000; }
+    .footer__main { display: flex; flex-direction: column; gap: 40px; padding: 64px var(--grid-margin-sm) 0; }
+    @media (min-width: 768px) { .footer__main { padding-inline: var(--s2a-layout-lg); } }
+    .footer__cols { display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px 20px; }
+    @media (min-width: 900px) { .footer__cols { grid-template-columns: repeat(6, 1fr); gap: 0 8px; } }
+    .footer__col { display: flex; flex-direction: column; gap: 24px; }
+    .footer__col-title { font-family: var(--font-body); font-weight: 700; color: #fff; font-size: 16px; line-height: 20px; letter-spacing: -0.2px; }
+    .footer__col ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+    .footer__col ul li a { font-family: var(--font-body); font-size: 16px; font-weight: 400; color: rgba(255,255,255,0.64); }
+    .footer__bottom { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; padding-block: 32px; border-top: 1px solid rgba(255,255,255,0.08); margin-top: 48px; }
+    .footer__legal { display: flex; align-items: center; gap: 32px; flex-wrap: wrap; }
+    .footer__legal-item { font-family: var(--font-body); font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.64); letter-spacing: 0.04em; }
+    .footer__legal-item a { color: rgba(255,255,255,0.64); }
+
+    /* Reduced motion: disable everything */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      .slide-in-left, .slide-in-right, .slide-in-up, .mask-wipe, .stagger > *,
+      .bc-try__chip, .bc-try__bar, .bc-split__media, .bc-split__media img,
+      .bc-split__title, .bc-split__body, .bc-split__bullet,
+      .bc-use-case--1, .bc-use-case--2, .bc-use-case--3,
+      .bc-why-card--1, .bc-why-card--2, .bc-why-card--3, .bc-why-card--4,
+      .bc-conv-prompt, .bc-conv-center, .bc-conv-leaf, .bc-conv-lines path,
+      .faq-accordion__list .faq-accordion__item,
+      .bc-hero__title .word, .bc-hero__chat, .bc-hero__media, .bc-hero__eyebrow,
+      .bc-hero__body, .bc-hero__cta-wrap {
+        opacity: 1 !important; transform: none !important;
+        clip-path: none !important; stroke-dashoffset: 0 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header id="gnav">
+    <div class="gnav-inner">
+      <div class="gnav-left">
+        <img src="../../runtime/assets/adobe-logo.svg"       alt="Adobe" class="gnav-logo">
+        <img src="../../runtime/assets/adobe-logo-black.svg" alt="Adobe" class="gnav-logo-black">
+        <span class="gnav-subbrand">for Business</span>
+        <div class="gnav-logo-sm-wrap" aria-hidden="true">
+          <img src="../../runtime/assets/adobe-logo-sm.svg"       alt="" class="gnav-logo-sm">
+          <img src="../../runtime/assets/adobe-logo-sm-black.svg" alt="" class="gnav-logo-sm-black">
+        </div>
+        <button id="mobileNavToggle" class="gnav-hamburger" aria-label="Open menu" aria-expanded="false">
+          <span></span><span></span>
+        </button>
+        <nav class="gnav-links">
+          <a href="#" class="gnav-link" id="gnavProducts">Main Menu <span class="gnav-chevron"><svg width="8" height="5" viewBox="0 0 8 5" fill="none" aria-hidden="true"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a href="#" class="gnav-link">Brand Concierge</a>
+          <a href="#" class="gnav-link">Features</a>
+          <a href="#" class="gnav-link">Use Cases</a>
+          <a href="#" class="gnav-link">Resources</a>
+        </nav>
+      </div>
+      <div class="gnav-right">
+        <button class="gnav-apps" aria-label="Apps">
+          <img src="../../runtime/assets/icons/S2_Icon_AppsAll_20_N.svg" alt="">
+        </button>
+        <a href="#" class="gnav-cta">Get started</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="bc-hero" id="bc-hero">
+    <div class="bc-hero__mesh" aria-hidden="true">
+      <div class="bc-hero__blob bc-hero__blob--1"></div>
+      <div class="bc-hero__blob bc-hero__blob--2"></div>
+      <div class="bc-hero__blob bc-hero__blob--3"></div>
+      <div class="bc-hero__blob bc-hero__blob--4"></div>
+    </div>
+    <div class="bc-hero__grid">
+      <div class="bc-hero__copy">
+        <p class="bc-hero__eyebrow">ADOBE BRAND CONCIERGE</p>
+        <h1 class="bc-hero__title word-slide">
+          <span class="word">Turn</span>
+          <span class="word">conversations</span>
+          <span class="word">into</span>
+          <span class="word word--accent">conversions.</span>
+        </h1>
+        <p class="bc-hero__body">Transform your digital properties into immersive, conversational experiences that anticipate customer needs, guide discovery, and build trust with Brand Concierge &mdash; powered by AI.</p>
+        <div class="bc-hero__cta-wrap">
+          <a href="#" class="btn btn--solid-white">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M3 1.5l9 5.5-9 5.5z"/></svg>
+            Watch overview
+          </a>
+        </div>
+      </div>
+      <div class="bc-hero__media" id="bc-hero-portrait">
+        <img src="brand-concierge/assets/scraped/hero-portrait.png" alt="" class="bc-hero__bg">
+        <div class="bc-hero__chat bc-hero__chat--1">Based on your interests, how about a morning spa retreat and sunset sailing tour?</div>
+        <div class="bc-hero__chat bc-hero__chat--2">That sounds amazing!</div>
+        <div class="bc-hero__chat bc-hero__chat--3">Booking confirmed</div>
+        <div class="bc-hero__chat bc-hero__chat--4">All set! Your custom adventure is booked and ready to go.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- KINETIC MARQUEE — auto-scrolling text strips, opposing directions -->
+  <section class="bc-marquee" aria-hidden="true">
+    <div class="bc-marquee__track">
+      <span class="bc-marquee__item">Brand Concierge</span>
+      <span class="bc-marquee__sep">✦</span>
+      <span class="bc-marquee__item bc-marquee__item--accent">Powered by AI</span>
+      <span class="bc-marquee__sep">✦</span>
+      <span class="bc-marquee__item">Conversations into Conversions</span>
+      <span class="bc-marquee__sep">✦</span>
+      <span class="bc-marquee__item bc-marquee__item--accent">Brand-first</span>
+      <span class="bc-marquee__sep">✦</span>
+      <!-- duplicated for seamless loop -->
+      <span class="bc-marquee__item">Brand Concierge</span>
+      <span class="bc-marquee__sep">✦</span>
+      <span class="bc-marquee__item bc-marquee__item--accent">Powered by AI</span>
+      <span class="bc-marquee__sep">✦</span>
+      <span class="bc-marquee__item">Conversations into Conversions</span>
+      <span class="bc-marquee__sep">✦</span>
+      <span class="bc-marquee__item bc-marquee__item--accent">Brand-first</span>
+      <span class="bc-marquee__sep">✦</span>
+    </div>
+  </section>
+
+  <!-- TRY BRAND CONCIERGE -->
+  <section class="bc-try">
+    <div class="bc-try__inner">
+      <h2 class="bc-try__title slide-in-up">Try Brand Concierge for yourself.</h2>
+      <p class="bc-try__sub slide-in-up">Choose a prompt or ask your own question about Adobe products to see it in action.</p>
+      <div class="bc-try__chips">
+        <button type="button" class="bc-try__chip">What is a brand Concierge?</button>
+        <button type="button" class="bc-try__chip">How does Brand Concierge improve customer experience?</button>
+        <button type="button" class="bc-try__chip">What are the benefits of using Adobe agents?</button>
+        <button type="button" class="bc-try__chip">How does Adobe LLM Optimizer work?</button>
+      </div>
+      <form class="bc-try__bar" onsubmit="event.preventDefault();">
+        <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <circle cx="7" cy="7" r="5"/><path d="M14 14L10.5 10.5" stroke-linecap="round"/>
+        </svg>
+        <input type="text" placeholder="Ask a question">
+        <button type="submit" aria-label="Send">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+            <path d="M2 8L14 8M9 3L14 8L9 13"/>
+          </svg>
+        </button>
+      </form>
+      <p class="bc-try__disclaimer">Use of this beta AI chatbot is subject to <a href="#">Privacy Policy</a>. Don't share sensitive data. AI responses are not your Content, may be inaccurate, and any offers provided are non-binding. <a href="#">Generative AI Terms</a>.</p>
+    </div>
+  </section>
+
+  <!-- INTRO -->
+  <section class="bc-intro">
+    <h2 class="bc-intro__title">
+      <span class="mask-wipe">Guide customer journeys with personalized,</span><br>
+      <span class="mask-wipe" style="animation-delay: 100ms">conversational discovery.</span>
+    </h2>
+  </section>
+
+  <!-- SPLIT — clip-reveal media + bullets sliding in from edge -->
+  <section class="bc-split">
+    <div class="bc-split__inner">
+
+      <article class="bc-split__row" data-side="left">
+        <div class="bc-split__media">
+          <img src="brand-concierge/assets/scraped/split-1-guide.png" alt="" width="2000" height="1500">
+        </div>
+        <div class="bc-split__copy">
+          <h3 class="bc-split__title">AI-powered conversations that match customer intent with brand content.</h3>
+          <p class="bc-split__body">Enhance discovery and increase engagement with AI-powered conversations that match customer intent with the content to drive trust and action.</p>
+          <ul class="bc-split__bullets">
+            <li class="bc-split__bullet">Ensure every response is accurate with conversations based on brand-aligned content.</li>
+            <li class="bc-split__bullet">Surface existing site content and assets to create natural, on-brand responses and visuals by integrating with Adobe Experience Manager.</li>
+            <li class="bc-split__bullet">Adapt journeys in real time using Adobe Experience Platform Agents that can understand and anticipate customer needs.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="bc-split__row" data-side="right">
+        <div class="bc-split__media">
+          <img src="brand-concierge/assets/scraped/split-2-orchestrate.png" alt="" width="2000" height="1500">
+        </div>
+        <div class="bc-split__copy">
+          <h3 class="bc-split__title">Orchestrate dynamic customer journeys with Adobe Experience Platform.</h3>
+          <p class="bc-split__body">Transform your existing content and digital touchpoints into dynamic conversations that respond instantly to customer intent and drive conversions.</p>
+          <ul class="bc-split__bullets">
+            <li class="bc-split__bullet">Help customers find the most relevant information by surfacing tailored product comparisons and summaries based on their preferences and needs.</li>
+            <li class="bc-split__bullet">Capture insights from every interaction by connecting to Adobe Experience Platform. Each conversation enriches your customer profiles with intent and behavior data, enabling more precise personalization that accelerates purchase decisions.</li>
+          </ul>
+          <a href="#" class="bc-split__cta">Learn more</a>
+        </div>
+      </article>
+
+      <article class="bc-split__row" data-side="left">
+        <div class="bc-split__media">
+          <img src="brand-concierge/assets/scraped/split-2-extra.png" alt="" width="2000" height="1500">
+        </div>
+        <div class="bc-split__copy">
+          <h3 class="bc-split__title">Protect your brand and the customer experience.</h3>
+          <p class="bc-split__body">Adapt conversations to customer needs in real time without risking brand integrity.</p>
+          <ul class="bc-split__bullets">
+            <li class="bc-split__bullet">Apply brand attributes and first-party data as guardrails to ensure every interaction meets standards for tone, trust, and compliance.</li>
+            <li class="bc-split__bullet">Refine tone, flow, and content in a low-code environment so marketing teams can move faster and follow brand guidelines &mdash; no developer support required.</li>
+          </ul>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- USE CASES -->
+  <section class="bc-use-cases">
+    <div class="bc-use-cases__header">
+      <h2 class="bc-use-cases__title slide-in-up">Adobe Brand Concierge use cases.</h2>
+    </div>
+    <div class="bc-use-cases__grid">
+      <article class="bc-use-case bc-use-case--1">
+        <div class="bc-use-case__icon">💬</div>
+        <h3 class="bc-use-case__title">Product discovery and consideration</h3>
+        <p class="bc-use-case__body">Guide customers through a digital, conversational experience toward the options that best match their needs.</p>
+      </article>
+      <article class="bc-use-case bc-use-case--2">
+        <div class="bc-use-case__icon">↻</div>
+        <h3 class="bc-use-case__title">Increase customer lifetime value</h3>
+        <p class="bc-use-case__body">Transform static interactions into engaging experiences that keep customers coming back.</p>
+      </article>
+      <article class="bc-use-case bc-use-case--3">
+        <div class="bc-use-case__icon">📚</div>
+        <h3 class="bc-use-case__title">Knowledge support and assistance</h3>
+        <p class="bc-use-case__body">Elevate conventional help centers and FAQ pages into spaces for meaningful customer engagement.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- WHY ADOBE -->
+  <section class="bc-why">
+    <div class="bc-why__header">
+      <h2 class="bc-why__title slide-in-up">Why Adobe for AI-powered customer engagement?</h2>
+    </div>
+    <div class="bc-why__grid">
+      <article class="bc-why-card bc-why-card--1">
+        <div class="bc-why-card__media"><img src="brand-concierge/assets/scraped/why-1-firstparty-data.png" alt=""></div>
+        <h3 class="bc-why-card__title">Unmatched first-party data ecosystem for customer engagement.</h3>
+        <p class="bc-why-card__body">Tap into Adobe's comprehensive, first-party data ecosystem &mdash; spanning billions of customer touchpoints &mdash; to support and optimize truly personalized experiences for customers, leads, accounts, and buying groups.</p>
+      </article>
+      <article class="bc-why-card bc-why-card--2">
+        <div class="bc-why-card__media"><img src="brand-concierge/assets/scraped/why-2-buyer-journeys.png" alt=""></div>
+        <h3 class="bc-why-card__title">Redefined business buyer journeys with AI-driven orchestration.</h3>
+        <p class="bc-why-card__body">Turn complex buying paths into predictable pipelines. Adobe combines rich data and purpose-built AI to qualify opportunities, anticipate needs, and guide interactions across leads, accounts, and buying groups.</p>
+      </article>
+      <article class="bc-why-card bc-why-card--3">
+        <div class="bc-why-card__media"><img src="brand-concierge/assets/scraped/why-3-ai-innovation.png" alt=""></div>
+        <h3 class="bc-why-card__title">AI-powered innovation with predictive and agentic AI.</h3>
+        <p class="bc-why-card__body">Leverage cutting-edge, commercially safe agentic AI and predictive technologies to transform standard interactions into meaningful brand relationships for every customer.</p>
+      </article>
+      <article class="bc-why-card bc-why-card--4">
+        <div class="bc-why-card__media"><img src="brand-concierge/assets/scraped/why-4-enterprise-scale.png" alt=""></div>
+        <h3 class="bc-why-card__title">Proven enterprise scale for personalized digital experiences.</h3>
+        <p class="bc-why-card__body">Build on Adobe's trusted platform with proven success in orchestrating personalized experiences for every individual at global scale.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- CONVERSATIONS — diagram with scroll-driven line drawing -->
+  <section class="bc-conversations">
+    <div class="bc-conversations__grid">
+      <div>
+        <h2 class="bc-conversations__title slide-in-left">Conversations powered by Adobe.</h2>
+        <p class="bc-conversations__body slide-in-left">Connect your brand content, customer data, journey insights, and commerce catalogs to deliver personalized conversational experiences at scale.</p>
+        <a href="#" class="btn btn--outline slide-in-left">Explore integrations</a>
+      </div>
+      <div class="bc-conversations__diagram" aria-hidden="true">
+        <svg class="bc-conv-lines" viewBox="0 0 100 100" preserveAspectRatio="none">
+          <path d="M 50 35 Q 35 60 20 90"></path>
+          <path d="M 50 35 L 50 90"></path>
+          <path d="M 50 35 Q 65 60 80 90"></path>
+        </svg>
+        <div class="bc-conv-prompt">"What would be a good fit for me?"</div>
+        <div class="bc-conv-center">Thinking</div>
+        <div class="bc-conv-leaves">
+          <div class="bc-conv-leaf">Audience<br>insights</div>
+          <div class="bc-conv-leaf">Content<br>performance</div>
+          <div class="bc-conv-leaf">Brand<br>assets</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQs -->
+  <section class="faq-accordion">
+    <div class="faq-accordion__inner">
+      <h2 class="faq-accordion__title slide-in-up">Frequently asked questions.</h2>
+      <ul class="faq-accordion__list">
+        <li class="faq-accordion__item"><button class="faq-accordion__trigger" type="button"><span>What is Adobe Brand Concierge?</span><span class="faq-accordion__icon" aria-hidden="true"></span></button><div class="faq-accordion__panel"><p class="faq-accordion__answer">Adobe Brand Concierge is a brand-first AI application that transforms your digital properties into dynamic, conversational experiences. Instead of visitors relying on menus or search bars to hunt for information, Brand Concierge guides them through with natural dialogue.</p></div></li>
+        <li class="faq-accordion__item"><button class="faq-accordion__trigger" type="button"><span>How does Adobe Brand Concierge use AI agents?</span><span class="faq-accordion__icon" aria-hidden="true"></span></button><div class="faq-accordion__panel"><p class="faq-accordion__answer">Adobe Brand Concierge is powered by Adobe Experience Platform Agent Orchestrator, which coordinates multiple specialized agents to deliver adaptive, brand-aligned experiences that respond intelligently to customer intent.</p></div></li>
+        <li class="faq-accordion__item"><button class="faq-accordion__trigger" type="button"><span>How does Brand Concierge improve my customers' experience?</span><span class="faq-accordion__icon" aria-hidden="true"></span></button><div class="faq-accordion__panel"><p class="faq-accordion__answer">Traffic to brand sites is declining as AI assistants drive discovery. Visitors now arrive via AI summaries with clearer intent. Brand Concierge greets users, understands intent, and responds using first-party data and approved content.</p></div></li>
+        <li class="faq-accordion__item"><button class="faq-accordion__trigger" type="button"><span>Is Adobe Brand Concierge safe for my brand?</span><span class="faq-accordion__icon" aria-hidden="true"></span></button><div class="faq-accordion__panel"><p class="faq-accordion__answer">Yes. Brand Concierge is built with trust at its core. Every interaction is grounded in first-party data and approved content. Brand attributes function as guardrails so that tone, claims, and recommendations stay consistent.</p></div></li>
+        <li class="faq-accordion__item"><button class="faq-accordion__trigger" type="button"><span>Can marketing teams manage Brand Concierge without developers?</span><span class="faq-accordion__icon" aria-hidden="true"></span></button><div class="faq-accordion__panel"><p class="faq-accordion__answer">Yes. Brand Concierge is built to be managed directly by marketing teams. A low-code environment allows marketers to update brand attributes, refine voice, configure response patterns, and adjust guardrails without engineering support.</p></div></li>
+        <li class="faq-accordion__item"><button class="faq-accordion__trigger" type="button"><span>Do I need to be an existing Adobe customer to use Brand Concierge?</span><span class="faq-accordion__icon" aria-hidden="true"></span></button><div class="faq-accordion__panel"><p class="faq-accordion__answer">No. You do not need to be an existing Adobe customer to get started with Brand Concierge. It can be adopted on its own, and integrates more deeply with Adobe Experience Platform, Adobe Experience Manager, Adobe Commerce, and other Adobe products as your needs grow.</p></div></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="bc-final-cta">
+    <div class="bc-final-cta__grid">
+      <div>
+        <h2 class="bc-final-cta__title slide-in-left">Let's talk about what Adobe Brand Concierge can do for your business.</h2>
+        <a href="#" class="bc-final-cta__cta slide-in-left">Get started</a>
+      </div>
+      <div class="bc-final-cta__media slide-in-right" id="bc-final-portrait">
+        <img src="brand-concierge/assets/scraped/final-cta-portrait.png" alt="" class="bc-final-cta__bg">
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer__main">
+      <div class="footer__cols">
+        <div class="footer__col">
+          <div class="footer__col-title">Contact us</div>
+          <ul><li><a href="#">Request a demo</a></li></ul>
+          <div class="footer__col-title" style="margin-top:24px">Our solutions</div>
+          <ul>
+            <li><a href="#">Customer engagement</a></li>
+            <li><a href="#">Content supply chain</a></li>
+            <li><a href="#">Brand visibility</a></li>
+            <li><a href="#">B2B CX orchestration</a></li>
+            <li><a href="#">AI for business</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <div class="footer__col-title">Large &amp; medium<br>business</div>
+          <ul>
+            <li><a href="#">Explore products</a></li>
+            <li><a href="#">Adobe Analytics</a></li>
+            <li><a href="#">Acrobat Sign</a></li>
+            <li><a href="#">Brand intelligence</a></li>
+            <li><a href="#">GenStudio</a></li>
+            <li><a href="#">Real-Time CDP</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <div class="footer__col-title">Individuals &amp;<br>small business</div>
+          <ul>
+            <li><a href="#">Explore all products</a></li>
+            <li><a href="#">Adobe Express</a></li>
+            <li><a href="#">Adobe Firefly</a></li>
+            <li><a href="#">Creative Cloud</a></li>
+            <li><a href="#">Photoshop</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <div class="footer__col-title">Resources &amp;<br>support</div>
+          <ul>
+            <li><a href="#">Resource center</a></li>
+            <li><a href="#">Customer success stories</a></li>
+            <li><a href="#">Adobe business blog</a></li>
+            <li><a href="#">Customer support</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <div class="footer__col-title">Adobe</div>
+          <ul>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Investors</a></li>
+            <li><a href="#">Newsroom</a></li>
+            <li><a href="#">Adobe for All</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <div class="footer__col-title">Region</div>
+          <ul><li><a href="#">English (US)</a></li></ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <div class="footer__legal">
+          <span class="footer__legal-item">© 2026 Adobe. All rights reserved.</span>
+          <span class="footer__legal-item"><a href="#">Privacy</a></span>
+          <span class="footer__legal-item"><a href="#">Terms of Use</a></span>
+          <span class="footer__legal-item"><a href="#">Cookie preferences</a></span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    window.__reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  </script>
+  <script src="../../runtime/scripts/faq-accordion.js"></script>
+  <script>
+    /* gnav scroll state */
+    (function () {
+      var gnav = document.getElementById('gnav');
+      function update() { gnav.classList.toggle('gnav--scrolled', window.scrollY > 40); }
+      window.addEventListener('scroll', update, { passive: true });
+      update();
+    }());
+
+    /* Mouse-reactive parallax on hero portrait + final CTA portrait */
+    (function () {
+      if (window.__reducedMotion) return;
+      var targets = [document.getElementById('bc-hero-portrait'),
+                     document.getElementById('bc-final-portrait')].filter(Boolean);
+      function update(e) {
+        var x = (e.clientX / window.innerWidth) - 0.5;
+        var y = (e.clientY / window.innerHeight) - 0.5;
+        targets.forEach(function (t) {
+          t.style.setProperty('--mx', x.toFixed(3));
+          t.style.setProperty('--my', y.toFixed(3));
+        });
+      }
+      window.addEventListener('pointermove', update, { passive: true });
+    }());
+  </script>
+
+</body>
+</html>

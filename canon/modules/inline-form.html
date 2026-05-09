@@ -1,0 +1,36 @@
+<!--
+  module:    inline-form
+  extracted: stardust/products/brand-concierge.html:794-817
+             (also present in stardust/products/experience-manager/sites.html:1377-1407)
+  slots:     title, step
+  notes:     Form fields are frozen in template (email + country); building
+             a real submission flow is deferred — see site BACKLOG. Form is
+             non-functional today.
+-->
+<section class="inline-form">
+  <div class="inline-form__inner">
+    <h2 class="inline-form__title" data-slot="title">Form title.</h2>
+    <form class="inline-form__form" novalidate>
+      <div class="inline-form__field">
+        <label for="if-email" class="inline-form__label">Business email</label>
+        <input id="if-email" class="inline-form__input" type="email" placeholder="Business email*" required>
+      </div>
+      <div class="inline-form__field">
+        <label for="if-country" class="inline-form__label">Country</label>
+        <select id="if-country" class="inline-form__select" required>
+          <option value="" disabled selected>Country*</option>
+          <option value="us">United States</option>
+          <option value="ca">Canada</option>
+          <option value="gb">United Kingdom</option>
+          <option value="de">Germany</option>
+          <option value="fr">France</option>
+          <option value="jp">Japan</option>
+        </select>
+      </div>
+      <div class="inline-form__field inline-form__field--full">
+        <button type="submit" class="inline-form__submit">Next</button>
+      </div>
+    </form>
+    <p class="inline-form__step" data-slot="step">Step 1 of 2</p>
+  </div>
+</section>

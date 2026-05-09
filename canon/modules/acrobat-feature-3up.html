@@ -1,0 +1,33 @@
+<!--
+  module:    acrobat-feature-3up (no variant — base; 3 cards)
+  extracted: stardust/index.html:1309-1372
+  slots:     title, body, items (list of {image, title, body, cta, tone})
+  notes:     Distinct from `acrobat-feature` template (which froze the
+             teal variant + 2 cards). This one has no surface variant and
+             3 cards; could be unified later by parameterizing variant.
+-->
+<section class="acrobat-feature">
+  <div class="container">
+    <div class="acrobat-feature__header anim-enter">
+      <h2 class="title-2 acrobat-feature__title" data-slot="title">Section title.</h2>
+      <p class="body-md acrobat-feature__body" data-slot="body">Section body.</p>
+    </div>
+    <div class="acrobat-cards" data-slot-list="items">
+      <div class="acrobat-card anim-enter">
+        <div class="acrobat-card__asset">
+          <img class="acrobat-card__photo" data-slot="image" src="" alt="" width="1200" height="900">
+        </div>
+        <div class="acrobat-card__copy">
+          <div class="acrobat-card__text">
+            <p class="acrobat-card__title" data-slot="title">Card title.</p>
+            <p class="acrobat-card__body" data-slot="body">Card body.</p>
+          </div>
+          <a class="acrobat-cta" data-slot="cta" href="#">
+            Learn more
+            <svg viewBox="0 0 6 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 1L5 6L1 11"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,19 +1,16 @@
 /**
- * Header block — loads the stardust canon header (/canon/header.html) into
- * the page <header>. The boilerplate's nav-section / mobile-menu logic is
- * replaced by the gnav structure stardust generates; gnav-specific behavior
- * (scroll state, mobile toggle) is wired up in scripts.js delayed phase.
+ * Header block — loads the static site chrome from /fragments/header.html
+ * and injects it into the page <header>. Pure fetch + innerHTML; no DA
+ * authoring, no slots, no decoration. Pairs with /styles/fragments/chrome.css
+ * (loaded eagerly via head.html).
  */
 
 export default async function decorate(block) {
-  const res = await fetch('/canon/header.html');
+  const res = await fetch('/fragments/header.html');
   if (!res.ok) {
     // eslint-disable-next-line no-console
-    console.error('Failed to load /canon/header.html', res.status);
+    console.error('Failed to load /fragments/header.html', res.status);
     return;
   }
-  const html = await res.text();
-  // The block lives inside a <header> element; use the block as the mount
-  // point and let stardust's <header id="gnav"> render directly inside.
-  block.innerHTML = html;
+  block.innerHTML = await res.text();
 }

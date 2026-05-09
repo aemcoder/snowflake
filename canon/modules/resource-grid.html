@@ -1,0 +1,20 @@
+<!--
+  module:    resource-grid
+  extracted: stardust/products/llm-optimizer.html:590-626
+  slots:     title, items (list of {kind, title, link})
+  notes:     Original used inline styles + per-card SVG icons. This template
+             freezes the file-icon SVG; webinar variants would need a separate
+             template or a `kind`-controlled icon swap (deferred).
+-->
+<section class="resource-grid">
+  <div class="resource-grid__header">
+    <h2 class="title-2 resource-grid__title" data-slot="title">Resources title.</h2>
+  </div>
+  <div class="resource-grid__cards" data-slot-list="items">
+    <a class="resource-card" data-slot="link" href="#">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.6" aria-hidden="true"><path d="M5 4h11l3 3v13H5z"/><path d="M16 4v3h3"/></svg>
+      <p class="resource-card__kind" data-slot="kind">Blog</p>
+      <p class="resource-card__title" data-slot="title">Resource title.</p>
+    </a>
+  </div>
+</section>

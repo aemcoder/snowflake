@@ -1,0 +1,285 @@
+
+    /* Bizpro tokens */
+    :root {
+      --s2a-color-blue-900: #3b63fb;
+      --s2a-color-blue-1000: #274dea;
+      --s2a-color-background-default: #ffffff;
+      --s2a-color-background-subtle: #f8f8f8;
+      --s2a-color-content-default: #000000;
+      --s2a-color-content-subtle: rgba(0,0,0,0.64);
+      --s2a-color-content-background-subtle: #505050;
+      --s2a-color-transparent-black-08: rgba(0,0,0,0.08);
+
+      --s2a-typography-font-size-eyebrow: 16px;
+      --s2a-typography-line-height-eyebrow: 20px;
+      --s2a-typography-letter-spacing-eyebrow: -0.2px;
+
+      --s2a-spacing-xs: 8px;  --s2a-spacing-sm: 12px;
+      --s2a-spacing-md: 16px; --s2a-spacing-lg: 24px;
+      --s2a-spacing-xl: 32px; --s2a-spacing-2xl: 40px;
+      --s2a-spacing-3xl: 48px; --s2a-spacing-4xl: 64px;
+      --s2a-spacing-5xl: 80px; --s2a-spacing-6xl: 96px;
+      --s2a-layout-lg: 124px;
+
+      --s2a-border-radius-sm: 8px;  --s2a-border-radius-md: 16px;
+      --s2a-border-radius-lg: 32px; --s2a-border-radius-999: 999px;
+
+      --s2a-duration-fast: 200ms; --s2a-duration-base: 400ms;
+      --s2a-easing-default: cubic-bezier(0.42, 0, 0, 1);
+
+      --grid-margin-sm: 24px;
+      --grid-margin-md: 8.333vw;
+    }
+
+    /* Container + buttons + type utilities */
+    .container { width: 100%; padding-inline: var(--grid-margin-sm); }
+    @media (min-width: 768px) { .container { padding-inline: var(--grid-margin-md); } }
+    @media (min-width: 1441px) { .container { max-width: 1920px; margin-inline: auto; } }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      height: 48px; width: fit-content; padding: 0 24px;
+      border-radius: 75px;
+      font-family: var(--font-body); font-size: 14px; font-weight: 700; line-height: 18px;
+      border: 1.5px solid transparent; text-decoration: none;
+      transition: background var(--s2a-duration-fast), border-color var(--s2a-duration-fast), color var(--s2a-duration-fast);
+      white-space: nowrap; cursor: pointer;
+    }
+    .btn--primary { background: #000; color: #fff; border-color: #000; }
+    .btn--primary:hover { background: #1f1f1f; }
+    .btn--solid-white { background: #fff; color: #000; border-color: #fff; }
+    .btn--solid-white:hover { background: #e8e8e8; }
+    .btn--outline { background: transparent; color: #000; border-color: #000; }
+    .btn--outline:hover { background: rgba(0,0,0,0.04); }
+    .btn--ghost-white { background: transparent; color: #fff; border-color: #fff; backdrop-filter: blur(16px); }
+    .btn--ghost-white:hover { background: rgba(255,255,255,0.08); }
+
+    .title-2 {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(32px, 4.375vw, 56px); line-height: 1.0;
+      letter-spacing: clamp(-0.8px, -0.13vw, -1.68px);
+    }
+    .body-md {
+      font-family: var(--font-body); font-weight: 400;
+      font-size: 16px; line-height: 20px; letter-spacing: 0.16px;
+      max-width: 80ch;
+    }
+    .anim-enter { opacity: 0; transform: translateY(40px); will-change: opacity, transform; }
+
+    /* gnav — Get-started CTA matches signin height (40px) */
+    /* ═══════════════════════════════════════════════════════════════
+       HERO — composed from tokens (per S22 / option 3 from AEM Sites).
+       Two-column: title/body/CTAs left, UI mockup right. Dark surface.
+       ═══════════════════════════════════════════════════════════════ */
+    .llm-hero {
+      position: relative;
+      background:
+        radial-gradient(ellipse 60% 90% at 0% 50%, rgba(139,104,232,0.30), transparent 60%),
+        radial-gradient(ellipse 60% 90% at 100% 50%, rgba(254,54,0,0.14), transparent 60%),
+        #0c0820;
+      color: #fff;
+      padding: 120px var(--grid-margin-md, 8.333vw) 96px;
+    }
+    @media (max-width: 1023px) { .llm-hero { padding-inline: var(--grid-margin-sm); } }
+    .llm-hero__grid {
+      display: grid; grid-template-columns: 1fr 1.1fr;
+      gap: 64px; align-items: center;
+      max-width: 1920px; margin-inline: auto;
+    }
+    @media (max-width: 1023px) {
+      .llm-hero__grid { grid-template-columns: 1fr; gap: 48px; }
+    }
+    .llm-hero__copy { display: flex; flex-direction: column; align-items: flex-start; gap: 24px; }
+    .llm-hero__eyebrow {
+      font-family: var(--font-body); font-weight: 700;
+      font-size: 14px; letter-spacing: 0.08em; text-transform: uppercase;
+      color: rgba(255,255,255,0.65);
+    }
+    .llm-hero__title {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(44px, 5vw, 72px);
+      line-height: 1.0; letter-spacing: -0.03em;
+      max-width: 18ch;
+    }
+    .llm-hero__body {
+      font-family: var(--font-body); font-weight: 400;
+      font-size: 18px; line-height: 1.4;
+      color: rgba(255,255,255,0.78);
+      max-width: 56ch;
+    }
+    .llm-hero__ctas { display: inline-flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+    .llm-hero__media {
+      position: relative;
+      aspect-ratio: 16 / 11;
+      border-radius: 24px;
+      overflow: hidden;
+      background: linear-gradient(160deg, #1a0e3a 0%, #0c0820 100%);
+    }
+    .llm-hero__bg {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+      border-radius: inherit;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       SEMRUSH PROMO BAND — large gradient panel with announcement
+       (different from home page's chip/pill version: full-width,
+       centered, single CTA, larger band)
+       content_json.sections.semrush_announcement
+       ═══════════════════════════════════════════════════════════════ */
+    .semrush-promo {
+      background:
+        radial-gradient(ellipse 60% 90% at 0% 50%, rgba(139,104,232,0.55), transparent 60%),
+        radial-gradient(ellipse 60% 90% at 100% 50%, rgba(254,54,0,0.30), transparent 60%),
+        #1d0e3d;
+      color: #fff;
+      padding-block: var(--s2a-spacing-5xl);
+      text-align: center;
+    }
+    .semrush-promo__inner {
+      max-width: 720px; margin-inline: auto;
+      padding-inline: var(--grid-margin-sm);
+    }
+    .semrush-promo__head {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(24px, 2.5vw, 32px); line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+    .semrush-promo__sub {
+      font-family: var(--font-body); font-weight: 400;
+      font-size: 16px; line-height: 1.4;
+      color: rgba(255,255,255,0.78);
+      margin-bottom: 24px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       SECTION INTRO — centered headline above split-content rows
+       ═══════════════════════════════════════════════════════════════ */
+    .llm-intro {
+      background: #fff;
+      padding-top: var(--s2a-spacing-6xl);
+      padding-bottom: var(--s2a-spacing-3xl);
+    }
+    .llm-intro__inner {
+      max-width: 880px; margin: 0 auto;
+      text-align: center; padding-inline: var(--grid-margin-sm);
+    }
+    .llm-intro__title {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(28px, 3.5vw, 44px); line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: #1a1a1a;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       STATS GRID — 3 stat cards on light blue surface
+       (page-local; candidate for promotion to a stats-grid module)
+       content_json.sections.stats
+       ═══════════════════════════════════════════════════════════════ */
+    .llm-stats {
+      background: #d6e8f0;
+      padding-block: var(--s2a-spacing-6xl);
+    }
+    .llm-stats__header {
+      max-width: 720px; margin: 0 auto 64px;
+      text-align: center; padding-inline: var(--grid-margin-sm);
+    }
+    .llm-stats__title {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(28px, 3.5vw, 44px); line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: #1a1a1a;
+    }
+    .llm-stats__grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      max-width: 1200px; margin: 0 auto;
+      padding-inline: var(--grid-margin-md, 8.333vw);
+    }
+    @media (max-width: 1023px) { .llm-stats__grid { grid-template-columns: 1fr; gap: 40px; padding-inline: var(--grid-margin-sm); } }
+    .llm-stat { text-align: center; }
+    .llm-stat__num {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(48px, 5vw, 72px); line-height: 1;
+      letter-spacing: -0.03em; color: #1a1a1a;
+      margin-bottom: 16px;
+    }
+    .llm-stat__body {
+      font-family: var(--font-body); font-weight: 400;
+      font-size: 15px; line-height: 1.5;
+      color: rgba(0,0,0,0.78);
+      max-width: 32ch; margin: 0 auto 12px;
+    }
+    .llm-stat__source {
+      font-family: var(--font-body); font-weight: 700;
+      font-size: 13px;
+      color: #1a1a1a;
+      text-decoration: underline;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       TRAINING CTA — single panel + headline + CTA
+       (page-local; could be a simple-cta-card module later)
+       content_json.sections.training_cta
+       ═══════════════════════════════════════════════════════════════ */
+    .training-cta {
+      background: #f8f8f8;
+      padding-block: var(--s2a-spacing-5xl);
+    }
+    .training-cta__inner {
+      max-width: 720px; margin: 0 auto;
+      text-align: center; padding-inline: var(--grid-margin-sm);
+    }
+    .training-cta__title {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(24px, 2.8vw, 36px); line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: #1a1a1a;
+      margin-bottom: 24px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       FINAL CTA — portrait variant (lifted from home final-cta;
+       candidate for promotion to a portrait-cta module)
+       content_json.sections.final_cta
+       ═══════════════════════════════════════════════════════════════ */
+    .llm-final-cta {
+      position: relative;
+      background: #000;
+      padding-block: var(--s2a-spacing-6xl);
+    }
+    .llm-final-cta__grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 64px; align-items: center;
+      max-width: 1280px; margin: 0 auto;
+      padding-inline: var(--grid-margin-md, 8.333vw);
+    }
+    @media (max-width: 1023px) {
+      .llm-final-cta__grid { grid-template-columns: 1fr; gap: 32px; padding-inline: var(--grid-margin-sm); }
+    }
+    .llm-final-cta__title {
+      color: #fff;
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(32px, 3.5vw, 48px); line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+      max-width: 18ch;
+    }
+    .llm-final-cta__media {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      border-radius: 16px;
+      overflow: hidden;
+      background: linear-gradient(160deg, #2a3548 0%, #18202c 100%);
+    }
+    .llm-final-cta__bg {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       FOOTER — verbatim from home page (per content.json _inherits_from)
+       ═══════════════════════════════════════════════════════════════ */

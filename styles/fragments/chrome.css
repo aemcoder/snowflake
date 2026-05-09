@@ -1,0 +1,120 @@
+/*
+ * Site chrome styles — header (gnav) + footer.
+ * Loads on every stardust page. Pairs with /fragments/header.html and
+ * /fragments/footer.html (loaded at runtime by /blocks/header/header.js
+ * and /blocks/footer/footer.js).
+ *
+ * The base chrome layout / typography lives in stardust runtime CSS:
+ *   /stardust/runtime/styles/nav.css        — gnav layout, links, apps button, signin
+ *   /stardust/runtime/styles/mega-nav.css   — desktop mega-menu
+ *   /stardust/runtime/styles/mobile-nav.css — mobile sheet
+ *
+ * This file carries the chrome-specific overrides + extras that lived in
+ * each page's inline <style> in stardust output. Extracted here so they
+ * load on every page, not only on a specific page's per-page CSS.
+ *
+ * Source: stardust/index.html inline <style> block (lines 210-238 for gnav,
+ * lines 1003-1075 for footer). See iter-002.
+ */
+
+/* ─── Header (gnav) ─────────────────────────────────────────────────── */
+
+.gnav-subbrand {
+  font-family: var(--font-body); font-size: 16px; font-weight: 700;
+  color: #fff; letter-spacing: -0.01em;
+  padding-left: 8px; margin-left: 4px;
+  border-left: 1px solid rgba(255,255,255,0.24);
+  align-self: center; line-height: 18px; white-space: nowrap;
+  transition: color 0.2s, border-color 0.2s;
+}
+#gnav.gnav--scrolled .gnav-subbrand {
+  color: #1a1a1a;
+  border-left-color: rgba(0,0,0,0.16);
+}
+@media (max-width: 767px) { .gnav-subbrand { display: none; } }
+
+/* Get-started CTA — solid white pill, sits balanced with .gnav-signin (40px tall). */
+.gnav-cta {
+  display: inline-flex; align-items: center; height: 40px;
+  padding: 0 20px; background: #fff; color: #000;
+  border-radius: 999px;
+  font-family: var(--font-body); font-size: 14px; font-weight: 700;
+  line-height: 18px;
+  text-decoration: none;
+  transition: background 0.2s ease; margin-left: 4px;
+}
+.gnav-cta:hover { background: #e8e8e8; }
+
+/* ─── Footer ────────────────────────────────────────────────────────── */
+
+.footer { position: relative; background: #000; }
+.footer__main {
+  display: flex; flex-direction: column;
+  gap: var(--s2a-spacing-2xl);
+  padding: 64px var(--grid-margin-sm) 0;
+}
+@media (min-width: 768px) { .footer__main { padding-inline: var(--s2a-layout-lg); } }
+
+.footer__cols {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 32px 20px;
+}
+@media (min-width: 900px) {
+  .footer__cols { grid-template-columns: repeat(6, 1fr); gap: 0 var(--s2a-spacing-xs); }
+}
+
+.footer__col { display: flex; flex-direction: column; gap: var(--s2a-spacing-lg); }
+.footer__col-title {
+  font-family: var(--font-body); font-weight: 700; color: #fff;
+  font-size: 16px; line-height: 20px; letter-spacing: -0.2px;
+}
+.footer__col ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--s2a-spacing-xs); }
+.footer__col ul li a {
+  font-family: var(--font-body); font-size: 16px; font-weight: 400;
+  color: rgba(255,255,255,0.64); line-height: 20px; letter-spacing: 0.16px;
+}
+.footer__col ul li a:hover { color: rgba(255,255,255,0.9); }
+
+.footer__bottom {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px;
+  padding-block: 32px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  margin-top: 48px;
+}
+.footer__legal { display: flex; align-items: center; gap: 32px; flex-wrap: wrap; }
+.footer__legal-item {
+  font-family: var(--font-body);
+  font-size: 12px; font-weight: 700;
+  color: rgba(255,255,255,0.64);
+  letter-spacing: 0.04em;
+}
+.footer__legal-item a { color: rgba(255,255,255,0.64); }
+.footer__legal-item a:hover { color: rgba(255,255,255,0.9); }
+
+.footer__social { display: flex; gap: 16px; align-items: center; }
+.footer__social-icon {
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.1); border-radius: 6px;
+  color: rgba(255,255,255,0.7);
+  font-family: var(--font-body); font-size: 11px; font-weight: 700;
+}
+
+.footer__wordmark {
+  width: 100%; aspect-ratio: 1440 / 338;
+  position: relative; overflow: hidden; margin-top: 40px;
+  display: flex; align-items: center; justify-content: center;
+}
+.footer__wordmark svg {
+  width: 92%; height: auto;
+  color: #fff;
+  clip-path: inset(60% 0 0 0);
+  transition: clip-path 600ms cubic-bezier(0.42,0,0,1);
+}
+.footer__wordmark.is-revealed svg { clip-path: inset(0% 0 0 0); }
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .footer__wordmark svg { clip-path: inset(0% 0 0 0) !important; }
+}

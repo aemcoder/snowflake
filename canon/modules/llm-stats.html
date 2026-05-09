@@ -1,0 +1,17 @@
+<!--
+  module:    llm-stats
+  extracted: stardust/products/llm-optimizer.html:518-539
+  slots:     title, items (list of {num, body, source})
+-->
+<section class="llm-stats">
+  <div class="llm-stats__header anim-enter">
+    <h2 class="llm-stats__title" data-slot="title">Stats title.</h2>
+  </div>
+  <div class="llm-stats__grid" data-slot-list="items">
+    <div class="llm-stat anim-enter">
+      <p class="llm-stat__num" data-slot="num">50%+</p>
+      <p class="llm-stat__body" data-slot="body">Stat description.</p>
+      <a class="llm-stat__source" data-slot="source" href="#">According to Source</a>
+    </div>
+  </div>
+</section>

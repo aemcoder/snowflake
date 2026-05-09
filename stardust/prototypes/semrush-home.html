@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Semrush — Be found everywhere search happens (built with Adobe stardust modules)</title>
+
+  <!-- Global design system -->
+  <link rel="stylesheet" href="../runtime/styles/global/reset.css">
+  <link rel="stylesheet" href="../runtime/styles/global/grid.css">
+  <link rel="stylesheet" href="../runtime/styles/global/typography.css">
+  <link rel="stylesheet" href="../runtime/styles/page.css">
+
+  <!-- Nav -->
+  <link rel="stylesheet" href="../runtime/styles/nav.css">
+  <link rel="stylesheet" href="../runtime/styles/mega-nav.css">
+  <link rel="stylesheet" href="../runtime/styles/mobile-nav.css">
+
+  <!-- Hero -->
+  <link rel="stylesheet" href="../runtime/styles/hero.css">
+  <link rel="stylesheet" href="../runtime/styles/hero-grid.css">
+  <link rel="stylesheet" href="../runtime/styles/hero-mobile.css">
+
+  <!-- Section modules -->
+  <link rel="stylesheet" href="../runtime/styles/rainbow-strip.css">
+  <link rel="stylesheet" href="../runtime/styles/brands-strip.css">
+  <link rel="stylesheet" href="../runtime/styles/split-content.css">
+  <link rel="stylesheet" href="../runtime/styles/acrobat-feature-3up.css">
+
+  <style>
+    /* ────────────────────────────────────────────────────────────
+       SEMRUSH × stardust — page tokens
+       Cross-brand migration: Adobe modules driven by Semrush palette.
+       Orange #FF642D and dark navy #0E1735 replace Adobe's red/purple.
+       Per Module Content Rule 1: only NEW selectors in this layer;
+       module classes are never overridden, only re-themed via tokens.
+       ──────────────────────────────────────────────────────────── */
+    :root {
+      --s2a-color-gray-50: #f8f8f8;
+      --s2a-color-gray-75: #f3f3f3;
+      --s2a-color-gray-700: #505050;
+      --s2a-color-blue-900: #FF642D;        /* Semrush primary */
+      --s2a-color-blue-1000: #E8501B;
+      --s2a-color-background-default: #ffffff;
+      --s2a-color-background-subtle: #f8f8f8;
+      --s2a-color-content-default: #0E1735;
+      --s2a-color-content-subtle: rgba(14,23,53,0.64);
+      --s2a-color-content-background-subtle: #505050;
+      --s2a-color-button-background-primary-solid-default: #FF642D;
+      --s2a-color-transparent-black-08: rgba(0,0,0,0.08);
+      --s2a-color-transparent-black-16: rgba(0,0,0,0.16);
+      --s2a-color-transparent-white-64: rgba(255,255,255,0.64);
+
+      --s2a-typography-font-size-eyebrow: 14px;
+      --s2a-typography-line-height-eyebrow: 18px;
+      --s2a-typography-letter-spacing-eyebrow: 0.6px;
+      --s2a-typography-font-size-body-md: 18px;
+      --s2a-typography-line-height-body-md: 28px;
+      --s2a-typography-letter-spacing-body-md: 0;
+      --s2a-typography-font-size-body-sm: 14px;
+      --s2a-typography-line-height-body-sm: 20px;
+      --s2a-typography-font-size-label: 14px;
+      --s2a-typography-line-height-label: 18px;
+      --s2a-typography-font-size-title-4: 24px;
+      --s2a-typography-line-height-title-4: 28px;
+      --s2a-font-letter-spacing-4xl: -0.48px;
+
+      --s2a-spacing-xs: 8px;
+      --s2a-spacing-sm: 12px;
+      --s2a-spacing-md: 16px;
+      --s2a-spacing-lg: 24px;
+      --s2a-spacing-xl: 32px;
+      --s2a-spacing-2xl: 40px;
+      --s2a-spacing-3xl: 48px;
+      --s2a-spacing-4xl: 64px;
+      --s2a-spacing-5xl: 80px;
+      --s2a-spacing-6xl: 96px;
+      --s2a-layout-lg: 124px;
+
+      --s2a-border-radius-sm: 8px;
+      --s2a-border-radius-md: 16px;
+      --s2a-border-radius-lg: 32px;
+      --s2a-border-radius-999: 999px;
+
+      --grid-margin-sm: 24px;
+      --grid-margin-md: 8.333vw;
+
+      /* Hero theming via documented tokens (no module overrides). */
+      --hero-bg:      #0E1735;
+      --hero-text:    #ffffff;
+      --hero-eyebrow: rgba(255,255,255,0.65);
+      --hero-body:    rgba(255,255,255,0.82);
+      --hero-pad-top: 92px;
+    }
+
+    body { background: #fff; color: #0E1735; }
+
+    /* Container + buttons + type utilities ─── consistent with Adobe pages */
+    .container { width: 100%; padding-inline: var(--grid-margin-sm); }
+    @media (min-width: 768px) { .container { padding-inline: var(--grid-margin-md); } }
+    @media (min-width: 1441px) { .container { max-width: 1920px; margin-inline: auto; } }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      height: 48px; width: fit-content; padding: 0 24px;
+      border-radius: 75px;
+      font-family: var(--font-body);
+      font-size: 14px; font-weight: 700; line-height: 18px; letter-spacing: 0.2px;
+      border: 1.5px solid transparent;
+      text-decoration: none;
+      transition: background 200ms cubic-bezier(0.42,0,0,1), border-color 200ms, color 200ms, transform 200ms;
+      white-space: nowrap; cursor: pointer;
+    }
+    .btn--primary { background: #FF642D; color: #fff; border-color: #FF642D; }
+    .btn--primary:hover { background: #E8501B; border-color: #E8501B; transform: translateY(-1px); }
+    .btn--solid-white { background: #fff; color: #0E1735; border-color: #fff; }
+    .btn--solid-white:hover { background: #ECECEC; }
+    .btn--outline-dark { background: transparent; color: #0E1735; border-color: #0E1735; }
+    .btn--outline-dark:hover { background: rgba(14,23,53,0.04); }
+    .btn--ghost-white { background: transparent; color: #fff; border-color: rgba(255,255,255,0.6); backdrop-filter: blur(16px); }
+    .btn--ghost-white:hover { background: rgba(255,255,255,0.10); border-color: #fff; }
+
+    .eyebrow {
+      font-family: var(--font-body); font-weight: 700;
+      font-size: 13px; line-height: 18px; letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: #FF642D;
+    }
+    .title-1 {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(40px, 6vw, 88px); line-height: 0.96;
+      letter-spacing: clamp(-1px, -0.18vw, -2.4px);
+    }
+    .title-2 {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(32px, 4vw, 56px); line-height: 1.04;
+      letter-spacing: clamp(-0.5px, -0.1vw, -1.4px);
+    }
+    .title-3 {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(24px, 2.4vw, 36px); line-height: 1.12;
+      letter-spacing: -0.6px;
+    }
+    .body-lg {
+      font-family: var(--font-body); font-weight: 400;
+      font-size: 18px; line-height: 28px;
+      max-width: 60ch;
+    }
+    .body-md {
+      font-family: var(--font-body); font-weight: 400;
+      font-size: 16px; line-height: 24px;
+      max-width: 60ch;
+    }
+
+    /* ────────────────────────────────────────────────────────────
+       ADOBE STRIP — uses .rainbow-strip module unchanged.
+       Page-level overlay class adds Adobe-purple→Semrush-orange
+       gradient bg. (Rule 4: page CSS adds, never edits module.)
+       ──────────────────────────────────────────────────────────── */
+    .adobe-strip {
+      background: linear-gradient(90deg, #6E3FF3 0%, #C535B7 50%, #FF642D 100%);
+      color: #fff;
+      padding: 12px var(--grid-margin-md);
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+      font-size: 14px; font-weight: 600; letter-spacing: 0.2px;
+      position: relative; z-index: 5;
+    }
+    .adobe-strip a { color: #fff; text-decoration: underline; text-underline-offset: 3px; font-weight: 700; }
+    .adobe-strip a:hover { text-decoration-thickness: 2px; }
+    .adobe-strip__chevron { transition: transform 200ms; }
+    .adobe-strip a:hover .adobe-strip__chevron { transform: translateX(3px); }
+
+    /* ────────────────────────────────────────────────────────────
+       NAV — Semrush wordmark + standard nav pill.
+       Consistent with hub-router pattern: pill becomes frosted on
+       scroll. Static here for prototype.
+       ──────────────────────────────────────────────────────────── */
+    .sr-nav {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(14,23,53,0.85);
+      backdrop-filter: blur(24px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .sr-nav__inner {
+      display: grid; grid-template-columns: auto 1fr auto; align-items: center;
+      gap: 32px; padding: 14px var(--grid-margin-md);
+    }
+    .sr-nav__brand {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: 22px; letter-spacing: -0.4px; color: #fff;
+      display: inline-flex; align-items: center; gap: 8px;
+      text-decoration: none;
+    }
+    .sr-nav__brand::before {
+      content: ""; width: 26px; height: 26px; border-radius: 6px;
+      background: #FF642D;
+      box-shadow: 0 0 0 3px rgba(255,100,45,0.18);
+    }
+    .sr-nav__menu { display: flex; gap: 28px; align-items: center; justify-content: center; }
+    .sr-nav__menu a {
+      color: rgba(255,255,255,0.85); text-decoration: none;
+      font-size: 14px; font-weight: 500; letter-spacing: 0.1px;
+      padding: 6px 2px; transition: color 200ms;
+    }
+    .sr-nav__menu a:hover { color: #fff; }
+    .sr-nav__cta { display: flex; align-items: center; gap: 12px; }
+    .sr-nav__cta a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 14px; font-weight: 600; }
+    .sr-nav__cta a:hover { color: #fff; }
+    .sr-nav__cta .btn { height: 36px; padding: 0 18px; font-size: 13px; }
+
+    @media (max-width: 1023px) {
+      .sr-nav__menu { display: none; }
+    }
+
+    /* ────────────────────────────────────────────────────────────
+       HERO — composed from hero-bg/hero-text tokens (dark navy).
+       Adds Semrush orange bloom + a meridian glow gradient.
+       Per Rule 4 page wraps add NEW selectors only.
+       ──────────────────────────────────────────────────────────── */
+    .sr-hero {
+      position: relative; overflow: hidden;
+      background:
+        radial-gradient(ellipse 80% 60% at 75% 110%, rgba(255,100,45,0.55), transparent 60%),
+        radial-gradient(ellipse 70% 50% at 15% -10%, rgba(110,63,243,0.40), transparent 55%),
+        var(--hero-bg);
+      color: var(--hero-text);
+      padding: 120px var(--grid-margin-md) 96px;
+      min-height: 78vh;
+      display: grid; align-items: center;
+    }
+    .sr-hero__bg-meridian {
+      position: absolute; inset: 0; pointer-events: none; opacity: 0.55;
+      background:
+        radial-gradient(ellipse 30% 30% at 50% 60%, rgba(255,100,45,0.22), transparent 55%),
+        radial-gradient(ellipse 45% 25% at 50% 70%, rgba(255,255,255,0.06), transparent 60%);
+    }
+    .sr-hero__inner {
+      position: relative; z-index: 1;
+      display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 64px;
+      align-items: center; max-width: 1440px; margin-inline: auto; width: 100%;
+    }
+    .sr-hero__copy { display: grid; gap: 28px; }
+    .sr-hero__eyebrow {
+      color: rgba(255,255,255,0.7);
+      font-size: 13px; letter-spacing: 1.2px; text-transform: uppercase; font-weight: 700;
+      display: inline-flex; align-items: center; gap: 10px;
+    }
+    .sr-hero__eyebrow::before {
+      content: ""; width: 24px; height: 1px; background: rgba(255,255,255,0.4);
+    }
+    .sr-hero__title { color: #fff; }
+    .sr-hero__title em {
+      font-style: normal;
+      background: linear-gradient(120deg, #FF642D 0%, #FFB07A 50%, #fff 100%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .sr-hero__body { color: rgba(255,255,255,0.82); font-size: 20px; line-height: 30px; max-width: 28em; }
+    .sr-hero__ctas { display: flex; gap: 16px; flex-wrap: wrap; padding-top: 8px; }
+    .sr-hero__ctas .btn { height: 56px; padding: 0 32px; font-size: 15px; }
+
+    .sr-hero__visual {
+      position: relative; aspect-ratio: 4/3;
+      border-radius: 24px;
+      background: linear-gradient(155deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(8px);
+      padding: 24px;
+      display: grid; place-items: center;
+      box-shadow: 0 40px 80px -30px rgba(0,0,0,0.6);
+    }
+    .sr-hero__chart {
+      position: relative; width: 100%; height: 100%;
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), transparent);
+      border-radius: 16px;
+      display: grid; place-items: center;
+      overflow: hidden;
+    }
+    .sr-hero__chart::before {
+      content: ""; position: absolute; inset: 0;
+      background:
+        repeating-linear-gradient(0deg, rgba(255,255,255,0.04) 0 1px, transparent 1px 60px),
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.04) 0 1px, transparent 1px 60px);
+    }
+    .sr-hero__chart svg { width: 100%; height: 100%; position: relative; z-index: 1; }
+    .sr-hero__chart-label {
+      position: absolute; top: 16px; left: 16px;
+      font-size: 12px; font-weight: 600; letter-spacing: 0.4px;
+      color: rgba(255,255,255,0.65);
+      display: inline-flex; gap: 8px; align-items: center;
+    }
+    .sr-hero__chart-label::before {
+      content: ""; width: 6px; height: 6px; border-radius: 999px; background: #FF642D;
+      box-shadow: 0 0 0 3px rgba(255,100,45,0.25);
+    }
+    .sr-hero__chart-metric {
+      position: absolute; right: 24px; top: 22%;
+      background: rgba(14,23,53,0.7); backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 12px; line-height: 16px; color: rgba(255,255,255,0.85);
+    }
+    .sr-hero__chart-metric strong { color: #FF642D; font-size: 16px; }
+
+    @media (max-width: 1023px) {
+      .sr-hero { padding: 96px var(--grid-margin-sm) 72px; min-height: auto; }
+      .sr-hero__inner { grid-template-columns: 1fr; gap: 48px; }
+    }
+
+    /* ────────────────────────────────────────────────────────────
+       BRANDS STRIP (uses brands-strip module class — no overrides).
+       Page-level wrapper for spacing only.
+       ──────────────────────────────────────────────────────────── */
+    .sr-brands { padding: 56px var(--grid-margin-md); background: #f8f8f8; }
+    .sr-brands__strip {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 24px 48px; align-items: center; justify-items: center;
+      max-width: 1280px; margin-inline: auto;
+    }
+    .sr-brands__strip img {
+      max-height: 32px; max-width: 140px;
+      filter: grayscale(100%) opacity(0.6);
+      transition: filter 200ms;
+    }
+    .sr-brands__strip a:hover img { filter: grayscale(0%) opacity(1); }
+
+    /* ────────────────────────────────────────────────────────────
+       SPLIT-CONTENT page styling — additive only. The module handles
+       grid + alternation; page CSS just tightens the type for these
+       hero promo rows and wraps videos in the media slot.
+       (Per Module Content Rule 4 — page adds, never overrides.)
+       ──────────────────────────────────────────────────────────── */
+    .sr-promos { background: #fff; }
+    .sr-promos .split-content__row + .split-content__row { /* extra row gap not needed — module ships --sc-row-gap */ }
+
+    .sr-promos .split-content__title {
+      font-size: clamp(36px, 4vw, 56px);
+      letter-spacing: -1.2px;
+      max-width: 16ch;
+    }
+    .sr-promos .split-content__body { font-size: 18px; line-height: 28px; max-width: 50ch; }
+
+    /* Video lives inside the standard media slot; the slot already
+       has aspect-ratio + overflow:hidden + radius, so we only need
+       to make the <video> fill it. */
+    .sr-promos .split-content__media video {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+    }
+    .sr-promos .split-content__media {
+      box-shadow: 0 30px 60px -20px rgba(14,23,53,0.18);
+    }
+    .sr-promos__cta { margin-top: 12px; align-self: flex-start; }
+
+    /* ────────────────────────────────────────────────────────────
+       TOOLKITS SPOTLIGHT — extends acrobat-feature-3up to 4-up.
+       Section wrapper sets surface; per Rule 1 we do not edit
+       acrobat-feature classes. We use page-local .sr-toolkits.
+       ──────────────────────────────────────────────────────────── */
+    .sr-toolkits {
+      padding: 120px var(--grid-margin-md);
+      background: linear-gradient(180deg, #f8f8f8 0%, #fff 100%);
+    }
+    .sr-toolkits__head {
+      max-width: 880px; margin: 0 auto 72px; text-align: center;
+    }
+    .sr-toolkits__head .eyebrow { display: block; margin-bottom: 16px; color: #505050; letter-spacing: 1.2px; }
+    .sr-toolkits__head h2 { color: #0E1735; }
+    .sr-toolkits__grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 24px; max-width: 1440px; margin-inline: auto;
+    }
+    @media (max-width: 1199px) { .sr-toolkits__grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 599px) { .sr-toolkits__grid { grid-template-columns: 1fr; } }
+    .sr-toolkit {
+      background: #fff; border-radius: 24px; padding: 32px;
+      border: 1px solid #ECECEC;
+      display: grid; gap: 20px;
+      transition: transform 280ms cubic-bezier(0.42,0,0,1), box-shadow 280ms, border-color 280ms;
+      will-change: transform;
+    }
+    .sr-toolkit:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 24px 48px -16px rgba(14,23,53,0.12);
+      border-color: rgba(255,100,45,0.4);
+    }
+    .sr-toolkit__media {
+      aspect-ratio: 4/3; border-radius: 16px; overflow: hidden;
+      background: #f3f3f3;
+    }
+    .sr-toolkit__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .sr-toolkit__label {
+      font-size: 12px; font-weight: 700; letter-spacing: 1.2px;
+      color: #FF642D; text-transform: uppercase;
+    }
+    .sr-toolkit__title { color: #0E1735; font-weight: 900; font-size: 20px; line-height: 1.18; letter-spacing: -0.4px; }
+    .sr-toolkit__body { color: rgba(14,23,53,0.72); font-size: 14px; line-height: 22px; }
+    .sr-toolkit__more {
+      max-width: 1440px; margin: 48px auto 0; text-align: center;
+      color: rgba(14,23,53,0.55); font-size: 14px;
+    }
+    .sr-toolkit__more strong { color: #0E1735; }
+
+    /* ────────────────────────────────────────────────────────────
+       STATS GRID — 5-up. Big number + label + body.
+       Page-local pattern (used by LLM Optimizer too — promotion candidate).
+       ──────────────────────────────────────────────────────────── */
+    .sr-stats {
+      padding: 120px var(--grid-margin-md);
+      background: #0E1735; color: #fff;
+      position: relative; overflow: hidden;
+    }
+    .sr-stats::before {
+      content: ""; position: absolute; inset: 0; opacity: 0.5;
+      background:
+        radial-gradient(ellipse 60% 40% at 20% 0%, rgba(255,100,45,0.30), transparent 60%),
+        radial-gradient(ellipse 50% 35% at 90% 100%, rgba(110,63,243,0.30), transparent 60%);
+    }
+    .sr-stats__head {
+      position: relative; max-width: 880px; margin: 0 auto 72px; text-align: center;
+    }
+    .sr-stats__head .eyebrow { color: rgba(255,255,255,0.7); margin-bottom: 14px; display: block; }
+    .sr-stats__head h2 { color: #fff; }
+    .sr-stats__grid {
+      position: relative; display: grid; grid-template-columns: repeat(5, 1fr);
+      gap: 24px; max-width: 1440px; margin-inline: auto;
+    }
+    @media (max-width: 1199px) { .sr-stats__grid { grid-template-columns: repeat(2, 1fr); } }
+    .sr-stat {
+      padding: 32px 24px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 20px;
+      display: grid; gap: 12px;
+      transition: background 280ms, border-color 280ms;
+    }
+    .sr-stat:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,100,45,0.4); }
+    .sr-stat__value {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(40px, 4.4vw, 64px); line-height: 0.92;
+      letter-spacing: -1.6px;
+      background: linear-gradient(120deg, #FF642D 0%, #FFB07A 50%, #fff 110%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .sr-stat__label {
+      font-size: 14px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase;
+      color: #fff;
+    }
+    .sr-stat__body {
+      font-size: 14px; line-height: 20px; color: rgba(255,255,255,0.7);
+    }
+
+    /* ────────────────────────────────────────────────────────────
+       AI VISIBILITY INDEX — reuses split-content module.
+       Page wrapper paints a soft tinted media slot for the SVG chart.
+       ──────────────────────────────────────────────────────────── */
+    .sr-aivi { background: #fff; }
+    .sr-aivi .split-content__title {
+      font-size: clamp(36px, 4vw, 56px); letter-spacing: -1.2px; max-width: 14ch;
+    }
+    .sr-aivi__media {
+      background: linear-gradient(135deg, #f3f0ff 0%, #fff 50%, #fff5ee 100%);
+      box-shadow: 0 30px 60px -20px rgba(14,23,53,0.18);
+    }
+    .sr-aivi__media img {
+      position: absolute; inset: 0;
+      width: 88%; height: 88%; margin: 6%;
+      object-fit: contain;
+    }
+
+    /* ────────────────────────────────────────────────────────────
+       TESTIMONIAL — portrait-cta variant (page-local).
+       Quote left, portrait + metric right.
+       ──────────────────────────────────────────────────────────── */
+    .sr-testimonial {
+      padding: 120px var(--grid-margin-md);
+      background: linear-gradient(180deg, #fff 0%, #f8f8f8 100%);
+    }
+    .sr-testimonial__inner {
+      max-width: 1280px; margin-inline: auto;
+      display: grid; grid-template-columns: 1.4fr 1fr;
+      gap: 80px; align-items: center;
+    }
+    .sr-testimonial__copy { display: grid; gap: 24px; }
+    .sr-testimonial__copy .eyebrow { color: #505050; letter-spacing: 1.2px; }
+    .sr-testimonial__quote {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: clamp(24px, 2.8vw, 36px); line-height: 1.32;
+      letter-spacing: -0.6px; color: #0E1735;
+      max-width: 32ch;
+    }
+    .sr-testimonial__quote::before {
+      content: "\201C"; display: block;
+      font-size: 96px; line-height: 0.6; color: #FF642D;
+      margin-bottom: 16px;
+    }
+    .sr-testimonial__byline { display: flex; align-items: center; gap: 16px; padding-top: 8px; }
+    .sr-testimonial__byline-img {
+      width: 56px; height: 56px; border-radius: 999px; overflow: hidden;
+      background: #ECECEC; flex-shrink: 0;
+    }
+    .sr-testimonial__byline-img img { width: 100%; height: 100%; object-fit: cover; }
+    .sr-testimonial__byline-name { font-weight: 700; font-size: 16px; color: #0E1735; }
+    .sr-testimonial__byline-role { font-size: 14px; color: #505050; }
+    .sr-testimonial__byline-logo { margin-left: auto; opacity: 0.7; }
+    .sr-testimonial__byline-logo img { max-height: 28px; max-width: 140px; }
+
+    .sr-testimonial__metric {
+      background: #FF642D; color: #fff;
+      border-radius: 24px;
+      padding: 56px 48px;
+      display: grid; gap: 8px;
+      box-shadow: 0 30px 60px -20px rgba(255,100,45,0.4);
+      position: relative; overflow: hidden;
+    }
+    .sr-testimonial__metric::before {
+      content: ""; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 100% 100%, rgba(255,255,255,0.18), transparent 60%);
+    }
+    .sr-testimonial__metric-value {
+      position: relative;
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(72px, 8vw, 112px); line-height: 0.92;
+      letter-spacing: -3.2px;
+    }
+    .sr-testimonial__metric-label {
+      position: relative;
+      font-size: 16px; font-weight: 600; letter-spacing: 0.2px;
+      color: rgba(255,255,255,0.95);
+    }
+
+    @media (max-width: 1023px) {
+      .sr-testimonial__inner { grid-template-columns: 1fr; gap: 48px; }
+    }
+
+    /* ────────────────────────────────────────────────────────────
+       RESOURCE GRID — page-local. First card feature-sized
+       (spans 2 cols), remaining 6 in a 3-col sub-grid.
+       ──────────────────────────────────────────────────────────── */
+    .sr-resources {
+      padding: 120px var(--grid-margin-md);
+      background: #fff;
+    }
+    .sr-resources__head {
+      max-width: 1440px; margin: 0 auto 56px;
+      display: flex; justify-content: space-between; align-items: end; gap: 32px;
+    }
+    .sr-resources__head .eyebrow { color: #505050; letter-spacing: 1.2px; }
+    .sr-resources__head h2 { color: #0E1735; max-width: 14ch; }
+    .sr-resources__head-cta {
+      color: #FF642D; font-weight: 700; font-size: 14px; text-decoration: none;
+      letter-spacing: 0.2px; display: inline-flex; align-items: center; gap: 6px;
+    }
+    .sr-resources__head-cta:hover { gap: 10px; }
+
+    .sr-resources__grid {
+      max-width: 1440px; margin-inline: auto;
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .sr-resource {
+      display: grid; gap: 20px; text-decoration: none; color: #0E1735;
+      background: #fff; border: 1px solid #ECECEC; border-radius: 20px;
+      padding: 24px; overflow: hidden;
+      transition: transform 280ms, box-shadow 280ms, border-color 280ms;
+    }
+    .sr-resource:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 24px 48px -16px rgba(14,23,53,0.12);
+      border-color: rgba(255,100,45,0.4);
+    }
+    .sr-resource__media {
+      aspect-ratio: 16/10; border-radius: 12px; overflow: hidden;
+      background: linear-gradient(135deg, #FFEEE3 0%, #fff 100%);
+    }
+    .sr-resource__media img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+    .sr-resource__cat {
+      font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+      color: #FF642D;
+    }
+    .sr-resource__title {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: 18px; line-height: 1.28; letter-spacing: -0.3px;
+      color: #0E1735;
+    }
+    .sr-resource__body {
+      font-size: 14px; line-height: 22px; color: rgba(14,23,53,0.72);
+    }
+    /* Feature card — spans 2 columns on 1st row */
+    .sr-resource--feature {
+      grid-column: span 2; grid-row: span 1;
+      grid-template-columns: 1.05fr 1fr;
+      align-items: center; gap: 32px;
+      padding: 32px;
+      background: linear-gradient(135deg, #FFEEE3 0%, #fff 100%);
+      border-color: rgba(255,100,45,0.25);
+    }
+    .sr-resource--feature .sr-resource__media { aspect-ratio: 4/3; }
+    .sr-resource--feature .sr-resource__title { font-size: 28px; line-height: 1.12; letter-spacing: -0.6px; }
+    .sr-resource--feature .sr-resource__body { font-size: 16px; line-height: 24px; }
+    @media (max-width: 1023px) {
+      .sr-resources__grid { grid-template-columns: repeat(2, 1fr); }
+      .sr-resource--feature { grid-column: span 2; grid-template-columns: 1fr; }
+    }
+    @media (max-width: 599px) {
+      .sr-resources__grid { grid-template-columns: 1fr; }
+      .sr-resource--feature { grid-column: span 1; }
+    }
+
+    /* ────────────────────────────────────────────────────────────
+       FINAL CTA — center hero, dark, big.
+       Same surface as hero for symmetry; smaller height.
+       ──────────────────────────────────────────────────────────── */
+    .sr-final {
+      padding: 120px var(--grid-margin-md);
+      background:
+        radial-gradient(ellipse 50% 60% at 50% 100%, rgba(255,100,45,0.50), transparent 60%),
+        radial-gradient(ellipse 50% 40% at 50% 0%, rgba(110,63,243,0.30), transparent 60%),
+        #0E1735;
+      color: #fff; text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .sr-final h2 {
+      max-width: 18ch; margin: 0 auto 16px;
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(40px, 5vw, 80px); line-height: 0.96;
+      letter-spacing: -1.6px; color: #fff;
+    }
+    .sr-final p { color: rgba(255,255,255,0.78); font-size: 18px; margin-bottom: 32px; }
+    .sr-final .btn { height: 56px; padding: 0 36px; font-size: 16px; }
+
+    /* ────────────────────────────────────────────────────────────
+       FOOTER — minimal. Real Semrush footer is JS-loaded.
+       ──────────────────────────────────────────────────────────── */
+    .sr-footer {
+      background: #0A0F26; color: rgba(255,255,255,0.65);
+      padding: 64px var(--grid-margin-md) 32px;
+    }
+    .sr-footer__inner {
+      max-width: 1440px; margin-inline: auto;
+      display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 48px;
+    }
+    .sr-footer__brand {
+      font-family: var(--font-display); font-weight: 900; color: #fff; font-size: 22px;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .sr-footer__brand::before {
+      content: ""; width: 24px; height: 24px; border-radius: 6px; background: #FF642D;
+    }
+    .sr-footer__col h4 {
+      color: #fff; font-size: 13px; font-weight: 700;
+      letter-spacing: 0.6px; text-transform: uppercase; margin-bottom: 16px;
+    }
+    .sr-footer__col ul { list-style: none; padding: 0; margin: 0; }
+    .sr-footer__col li { margin-bottom: 10px; }
+    .sr-footer__col a {
+      color: rgba(255,255,255,0.65); text-decoration: none;
+      font-size: 14px; transition: color 200ms;
+    }
+    .sr-footer__col a:hover { color: #fff; }
+    .sr-footer__legal {
+      max-width: 1440px; margin: 48px auto 0; padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap;
+      font-size: 12px; color: rgba(255,255,255,0.5);
+    }
+    @media (max-width: 1023px) {
+      .sr-footer__inner { grid-template-columns: 1fr 1fr; gap: 32px; }
+    }
+
+    /* anim-enter init state */
+    .anim-enter { opacity: 0; transform: translateY(40px); transition: opacity 700ms cubic-bezier(0.42,0,0,1), transform 700ms cubic-bezier(0.42,0,0,1); }
+    .anim-enter.visible { opacity: 1; transform: none; }
+
+  </style>
+</head>
+<body>
+
+  <!-- ═══ Adobe acquisition strip ═══ -->
+  <div class="adobe-strip">
+    <span>Semrush is now an Adobe company.</span>
+    <a href="#">Read the announcement
+      <svg class="adobe-strip__chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 6l6 6-6 6"/></svg>
+    </a>
+  </div>
+
+  <!-- ═══ Nav ═══ -->
+  <header class="sr-nav">
+    <div class="sr-nav__inner">
+      <a class="sr-nav__brand" href="#">Semrush</a>
+      <nav class="sr-nav__menu">
+        <a href="#">Products</a>
+        <a href="#">Pricing</a>
+        <a href="#">Resources</a>
+        <a href="#">Enterprise</a>
+      </nav>
+      <div class="sr-nav__cta">
+        <a href="#">Log in</a>
+        <a class="btn btn--primary" href="#">Sign up free</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══ Hero ═══ -->
+  <section class="sr-hero">
+    <div class="sr-hero__bg-meridian"></div>
+    <div class="sr-hero__inner">
+      <div class="sr-hero__copy anim-enter">
+        <span class="sr-hero__eyebrow">SEMRUSH ONE — UNIFIED BRAND VISIBILITY</span>
+        <h1 class="title-1 sr-hero__title">Be found <em>everywhere</em><br>search happens</h1>
+        <p class="sr-hero__body">The leading platform to grow and measure brand visibility across virtually every digital channel.</p>
+        <div class="sr-hero__ctas">
+          <a class="btn btn--primary" href="#">Start your free trial</a>
+          <a class="btn btn--ghost-white" href="#">See pricing</a>
+        </div>
+      </div>
+      <div class="sr-hero__visual anim-enter" style="transition-delay: 120ms;">
+        <div class="sr-hero__chart">
+          <span class="sr-hero__chart-label">AI Visibility · last 30 days</span>
+          <svg viewBox="0 0 480 320" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="srgrad" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="#FF642D" stop-opacity="0.6"/>
+                <stop offset="100%" stop-color="#FF642D" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <!-- baseline (competitor) -->
+            <path d="M0,260 C60,250 120,245 180,240 C240,235 300,230 360,228 C420,226 460,224 480,222"
+                  fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-dasharray="4 4"/>
+            <!-- semrush trajectory -->
+            <path d="M0,250 C60,240 120,210 180,180 C240,150 300,110 360,80 C420,55 460,40 480,30"
+                  fill="none" stroke="#FF642D" stroke-width="3"/>
+            <path d="M0,250 C60,240 120,210 180,180 C240,150 300,110 360,80 C420,55 460,40 480,30
+                     L480,320 L0,320 Z" fill="url(#srgrad)"/>
+            <!-- markers -->
+            <circle cx="180" cy="180" r="4" fill="#fff"/>
+            <circle cx="360" cy="80" r="5" fill="#FF642D" stroke="#fff" stroke-width="2"/>
+          </svg>
+        </div>
+        <div class="sr-hero__chart-metric">
+          <strong>+373%</strong><br>share of voice
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Brands strip — bare logos as on the live page ═══ -->
+  <section class="sr-brands">
+    <div class="sr-brands__strip">
+      <a href="#"><img src="semrush-home/assets/scraped/logos/Shopify.svg" alt="Shopify"></a>
+      <a href="#"><img src="semrush-home/assets/scraped/logos/Decathlon.svg" alt="Decathlon"></a>
+      <a href="#"><img src="semrush-home/assets/scraped/logos/Booking.svg" alt="Booking.com"></a>
+      <a href="#"><img src="semrush-home/assets/scraped/logos/PG.svg" alt="P&amp;G"></a>
+      <a href="#"><img src="semrush-home/assets/scraped/logos/Samsung.svg" alt="Samsung"></a>
+      <a href="#"><img src="semrush-home/assets/scraped/logos/FedEx.svg" alt="FedEx"></a>
+      <a href="#"><img src="semrush-home/assets/scraped/logos/Amazon.svg" alt="Amazon"></a>
+      <a href="#"><img src="semrush-home/assets/scraped/logos/Airbnb.svg" alt="Airbnb"></a>
+      <a href="#"><img src="semrush-home/assets/scraped/logos/Netflix.svg" alt="Netflix"></a>
+      <a href="#"><img src="semrush-home/assets/scraped/logos/Dropbox.svg" alt="Dropbox"></a>
+      <a href="#"><img src="semrush-home/assets/scraped/logos/TikTok.svg" alt="TikTok"></a>
+    </div>
+  </section>
+
+  <!-- ═══ Promo cards — split-content module (2 rows, alternating sides) ═══ -->
+  <section class="split-content sr-promos">
+    <div class="split-content__inner">
+
+      <!-- Row 1: Semrush One — image right -->
+      <div class="split-content__row" data-image-side="right">
+        <div class="split-content__media">
+          <video autoplay muted loop playsinline poster="assets/scraped/toolkits/semrush-one.webp">
+            <source src="semrush-home/assets/scraped/videos/toolkits.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="split-content__copy">
+          <span class="eyebrow">SEMRUSH ONE</span>
+          <h2 class="split-content__title">Your edge to win every search.</h2>
+          <p class="split-content__body">Semrush One unites SEO and AI visibility in one place — built on 17 years of search intelligence.</p>
+          <a class="btn btn--primary sr-promos__cta" href="#">Explore Semrush One</a>
+        </div>
+      </div>
+
+      <!-- Row 2: Enterprise — image left -->
+      <div class="split-content__row" data-image-side="left">
+        <div class="split-content__media">
+          <video autoplay muted loop playsinline>
+            <source src="semrush-home/assets/scraped/videos/enterprise.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="split-content__copy">
+          <span class="eyebrow">FOR ENTERPRISE</span>
+          <h2 class="split-content__title">Bigger scale.<br>Bigger advantage.</h2>
+          <p class="split-content__body">Semrush for Enterprise means brand visibility dominance. Win more customers across markets and domains. Everywhere they search.</p>
+          <a class="btn btn--outline-dark sr-promos__cta" href="#">Talk to sales</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══ Toolkits spotlight (4-up) ═══ -->
+  <section class="sr-toolkits">
+    <div class="sr-toolkits__head">
+      <span class="eyebrow">Solutions ( 9 )</span>
+      <h2 class="title-2">Get seen. Get cited. Be the answer.</h2>
+    </div>
+    <div class="sr-toolkits__grid">
+      <article class="sr-toolkit anim-enter">
+        <div class="sr-toolkit__media"><img src="semrush-home/assets/scraped/toolkits/semrush-one.webp" alt="Semrush One"></div>
+        <span class="sr-toolkit__label">Semrush One</span>
+        <h3 class="sr-toolkit__title">Grow your digital brand visibility</h3>
+        <p class="sr-toolkit__body">Built for the new era of discovery, Semrush One helps you win everywhere — from traditional SEO to AI search.</p>
+      </article>
+      <article class="sr-toolkit anim-enter" style="transition-delay: 80ms;">
+        <div class="sr-toolkit__media"><img src="semrush-home/assets/scraped/toolkits/seo.webp" alt="SEO"></div>
+        <span class="sr-toolkit__label">SEO</span>
+        <h3 class="sr-toolkit__title">Outrank the rest with better SEO</h3>
+        <p class="sr-toolkit__body">Unearth billions of keywords with AI, dissect your backlinks, rankings and traffic potential, and run technical audits to stay on top.</p>
+      </article>
+      <article class="sr-toolkit anim-enter" style="transition-delay: 160ms;">
+        <div class="sr-toolkit__media"><img src="semrush-home/assets/scraped/toolkits/ai-visibility.webp" alt="AI Visibility"></div>
+        <span class="sr-toolkit__label">AI Visibility</span>
+        <h3 class="sr-toolkit__title">Get LLMs to cite your brand</h3>
+        <p class="sr-toolkit__body">Take control of how you show up in AI answers. Track prompt-level visibility and analyze AI market share against your competition.</p>
+      </article>
+      <article class="sr-toolkit anim-enter" style="transition-delay: 240ms;">
+        <div class="sr-toolkit__media"><img src="semrush-home/assets/scraped/toolkits/traffic.webp" alt="Traffic and Market"></div>
+        <span class="sr-toolkit__label">Traffic and Market</span>
+        <h3 class="sr-toolkit__title">Analyze traffic on any website</h3>
+        <p class="sr-toolkit__body">Spy on competitors and uncover market trends with the most accurate traffic and market intelligence data on the web.</p>
+      </article>
+    </div>
+    <p class="sr-toolkit__more">
+      Plus <strong>Content</strong> · <strong>Local</strong> · <strong>Advertising</strong> · <strong>AI&nbsp;PR</strong> · <strong>Social</strong> — 5 more solutions to explore.
+    </p>
+  </section>
+
+  <!-- ═══ Stats ═══ -->
+  <section class="sr-stats">
+    <div class="sr-stats__head">
+      <span class="eyebrow">Stats and facts</span>
+      <h2 class="title-2">The data you need to outrank the competition</h2>
+    </div>
+    <div class="sr-stats__grid">
+      <div class="sr-stat anim-enter">
+        <div class="sr-stat__value">28B</div>
+        <div class="sr-stat__label">Keywords</div>
+        <p class="sr-stat__body">More keywords means more ways to win.</p>
+      </div>
+      <div class="sr-stat anim-enter" style="transition-delay: 80ms;">
+        <div class="sr-stat__value">43T</div>
+        <div class="sr-stat__label">Backlinks</div>
+        <p class="sr-stat__body">Build credibility with the largest database on the market.</p>
+      </div>
+      <div class="sr-stat anim-enter" style="transition-delay: 160ms;">
+        <div class="sr-stat__value">808M</div>
+        <div class="sr-stat__label">Domain profiles</div>
+        <p class="sr-stat__body">Your (secret) market insights superpower.</p>
+      </div>
+      <div class="sr-stat anim-enter" style="transition-delay: 240ms;">
+        <div class="sr-stat__value">142</div>
+        <div class="sr-stat__label">Geo databases</div>
+        <p class="sr-stat__body">You're covered all around the world.</p>
+      </div>
+      <div class="sr-stat anim-enter" style="transition-delay: 320ms;">
+        <div class="sr-stat__value">239M+</div>
+        <div class="sr-stat__label">LLM prompts</div>
+        <p class="sr-stat__body">Monitor more prompts. Grow your visibility faster.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ AI Visibility Index — split-content (single row, image right) ═══ -->
+  <section class="split-content sr-aivi">
+    <div class="split-content__inner">
+      <div class="split-content__row" data-image-side="right">
+        <div class="split-content__media sr-aivi__media">
+          <img src="semrush-home/assets/scraped/ai-visibility-index.svg" alt="AI Visibility Index">
+        </div>
+        <div class="split-content__copy">
+          <span class="eyebrow">AI VISIBILITY INDEX</span>
+          <h2 class="split-content__title">Who's winning AI search? Find&nbsp;out.</h2>
+          <p class="split-content__body">Explore the strategies powering today's AI search leaders and get clear steps to build your own.</p>
+          <a class="btn btn--outline-dark sr-promos__cta" href="#">Explore the index</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Testimonial ═══ -->
+  <section class="sr-testimonial">
+    <div class="sr-testimonial__inner">
+      <div class="sr-testimonial__copy anim-enter">
+        <span class="eyebrow">Our customers</span>
+        <h2 class="title-3" style="color: #0E1735; margin-bottom: 4px;">How we help marketers win</h2>
+        <p class="sr-testimonial__quote">Semrush for Enterprise has been a game-changer for our marketing teams. It's helped us work more efficiently, cutting down on manual tasks so we can focus on what really matters — engaging with our audience and driving growth.</p>
+        <div class="sr-testimonial__byline">
+          <div class="sr-testimonial__byline-img">
+            <img src="semrush-home/assets/scraped/testimonials/james-roth.png" alt="James Roth portrait">
+          </div>
+          <div>
+            <div class="sr-testimonial__byline-name">James Roth</div>
+            <div class="sr-testimonial__byline-role">CRO at ZoomInfo</div>
+          </div>
+          <div class="sr-testimonial__byline-logo">
+            <img src="semrush-home/assets/scraped/testimonials/zoominfo.svg" alt="ZoomInfo">
+          </div>
+        </div>
+      </div>
+      <div class="sr-testimonial__metric anim-enter" style="transition-delay: 120ms;">
+        <div class="sr-testimonial__metric-value">+373%</div>
+        <div class="sr-testimonial__metric-label">Increase in share of voice</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Resources ═══ -->
+  <section class="sr-resources">
+    <div class="sr-resources__head">
+      <div>
+        <span class="eyebrow">Resources ( 7 )</span>
+        <h2 class="title-2" style="margin-top: 8px;">Stay ahead of what's next</h2>
+      </div>
+      <a class="sr-resources__head-cta" href="#">All resources <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </div>
+    <div class="sr-resources__grid">
+      <a class="sr-resource sr-resource--feature" href="#">
+        <div class="sr-resource__media">
+          <img src="semrush-home/assets/scraped/resources/adobe-acquisition.svg" alt="Adobe acquires Semrush announcement">
+        </div>
+        <div>
+          <span class="sr-resource__cat">News</span>
+          <h3 class="sr-resource__title">Adobe Completes Semrush Acquisition</h3>
+          <p class="sr-resource__body">Adobe acquires Semrush to unify brand visibility, SEO, and AI-driven customer experience — helping businesses stay discoverable and drive engagement in an agent-led digital landscape.</p>
+        </div>
+      </a>
+      <a class="sr-resource" href="#">
+        <div class="sr-resource__media"><img src="semrush-home/assets/scraped/resources/adobe-faq.svg" alt="Adobe acquisition FAQ"></div>
+        <span class="sr-resource__cat">News</span>
+        <h3 class="sr-resource__title">FAQ for Customers: Adobe Acquires Semrush</h3>
+        <p class="sr-resource__body">Answers to the most important customer questions — covering what changes, what stays the same, and what to expect next from Adobe and Semrush.</p>
+      </a>
+      <a class="sr-resource" href="#">
+        <div class="sr-resource__media"><img src="semrush-home/assets/scraped/resources/direct-access.webp" alt="ChatGPT integration"></div>
+        <span class="sr-resource__cat">News · Product Update</span>
+        <h3 class="sr-resource__title">Direct Access to Semrush Data in ChatGPT</h3>
+        <p class="sr-resource__body">The go-to integration to streamline daily tasks and centralize your data. Faster insights, smarter workflows, and visibility built right in to where you work.</p>
+      </a>
+      <a class="sr-resource" href="#">
+        <div class="sr-resource__media"><img src="semrush-home/assets/scraped/resources/share-of-voice.webp" alt="LLM share of voice"></div>
+        <span class="sr-resource__cat">Blog · Article</span>
+        <h3 class="sr-resource__title">How We're Driving LLM Visibility at Semrush</h3>
+        <p class="sr-resource__body">How we nearly tripled our AI share of voice and boosted our AI visibility with Enterprise AIO and the AI Visibility Toolkit. A systematic approach with real data.</p>
+      </a>
+      <a class="sr-resource" href="#">
+        <div class="sr-resource__media"><img src="semrush-home/assets/scraped/resources/free-webinars.webp" alt="Free webinars"></div>
+        <span class="sr-resource__cat">Academy Course</span>
+        <h3 class="sr-resource__title">Sharpen Your Digital Marketing Skills with Our Free Webinars</h3>
+        <p class="sr-resource__body">A free certification course on how AI is changing search. Track prompts, optimize for LLMs, and grow your brand's visibility in AI search.</p>
+      </a>
+      <a class="sr-resource" href="#">
+        <div class="sr-resource__media"><img src="semrush-home/assets/scraped/resources/ai-rankings.webp" alt="AI rankings"></div>
+        <span class="sr-resource__cat">News · Product Update</span>
+        <h3 class="sr-resource__title">Enterprise AIO Adds Persona-Based Prompt Generation</h3>
+        <p class="sr-resource__body">Simulate real user behavior across AI search with audience-specific prompts. Track visibility more accurately and tailor messaging to how different personas think, search, and decide.</p>
+      </a>
+      <a class="sr-resource" href="#">
+        <div class="sr-resource__media"><img src="semrush-home/assets/scraped/resources/spotlight.webp" alt="Spotlight conference"></div>
+        <span class="sr-resource__cat">Spotlight</span>
+        <h3 class="sr-resource__title">Where Ambitious Marketers Take Center Stage</h3>
+        <p class="sr-resource__body">Join us at Spotlight for practical strategies, expert feedback, and a community that has your back. It's one day that makes the next 365 work smarter.</p>
+      </a>
+    </div>
+  </section>
+
+  <!-- ═══ Final CTA ═══ -->
+  <section class="sr-final">
+    <h2>Get started with Semrush today</h2>
+    <p>Try Semrush free for seven days. Cancel anytime.</p>
+    <a class="btn btn--primary" href="#">Start free trial</a>
+  </section>
+
+  <!-- ═══ Footer ═══ -->
+  <footer class="sr-footer">
+    <div class="sr-footer__inner">
+      <div>
+        <a class="sr-footer__brand" href="#">Semrush</a>
+        <p style="margin-top: 16px; font-size: 14px; max-width: 32ch;">
+          The leading platform to grow and measure brand visibility across virtually every digital channel.
+        </p>
+      </div>
+      <div class="sr-footer__col">
+        <h4>Semrush</h4>
+        <ul>
+          <li><a href="#">Semrush One</a></li>
+          <li><a href="#">Features</a></li>
+          <li><a href="#">Pricing</a></li>
+          <li><a href="#">Free trial</a></li>
+        </ul>
+      </div>
+      <div class="sr-footer__col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Newsroom</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Partners</a></li>
+        </ul>
+      </div>
+      <div class="sr-footer__col">
+        <h4>Resources</h4>
+        <ul>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Academy</a></li>
+          <li><a href="#">Webinars</a></li>
+          <li><a href="#">Help Center</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="sr-footer__legal">
+      <span>© 2026 Semrush, an Adobe company. All rights reserved.</span>
+      <span>Privacy · Terms · Cookies</span>
+    </div>
+  </footer>
+
+  <script>
+    // anim-enter via IntersectionObserver
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.anim-enter').forEach(el => io.observe(el));
+  </script>
+</body>
+</html>

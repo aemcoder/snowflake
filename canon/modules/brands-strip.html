@@ -1,0 +1,20 @@
+<!--
+  module:    brands-strip
+  extracted: stardust/index.html:1465-1478
+  slots:     title, items (list of {label}), cta (link)
+  notes:     Each logo is a styled <span> with the brand name as text;
+             original used inline styles for typography variations
+             which are frozen here (all logos render in the default
+             style). Could be enhanced later with per-logo styling slots.
+-->
+<section class="brands-strip">
+  <div class="container">
+    <h2 class="brands-strip__title anim-enter" data-slot="title">Brands title.</h2>
+    <div class="brands-strip__row anim-enter" data-slot-list="items">
+      <span class="brands-strip__logo" data-slot="label">Brand</span>
+    </div>
+    <div class="brands-strip__foot anim-enter">
+      <a class="btn btn--outline" data-slot="cta" href="#">Read more stories</a>
+    </div>
+  </div>
+</section>

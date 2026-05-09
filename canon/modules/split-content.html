@@ -1,0 +1,24 @@
+<!--
+  module:    split-content
+  extracted: stardust/products/llm-optimizer.html:460-515
+  slots:     items (list of {image, title, body, bullets, cta})
+  notes:     Each item alternates image-side (left/right) automatically via :nth-child CSS;
+             bullets is a single slot whose value is a <ul> from the cell.
+-->
+<section class="split-content">
+  <div class="split-content__inner" data-slot-list="items">
+    <article class="split-content__row anim-enter">
+      <div class="split-content__media">
+        <img data-slot="image" src="" alt="" width="2000" height="1500">
+      </div>
+      <div class="split-content__copy">
+        <h3 class="split-content__title" data-slot="title">Split row title.</h3>
+        <p class="split-content__body" data-slot="body">Split row body.</p>
+        <ul class="split-content__bullets" data-slot="bullets">
+          <li class="split-content__bullet">Bullet content.</li>
+        </ul>
+        <a class="split-content__cta" data-slot="cta" href="#">Learn more</a>
+      </div>
+    </article>
+  </div>
+</section>

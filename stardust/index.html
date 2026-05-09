@@ -1,0 +1,1918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Adobe for Business — Customer experience orchestration (faithful)</title>
+  <link rel="icon" type="image/svg+xml" href="runtime/assets/adobe-logo-red.svg">
+
+  <!-- Global design system -->
+  <link rel="stylesheet" href="runtime/styles/global/reset.css">
+  <link rel="stylesheet" href="runtime/styles/global/grid.css">
+  <link rel="stylesheet" href="runtime/styles/global/typography.css">
+
+  <!-- Page baseline -->
+  <link rel="stylesheet" href="runtime/styles/page.css">
+
+  <!-- Nav. nav-offer.css intentionally NOT loaded — that override is for
+       white-bg pages. Our hero is dark, so the default hub variant
+       (white text on transparent pill, dark on frosted pill once
+       scrolled) is what we want. -->
+  <link rel="stylesheet" href="runtime/styles/nav.css">
+  <link rel="stylesheet" href="runtime/styles/mega-nav.css">
+  <link rel="stylesheet" href="runtime/styles/mobile-nav.css">
+
+  <!-- Hero (mosaic + hub-router) -->
+  <link rel="stylesheet" href="runtime/styles/hero.css?v=tokens2">
+  <link rel="stylesheet" href="runtime/styles/hero-grid.css">
+  <link rel="stylesheet" href="runtime/styles/hero-hub-router.css">
+  <link rel="stylesheet" href="runtime/styles/hero-mobile.css">
+
+  <!-- Editorial bento -->
+  <link rel="stylesheet" href="runtime/styles/editorial.css">
+
+  <style>
+    /* ─── Bizpro tokens (s2a-*) — required by sections lifted from bizpro-hub ─── */
+    :root {
+      --s2a-color-gray-50: #f8f8f8;
+      --s2a-color-gray-75: #f3f3f3;
+      --s2a-color-gray-700: #505050;
+      --s2a-color-blue-900: #3b63fb;
+      --s2a-color-blue-1000: #274dea;
+      --s2a-color-background-default: #ffffff;
+      --s2a-color-background-subtle: #f8f8f8;
+      --s2a-color-content-default: #000000;
+      --s2a-color-content-subtle: rgba(0,0,0,0.64);
+      --s2a-color-content-background-subtle: #505050;
+      --s2a-color-button-background-primary-solid-default: #3b63fb;
+      --s2a-color-transparent-black-08: rgba(0,0,0,0.08);
+      --s2a-color-transparent-black-16: rgba(0,0,0,0.16);
+      --s2a-color-transparent-white-64: rgba(255,255,255,0.64);
+
+      --s2a-typography-font-size-eyebrow: 16px;
+      --s2a-typography-line-height-eyebrow: 20px;
+      --s2a-typography-letter-spacing-eyebrow: -0.2px;
+      --s2a-typography-font-size-body-md: 16px;
+      --s2a-typography-line-height-body-md: 20px;
+      --s2a-typography-letter-spacing-body-md: 0.16px;
+      --s2a-typography-font-size-body-sm: 14px;
+      --s2a-typography-line-height-body-sm: 18px;
+      --s2a-typography-letter-spacing-body-sm: 0.16px;
+      --s2a-typography-font-size-label: 14px;
+      --s2a-typography-line-height-label: 18px;
+      --s2a-typography-font-size-title-4: 24px;
+      --s2a-typography-line-height-title-4: 24px;
+      --s2a-font-letter-spacing-4xl: -0.48px;
+
+      --s2a-spacing-xs: 8px;
+      --s2a-spacing-sm: 12px;
+      --s2a-spacing-md: 16px;
+      --s2a-spacing-lg: 24px;
+      --s2a-spacing-xl: 32px;
+      --s2a-spacing-2xl: 40px;
+      --s2a-spacing-3xl: 48px;
+      --s2a-spacing-4xl: 64px;
+      --s2a-spacing-5xl: 80px;
+      --s2a-spacing-6xl: 96px;
+      --s2a-layout-lg: 124px;
+
+      --s2a-border-radius-sm: 8px;
+      --s2a-border-radius-md: 16px;
+      --s2a-border-radius-lg: 32px;
+      --s2a-border-radius-999: 999px;
+
+      --s2a-duration-fast: 200ms;
+      --s2a-duration-base: 400ms;
+      --s2a-easing-default: cubic-bezier(0.42, 0, 0, 1);
+
+      --grid-margin-sm: 24px;
+      --grid-margin-md: 8.333vw;
+    }
+
+    /* ─── Container + buttons + type utilities ─── */
+    .container { width: 100%; padding-inline: var(--grid-margin-sm); }
+    @media (min-width: 768px) { .container { padding-inline: var(--grid-margin-md); } }
+    @media (min-width: 1441px) { .container { max-width: 1920px; margin-inline: auto; } }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      height: 48px; width: fit-content; padding: 0 24px;
+      border-radius: 75px;
+      font-family: var(--font-body);
+      font-size: 14px; font-weight: 700; line-height: 18px;
+      border: 1.5px solid transparent;
+      text-decoration: none;
+      transition: background var(--s2a-duration-fast), border-color var(--s2a-duration-fast), color var(--s2a-duration-fast);
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    /* Primary = solid black on light bg (hub reference "Try it free") */
+    .btn--primary { background: #000; color: #fff; border-color: #000; }
+    .btn--primary:hover { background: #1f1f1f; }
+    /* Solid-white = solid white on dark bg (hero CTA) */
+    .btn--solid-white { background: #fff; color: #000; border-color: #fff; }
+    .btn--solid-white:hover { background: #e8e8e8; }
+    .btn--outline { background: transparent; color: #000; border-color: #000; }
+    .btn--outline:hover { background: rgba(0,0,0,0.04); }
+    .btn--ghost-white { background: transparent; color: #fff; border-color: #fff; backdrop-filter: blur(16px); }
+    .btn--ghost-white:hover { background: rgba(255,255,255,0.08); }
+
+    .eyebrow {
+      font-family: var(--font-body); font-weight: 700;
+      font-size: var(--s2a-typography-font-size-eyebrow);
+      line-height: var(--s2a-typography-line-height-eyebrow);
+      letter-spacing: var(--s2a-typography-letter-spacing-eyebrow);
+      color: var(--s2a-color-content-background-subtle);
+    }
+    .title-2 {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(32px, 4.375vw, 56px); line-height: 1.0;
+      letter-spacing: clamp(-0.8px, -0.13vw, -1.68px);
+    }
+    .title-4 {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: var(--s2a-typography-font-size-title-4);
+      line-height: var(--s2a-typography-line-height-title-4);
+      letter-spacing: var(--s2a-font-letter-spacing-4xl);
+    }
+    .body-md {
+      font-family: var(--font-body); font-weight: 400;
+      font-size: var(--s2a-typography-font-size-body-md);
+      line-height: var(--s2a-typography-line-height-body-md);
+      letter-spacing: var(--s2a-typography-letter-spacing-body-md);
+      max-width: 80ch;
+    }
+
+    /* ─── anim-enter init state — stagger-reveal.js drives the rest ─── */
+    .anim-enter { opacity: 0; transform: translateY(40px); will-change: opacity, transform; }
+
+    /* ═══════════════════════════════════════════════════════════════
+       HERO THEME — dark variant.
+       hero.css ships with --hero-bg/--hero-text/--hero-eyebrow/--hero-body
+       custom properties (defaults: white surface, dark ink). Setting
+       them at :root flips the whole hero (mosaic + text) to dark
+       without touching any module selector.
+       ═══════════════════════════════════════════════════════════════ */
+    :root {
+      --hero-bg:      #0c0820;
+      --hero-text:    #ffffff;
+      --hero-eyebrow: rgba(255,255,255,0.65);
+      --hero-body:    rgba(255,255,255,0.78);
+      /* Tighten — there's an announce panel above the hero, so the
+         module's default 189px would push content too far down.
+         48px sits just below the announce's bottom edge; combined
+         with the hero's 100vh height the headline lands roughly in
+         the middle of the visible "below-announce, above-fold" band. */
+      --hero-pad-top: 98px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       HERO ANNOUNCE PANEL — Adobe + Semrush, full-width band ABOVE the
+       main hero copy. Sits between gnav and the mosaic-convergence
+       module so the gnav can be at top:0 and the announcement still
+       reads as "in the hero" (shared dark surface, gradient bleed).
+       (content_json.announcement_banner)
+       ═══════════════════════════════════════════════════════════════ */
+    .hero-announce {
+      position: relative; z-index: 1;
+      background:
+        /* Symmetric blooms — both vertically centered so they fade
+           evenly toward top and bottom edges (no sharp boundary). */
+        radial-gradient(ellipse 60% 90% at 0% 50%, rgba(139,104,232,0.45), transparent 60%),
+        radial-gradient(ellipse 60% 90% at 100% 50%, rgba(254,54,0,0.30), transparent 60%),
+        #0c0820;
+      color: #fff;
+      /* clear gnav (72px outer pad + pill) */
+      padding: 96px var(--grid-margin-md, 8.333vw) 28px;
+    }
+    @media (max-width: 1023px) { .hero-announce { padding-inline: var(--grid-margin-sm); } }
+    .hero-announce__panel {
+      display: grid; grid-template-columns: auto 1fr auto; gap: 32px;
+      align-items: center;
+      padding: 20px 24px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.10);
+      backdrop-filter: blur(20px);
+    }
+    @media (max-width: 1023px) {
+      .hero-announce__panel {
+        grid-template-columns: 1fr; gap: 16px;
+        border-radius: 24px;
+        text-align: center; justify-items: center;
+      }
+    }
+    /* Real Adobe + Semrush SVG lockup (canonical asset). */
+    .hero-announce__lockup {
+      display: block;
+      height: 22px;
+      width: auto;
+      flex-shrink: 0;
+    }
+    .hero-announce__copy {
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .hero-announce__head {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: 18px; line-height: 1.15; color: #fff;
+      letter-spacing: -0.01em;
+    }
+    .hero-announce__sub {
+      font-family: var(--font-body); font-weight: 400;
+      font-size: 13px; line-height: 1.4;
+      color: rgba(255,255,255,0.72);
+    }
+    .hero-announce__ctas { display: inline-flex; gap: 8px; flex-shrink: 0; }
+    .hero-announce__cta {
+      display: inline-flex; align-items: center; height: 40px;
+      padding: 0 20px; border-radius: 999px;
+      background: rgba(255,255,255,0.14); color: #fff;
+      backdrop-filter: blur(20px);
+      font-family: var(--font-body); font-size: 14px; font-weight: 700;
+      line-height: 18px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .hero-announce__cta:hover { background: rgba(255,255,255,0.24); }
+    .hero-announce__cta--primary { background: #fff; color: #0E0E10; }
+    .hero-announce__cta--primary:hover { background: #f3f3f3; }
+
+    /* Sub-brand "for Business" injection.
+       Default state — gnav over a dark surface (hero) — white ink.
+       Scrolled state — gnav has frosted pill + dark ink — flip to dark. */
+    .gnav-subbrand {
+      font-family: var(--font-body); font-size: 16px; font-weight: 700;
+      color: #fff; letter-spacing: -0.01em;
+      padding-left: 8px; margin-left: 4px;
+      border-left: 1px solid rgba(255,255,255,0.24);
+      align-self: center; line-height: 18px; white-space: nowrap;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    #gnav.gnav--scrolled .gnav-subbrand {
+      color: #1a1a1a;
+      border-left-color: rgba(0,0,0,0.16);
+    }
+    @media (max-width: 767px) { .gnav-subbrand { display: none; } }
+
+    /* Get started CTA in gnav-right — solid white pill. Sits over both
+       the dark hero and the frosted scrolled pill (still readable in
+       both states because it's opaque). */
+    /* Get started CTA in gnav-right — matches the .gnav-signin height
+       (40px) so both buttons read as a balanced pair in the gnav. */
+    .gnav-cta {
+      display: inline-flex; align-items: center; height: 40px;
+      padding: 0 20px; background: #fff; color: #000;
+      border-radius: 999px;
+      font-family: var(--font-body); font-size: 14px; font-weight: 700;
+      line-height: 18px;
+      text-decoration: none;
+      transition: background 0.2s ease; margin-left: 4px;
+    }
+    .gnav-cta:hover { background: #e8e8e8; }
+
+    /* ═══════════════════════════════════════════════════════════════
+       HERO — copy override for CX Enterprise
+       ═══════════════════════════════════════════════════════════════ */
+    /* Hub title sits over the dark hero — override the runtime's #000 default. */
+    .hero-hub-title { color: #fff; }
+    .hero-hub-title .ta-line, .hero-hub-title .ta-unit { color: #fff; }
+    .hero-app-id .ta-eyebrow-color { color: var(--s2a-color-blue-900); }
+
+    /* Hub-router cards — per-product gradient backgrounds, no photo. */
+    .hhub-card[data-cx="brand-intelligence"] .hhub-card-bg {
+      background: linear-gradient(160deg, #ffb190 0%, #ffd6c0 60%, #f5e2d7 100%);
+    }
+    .hhub-card[data-cx="cx-coworker"] .hhub-card-bg {
+      background: linear-gradient(160deg, #c5d8f5 0%, #d8e4f3 60%, #e6ecf1 100%);
+    }
+    .hhub-card[data-cx="cx-analytics"] .hhub-card-bg {
+      background: linear-gradient(160deg, #c4e3d8 0%, #d6ecdf 60%, #e3eee4 100%);
+    }
+    /* Let the gradient bg paint through the media slot (override settled grey). */
+    .hero-hub-router.is-settled .hhub-card .hhub-card-media,
+    .hhub-card .hhub-card-media { background: transparent; }
+    /* Body copy + Learn more should stay visible at rest (the canonical
+       hub-router collapses these into a hover-only reveal — we want both
+       always shown for these product cards). */
+    .hhub-card .hhub-card-body {
+      width: auto;
+      max-height: none;
+      opacity: 1;
+      transform: none;
+      color: rgba(0, 0, 0, 0.72);
+    }
+    .hhub-card .hhub-card-copy { transform: none; }
+    .hhub-card .hhub-card-footer { align-items: flex-start; }
+    /* Move title from footer into header — hub-router has the label in
+       header by default, but the current visual treatment shows the title
+       prominently up top. Bump the header label to title-3 size and
+       reserve 2 lines so all 3 cards align regardless of title length. */
+    .hhub-card .hhub-card-label {
+      font-size: 24px; font-weight: 900; line-height: 1.1;
+      letter-spacing: -0.02em;
+      white-space: normal;
+      display: -webkit-box; -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      min-height: calc(24px * 1.1 * 2);  /* always 2 lines tall */
+    }
+    /* "Learn more" pill inside each hub card */
+    .hhub-card-learn {
+      display: inline-flex; align-items: center;
+      height: 36px; padding: 0 18px; margin-top: 14px;
+      border: 1.5px solid #1a1a1a; border-radius: 75px;
+      font-family: var(--font-body); font-weight: 700; font-size: 13px;
+      color: #1a1a1a; text-decoration: none;
+      background: transparent;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+    .hhub-card-learn:hover { background: #1a1a1a; color: #fff; }
+    .hero-app-id img.cx-mark {
+      width: 22px; height: 22px;
+      background: var(--s2a-color-blue-900);
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+
+    /* ═══════════════════════════════════════════════════════════════
+       EDITORIAL — partner highlights (lifted module, copy adapted)
+       ═══════════════════════════════════════════════════════════════ */
+    /* editorial.css already loaded; nothing extra needed. */
+
+    /* ═══════════════════════════════════════════════════════════════
+       ACROBAT-FEATURE-3UP — Business solutions
+       (lifted from bizpro-hub)
+       ═══════════════════════════════════════════════════════════════ */
+    .acrobat-feature {
+      position: relative;
+      background: var(--s2a-color-background-default);
+      padding-block: var(--s2a-spacing-6xl);
+    }
+    .acrobat-feature__header {
+      text-align: center;
+      margin-bottom: var(--s2a-spacing-5xl);
+      padding-inline: var(--s2a-spacing-lg);
+    }
+    .acrobat-feature__eyebrow { margin-bottom: var(--s2a-spacing-md); }
+    .acrobat-feature__title { margin-bottom: var(--s2a-spacing-md); }
+    .acrobat-feature__body {
+      color: var(--s2a-color-content-subtle); max-width: 80ch; margin-inline: auto;
+    }
+    .acrobat-wide { margin-bottom: var(--s2a-spacing-4xl); }
+    .acrobat-wide__img {
+      background: rgba(0,0,0,0.08);
+      border-radius: var(--s2a-border-radius-md);
+      overflow: hidden; aspect-ratio: 1068 / 480; position: relative;
+    }
+    .acrobat-wide__img-fallback {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse at 30% 60%, rgba(59,99,251,0.25), transparent 55%),
+        radial-gradient(ellipse at 75% 40%, rgba(139,104,232,0.30), transparent 60%),
+        linear-gradient(135deg,#0c0820 0%,#1a1240 60%,#3b63fb 120%);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(28px, 3vw, 48px); line-height: 1; letter-spacing: -0.02em;
+      padding: 0 8%; text-align: center;
+    }
+    .acrobat-wide__bottom {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      padding: var(--s2a-spacing-lg) var(--s2a-spacing-lg) 0;
+      gap: var(--s2a-spacing-md);
+    }
+    .acrobat-wide__copy { max-width: 60ch; display: flex; flex-direction: column; gap: var(--s2a-spacing-xs); }
+    .acrobat-wide__cta { display: flex; align-items: center; flex-shrink: 0; }
+    .acrobat-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s2a-spacing-xs); }
+    @media (max-width: 767px) { .acrobat-cards { grid-template-columns: 1fr; } }
+    .acrobat-card { display: flex; flex-direction: column; }
+    .acrobat-card__asset {
+      aspect-ratio: 488 / 366;
+      background: #eceae7;
+      border-radius: var(--s2a-border-radius-md);
+      overflow: hidden; position: relative; flex-shrink: 0;
+    }
+    .acrobat-card__photo {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+    .acrobat-card__asset .ac-fallback { display: none; }
+    .acrobat-card__copy {
+      display: flex; flex-direction: column;
+      gap: var(--s2a-spacing-lg);
+      padding: var(--s2a-spacing-lg) var(--s2a-spacing-lg) 0;
+    }
+    .acrobat-card__text { display: flex; flex-direction: column; gap: var(--s2a-spacing-xs); }
+    .acrobat-card__title { font-family: var(--font-display); font-weight: 900; font-size: 24px; line-height: 24px; letter-spacing: -0.48px; }
+    .acrobat-card__body { font-family: var(--font-body); font-weight: 400; font-size: 16px; line-height: 20px; color: rgba(0,0,0,0.64); }
+    .acrobat-cta {
+      display: inline-flex; align-items: center; gap: var(--s2a-spacing-xs);
+      font-family: var(--font-body); font-weight: 700; font-size: 14px;
+      color: #000; white-space: nowrap;
+    }
+    .acrobat-cta:hover { opacity: 0.7; }
+    .acrobat-cta svg { width: 6px; height: 12px; }
+
+    /* ═══════════════════════════════════════════════════════════════
+       ANNOUNCE CAROUSEL — paged 3-up text-card carousel.
+       Distinct from stories-carousel (large photo cards, mouse-pan)
+       and tutorial-carousel (single-slide infinite). Live page mechanic:
+       text-only cards, 3 visible at a time, prev/next arrow controls.
+       Candidate for promotion to a documented module:
+       modules/announce-carousel.md.
+       ═══════════════════════════════════════════════════════════════ */
+    .announce-carousel {
+      background: var(--s2a-color-background-subtle);
+      padding: 96px var(--grid-margin-md, 8.333vw) 96px;
+    }
+    @media (max-width: 1023px) { .announce-carousel { padding-inline: var(--grid-margin-sm); } }
+    .announce-carousel__header {
+      max-width: 1920px; margin: 0 auto 40px;
+      text-align: center;
+    }
+    .announce-carousel__title {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(28px, 3.5vw, 48px); line-height: 1.0; letter-spacing: -0.03em;
+      color: #1a1a1a;
+    }
+    .announce-carousel__viewport {
+      max-width: 1920px; margin: 0 auto;
+      overflow: hidden;
+    }
+    .announce-carousel__track {
+      display: flex; gap: 8px;
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      will-change: transform;
+    }
+    .announce-card {
+      flex: 0 0 calc((100% - 16px) / 3);
+      background: #fff;
+      border-radius: var(--s2a-border-radius-md);
+      padding: var(--s2a-spacing-lg);
+      display: flex; flex-direction: column; gap: 12px;
+      min-height: 200px;
+    }
+    @media (max-width: 1023px) { .announce-card { flex: 0 0 calc((100% - 8px) / 2); } }
+    @media (max-width: 767px)  { .announce-card { flex: 0 0 100%; } }
+    .announce-card__eyebrow {
+      font-family: var(--font-body); font-weight: 700;
+      font-size: 11px; letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(0,0,0,0.55);
+    }
+    .announce-card__title {
+      font-family: var(--font-body); font-weight: 700;
+      font-size: 16px; line-height: 1.3;
+      color: #1a1a1a;
+      flex: 1;
+    }
+    .announce-card__cta {
+      display: inline-flex; align-items: center; height: 32px;
+      padding: 0 14px;
+      background: transparent; color: #1a1a1a;
+      border: 1.5px solid #1a1a1a;
+      border-radius: 999px;
+      font-family: var(--font-body); font-weight: 700; font-size: 12px;
+      text-decoration: none; white-space: nowrap;
+      width: fit-content;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+    .announce-card__cta:hover { background: #1a1a1a; color: #fff; }
+    .announce-carousel__controls {
+      display: flex; gap: 8px; justify-content: center;
+      margin-top: 40px;
+    }
+    .announce-carousel__arrow {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(0,0,0,0.18);
+      background: #fff;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: #1a1a1a;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+    .announce-carousel__arrow:hover { background: #1a1a1a; border-color: #1a1a1a; color: #fff; }
+    .announce-carousel__arrow:disabled {
+      opacity: 0.3; cursor: not-allowed;
+      background: #fff; border-color: rgba(0,0,0,0.12); color: #1a1a1a;
+    }
+    .announce-carousel__arrow svg { width: 14px; height: 14px; }
+
+    /* ═══════════════════════════════════════════════════════════════
+       FORD TESTIMONIAL — single white quote section
+       ═══════════════════════════════════════════════════════════════ */
+    .testimonial {
+      background: #fff;
+      padding-block: var(--s2a-spacing-6xl);
+    }
+    .testimonial__grid {
+      display: grid; gap: 48px;
+      grid-template-columns: 1fr;
+      align-items: center;
+    }
+    @media (min-width: 1024px) {
+      .testimonial__grid { grid-template-columns: 1fr 1fr; gap: 80px; }
+    }
+    .testimonial__logo {
+      display: inline-block; padding: 4px 16px;
+      border: 1.5px solid #003478; border-radius: 999px;
+      color: #003478; font-family: 'Times New Roman', Georgia, serif;
+      font-style: italic; font-weight: 700; font-size: 22px;
+      margin-bottom: 32px;
+    }
+    .testimonial__quote {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(28px, 3vw, 40px); line-height: 1.05;
+      letter-spacing: -0.02em; color: #1a1a1a;
+      margin-bottom: 24px;
+    }
+    .testimonial__attrib {
+      font-family: var(--font-body); font-weight: 400;
+      font-size: 16px; color: rgba(0,0,0,0.6);
+      margin-bottom: 32px;
+    }
+    /* Testimonial media — reframed as a content-review UI (per
+       PIPELINE M4 / S24): pale-blue card, white inset frame, with
+       overlays that suggest "approved asset for Q3 launch":
+       Approved-assets pill, From-the-Road callout, reaction count,
+       sticky-note, asset-thumbnail strip. Lifted from the original
+       index.html where this pattern was first authored. */
+    .testimonial__media {
+      aspect-ratio: 4 / 3;
+      border-radius: 16px;
+      background: #C9E9FF;
+      padding: 32px;
+      position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .testimonial__frame {
+      width: 100%; height: 78%;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,0.55) 0%, transparent 30%, transparent 60%, rgba(0,0,0,0.45) 100%),
+        linear-gradient(160deg, #1f2a3d 0%, #3b3024 50%, #6b4a3a 100%);
+      border-radius: 12px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+      position: relative;
+      overflow: hidden;
+    }
+    .testimonial__frame::before {
+      /* "From the Road" headline approximation — top of the framed image */
+      content: 'From the Road';
+      position: absolute; top: 14px; left: 18px;
+      font-family: var(--font-display); font-weight: 900;
+      font-size: 13px; color: rgba(255,255,255,0.92);
+      letter-spacing: -0.01em;
+    }
+    .testimonial__frame::after {
+      /* horizon line / road suggestion */
+      content: '';
+      position: absolute; bottom: 24%; left: 0; right: 0; height: 2px;
+      background: rgba(255,255,255,0.18);
+    }
+    .testimonial__tag {
+      position: absolute; top: 24px; left: 24px;
+      background: #fff; color: #1a1a1a;
+      font-family: var(--font-body); font-weight: 700; font-size: 11px;
+      padding: 6px 12px 6px 26px; border-radius: 999px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+      z-index: 4;
+    }
+    .testimonial__tag::before {
+      content: ''; position: absolute;
+      left: 8px; top: 50%; transform: translateY(-50%);
+      width: 10px; height: 10px; border-radius: 50%;
+      background: #2F7D3A;
+    }
+    .testimonial__tag::after {
+      content: ''; position: absolute;
+      left: 11px; top: 50%; transform: translateY(-65%) rotate(-45deg);
+      width: 4px; height: 2px;
+      border-bottom: 1.5px solid #fff;
+      border-left: 1.5px solid #fff;
+    }
+    .testimonial__pill {
+      position: absolute; top: 24px; right: 24px;
+      background: #fff; color: #1a1a1a;
+      font-family: var(--font-display); font-weight: 900;
+      font-size: 12px; letter-spacing: -0.01em;
+      padding: 8px 14px; border-radius: 999px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+      z-index: 4;
+    }
+    .testimonial__react {
+      position: absolute; top: 30%; left: 12%;
+      background: #fff; border-radius: 999px;
+      padding: 6px 12px;
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: var(--font-body); font-weight: 700; font-size: 12px;
+      color: #1a1a1a;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+      z-index: 4;
+    }
+    .testimonial__react::before {
+      content: ''; width: 14px; height: 14px;
+      background: #FF3A00;
+      mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 14s-5-3-5-7a3 3 0 0 1 5-2 3 3 0 0 1 5 2c0 4-5 7-5 7Z' fill='black'/%3E%3C/svg%3E") no-repeat center / contain;
+      -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 14s-5-3-5-7a3 3 0 0 1 5-2 3 3 0 0 1 5 2c0 4-5 7-5 7Z' fill='black'/%3E%3C/svg%3E") no-repeat center / contain;
+    }
+    .testimonial__note {
+      position: absolute; bottom: 20%; right: 8%;
+      width: 88px; height: 88px;
+      background: #FFE066;
+      transform: rotate(6deg);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      padding: 10px;
+      font-family: var(--font-body);
+      font-size: 9px; font-weight: 700;
+      color: #5a4500;
+      line-height: 1.25;
+      z-index: 4;
+    }
+    .testimonial__strip {
+      position: absolute; bottom: 14%; left: 50%;
+      transform: translateX(-50%);
+      display: flex; gap: 4px;
+      padding: 6px;
+      background: rgba(255,255,255,0.95);
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+      z-index: 4;
+    }
+    .testimonial__strip span {
+      display: block; width: 24px; height: 18px;
+      border-radius: 3px;
+    }
+    .testimonial__strip span:nth-child(1) { background: linear-gradient(135deg, #C13A2B, #6e1d10); border: 1.5px solid #1a1a1a; }
+    .testimonial__strip span:nth-child(2) { background: linear-gradient(135deg, #2C68C2, #143a78); }
+    .testimonial__strip span:nth-child(3) { background: linear-gradient(135deg, #2F7D3A, #1c4d22); }
+    .testimonial__strip span:nth-child(4) { background: linear-gradient(135deg, #FFE066, #c4a800); }
+    .testimonial__sticky {
+      position: absolute; right: 24px; top: 24px;
+      padding: 14px 16px; border-radius: 4px;
+      background: #ffe96a; color: #1a1a1a;
+      font-family: var(--font-body); font-weight: 700; font-size: 13px;
+      line-height: 1.25; max-width: 200px;
+      transform: rotate(4deg);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       BRANDS LOGO STRIP — minimal section
+       ═══════════════════════════════════════════════════════════════ */
+    .brands-strip {
+      background: #fff;
+      padding-block: var(--s2a-spacing-5xl);
+      text-align: center;
+    }
+    .brands-strip__title {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(28px, 3vw, 40px); line-height: 1; letter-spacing: -0.02em;
+      margin-bottom: 48px;
+      max-width: 24ch; margin-inline: auto;
+    }
+    .brands-strip__row {
+      display: flex; flex-wrap: wrap; gap: 48px;
+      align-items: center; justify-content: center;
+      color: #1a1a1a; opacity: 0.75;
+      max-width: 1200px; margin-inline: auto;
+    }
+    .brands-strip__logo {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: 18px; letter-spacing: -0.02em;
+      white-space: nowrap;
+    }
+    .brands-strip__foot { margin-top: 40px; text-align: center; }
+
+    /* ═══════════════════════════════════════════════════════════════
+       SEARCH SECTION — Brand Concierge (black surface)
+       ═══════════════════════════════════════════════════════════════ */
+    .search-section {
+      position: relative;
+      background: #000;
+      padding: var(--s2a-layout-lg) var(--grid-margin-sm);
+      text-align: center;
+    }
+    @media (min-width: 768px) { .search-section { padding-inline: var(--s2a-layout-lg); } }
+    .search-section__inner {
+      display: flex; flex-direction: column;
+      align-items: center; gap: var(--s2a-spacing-lg);
+    }
+    .search-section__copy {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 8px;
+      padding-bottom: var(--s2a-spacing-xl);
+      width: 100%;
+    }
+    .search-section__title { color: #fff; margin: 0; }
+    .search-section__body {
+      font-size: 20px; line-height: 1.3; letter-spacing: -0.4px;
+      color: #fff; margin: 0;
+      max-width: 60ch;
+    }
+    .search-bar {
+      width: 100%; max-width: 768px; height: 56px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 999px;
+      border: 2px solid rgba(255,255,255,0.06);
+      display: flex; align-items: center; overflow: hidden;
+    }
+    .search-bar__icon-left {
+      flex-shrink: 0; padding-left: 24px;
+      display: flex; align-items: center;
+    }
+    .search-bar__icon-left svg { width: 16px; height: 16px; color: rgba(255,255,255,0.6); }
+    .search-bar__input {
+      flex: 1; background: transparent; border: none; outline: none;
+      font-family: var(--font-body); font-size: 16px;
+      color: #fff; padding: 16px;
+    }
+    .search-bar__input::placeholder { color: rgba(255,255,255,0.6); }
+    .search-bar__btn {
+      flex-shrink: 0; width: 36px; height: 36px;
+      border-radius: 8px; border: none;
+      background: rgba(255,255,255,0.15); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      margin-right: 12px;
+    }
+    .search-bar__btn svg { width: 18px; height: 18px; color: #fff; }
+    .search-section__chips {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      justify-content: center; max-width: 768px;
+      margin-top: var(--s2a-spacing-md);
+    }
+    .search-section__chip {
+      padding: 8px 16px;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 999px;
+      color: rgba(255,255,255,0.85);
+      font-family: var(--font-body); font-size: 13px; font-weight: 400;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .search-section__chip:hover { background: rgba(255,255,255,0.06); }
+    .search-section__disclaimer {
+      font-family: var(--font-body);
+      font-size: 12px; line-height: 1.5;
+      color: rgba(255,255,255,0.55);
+      margin-top: var(--s2a-spacing-md);
+      max-width: 720px;
+    }
+    .search-section__disclaimer a { color: rgba(255,255,255,0.7); text-decoration: underline; }
+
+    /* ═══════════════════════════════════════════════════════════════
+       PRODUCT GRID — Explore all Adobe for Business products (black, 9-tile)
+       Tabs + tab-pane utilities below the section title.
+       ═══════════════════════════════════════════════════════════════ */
+    .product-section__tabs {
+      display: inline-flex;
+      flex-wrap: wrap; gap: 4px;
+      margin: 0 auto var(--s2a-spacing-xl);
+      background: rgba(255,255,255,0.06);
+      padding: 4px; border-radius: 999px;
+    }
+    .product-section__tab {
+      padding: 8px 16px;
+      border: none; background: transparent;
+      color: rgba(255,255,255,0.7);
+      font-family: var(--font-body); font-size: 14px; font-weight: 700;
+      border-radius: 999px;
+      cursor: pointer; transition: background 0.2s, color 0.2s;
+      white-space: nowrap;
+    }
+    .product-section__tab:hover { color: #fff; }
+    .product-section__tab.is-active {
+      background: #fff; color: #000;
+    }
+    /* Centered scaffolding (tabs + pane) wraps itself — never the
+       sibling product-grid, so the module's grid still spans the
+       full .container width. */
+    .product-section__scaffold {
+      display: flex; flex-direction: column; align-items: center;
+      margin-bottom: var(--s2a-spacing-2xl);
+    }
+    .product-section__pane {
+      max-width: 700px; text-align: center;
+      margin-bottom: var(--s2a-spacing-md);
+    }
+    .product-section__pane-title { color: #fff; margin-bottom: 12px; }
+    .product-section__pane-body { color: rgba(255,255,255,0.7); font-size: 16px; line-height: 1.4; }
+    .product-section__list-heading {
+      font-family: var(--font-body); font-weight: 700; color: rgba(255,255,255,0.55);
+      font-size: 14px; letter-spacing: 0.04em; text-transform: uppercase;
+      margin: var(--s2a-spacing-md) 0;
+    }
+    .product-section__foot { margin-top: var(--s2a-spacing-2xl); text-align: center; }
+
+    .product-section {
+      position: relative; z-index: 2;
+      background: #000;
+      padding-block: 96px;
+    }
+    .product-section__header {
+      text-align: center;
+      color: #fff;
+      max-width: 800px; margin: 0 auto 48px;
+    }
+    .product-section__title { color: #fff; margin-bottom: 16px; }
+    .product-section__sub { color: rgba(255,255,255,0.7); font-size: 16px; line-height: 1.4; }
+    .product-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;
+    }
+    @media (min-width: 768px) { .product-grid { grid-template-columns: repeat(3, 1fr); } }
+    .explore-card { position: relative; }
+    .explore-card-container {
+      position: relative; border-radius: 12px;
+      overflow: hidden; aspect-ratio: 4 / 3;
+      background: rgba(255,255,255,0.08);
+    }
+    .explore-card-link-container {
+      position: absolute; inset: 0; z-index: 2;
+      display: flex; flex-direction: column;
+      padding: 24px; text-decoration: none;
+    }
+    .explore-card-link-container::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.18) 55%, transparent 100%);
+      opacity: 0; transition: opacity 0.4s ease; pointer-events: none;
+    }
+    .explore-card-container:hover .explore-card-link-container::before { opacity: 1; }
+    .explore-card-background {
+      position: absolute; inset: 0; z-index: 1;
+    }
+    .explore-card-background img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      opacity: 0; transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    .explore-card-container:hover .explore-card-background img {
+      opacity: 1; transform: scale(1.04);
+    }
+    .explore-card-content {
+      display: flex; flex-direction: column; justify-content: space-between;
+      height: 100%; position: relative; z-index: 1;
+    }
+    .explore-card-text { display: flex; flex-direction: column; gap: 8px; }
+    .explore-card-mark {
+      width: 32px; height: 32px; border-radius: 6px;
+      background: var(--s2a-color-blue-900);
+      color: #fff; font-family: var(--font-display); font-weight: 900;
+      font-size: 13px; letter-spacing: -0.02em;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .explore-card-mark[data-mark="bi"] { background: #b25cff; }
+    .explore-card-mark[data-mark="ao"] { background: #00a3ad; }
+    .explore-card-mark[data-mark="lo"] { background: #f15a29; }
+    .explore-card-mark[data-mark="bc"] { background: #6e3aff; }
+    .explore-card-mark[data-mark="as"] { background: #0073e6; }
+    .explore-card-mark[data-mark="ea"] { background: #d72b8a; }
+    .explore-card-content .title-4 { color: #fff; }
+    .explore-card-content .body-md { color: rgba(255,255,255,0.7); font-size: 16px; line-height: 1.4; max-width: 32ch; }
+    .explore-card-badge {
+      display: inline-flex; align-items: center; height: 20px;
+      padding: 0 8px; border-radius: 4px;
+      background: var(--s2a-color-blue-900); color: #fff;
+      font-family: var(--font-body); font-size: 11px; font-weight: 700;
+      letter-spacing: 0.04em; margin-left: 8px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       STUDIO BANNER — garage-door scroll-driven (final CTA)
+       ═══════════════════════════════════════════════════════════════ */
+    .studio-banner {
+      --gd-grow-from: -50vh;
+      --gd-reveal-from: 20vh;
+      position: relative;
+      background: #000;
+      height: min(100vh, 720px);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: flex-start;
+      overflow: clip; isolation: isolate;
+      transform-origin: top center;
+      animation: garage-door-grow ease-out both;
+      animation-timeline: view(block);
+      animation-range: entry 0% cover 40%;
+    }
+    @media (min-width: 1280px) {
+      .studio-banner {
+        --gd-grow-from: -110vh;
+        --gd-reveal-from: 50vh;
+        animation-range: entry 0% cover 50%;
+      }
+    }
+    .studio-banner .section-background {
+      position: absolute; inset: 0; z-index: -1;
+      animation: garage-door-bg-scale ease-out both;
+      animation-timeline: view(block);
+      animation-range: entry 0% cover 100%;
+      background:
+        radial-gradient(ellipse at 30% 50%, rgba(255,87,34,0.25), transparent 55%),
+        radial-gradient(ellipse at 70% 60%, rgba(59,99,251,0.30), transparent 55%),
+        linear-gradient(135deg,#0c0820 0%,#1a1240 60%,#0c0820 120%);
+    }
+    .studio-banner__overlay {
+      position: absolute; inset: 0; z-index: 0; pointer-events: none;
+      background: linear-gradient(180deg, rgba(0,0,0,0.0) 0%, rgba(0,0,0,0) 50%, #000 100%);
+    }
+    .studio-banner__content {
+      position: relative; z-index: 1; text-align: center; color: #fff;
+      padding: var(--s2a-spacing-6xl) var(--s2a-spacing-xs);
+      width: 100%;
+      animation: garage-door-reveal ease-out both;
+      animation-timeline: view(block);
+      animation-range: cover -10% cover 100%;
+    }
+    @media (min-width: 768px)  { .studio-banner__content { max-width: 708px; } }
+    @media (min-width: 1441px) { .studio-banner__content { max-width: 1064px; } }
+    .studio-banner__title { color: #fff; margin-bottom: 16px; }
+    .studio-banner__body {
+      font-size: 16px; line-height: 1.4;
+      color: rgba(255,255,255,0.85);
+      max-width: 60ch; margin: 0 auto 24px;
+    }
+    .studio-banner__ctas { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+
+    /* Home final-CTA (portrait + overlays variant)
+       Lifted intent from the original index.html bottom-CTA. Two-
+       column layout: headline + Get-started on the left, portrait
+       region with brand-score overlay + red selection frame +
+       create-customer-journey pill on the right. */
+    .home-final-cta {
+      position: relative;
+      background: #000;
+      padding-block: var(--s2a-spacing-6xl);
+    }
+    .home-final-cta__grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+      max-width: 1280px; margin: 0 auto;
+      padding-inline: var(--grid-margin-md, 8.333vw);
+    }
+    @media (max-width: 1023px) {
+      .home-final-cta__grid { grid-template-columns: 1fr; gap: 32px; padding-inline: var(--grid-margin-sm); }
+    }
+    .home-final-cta__title {
+      color: #fff;
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(32px, 3.5vw, 48px); line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+      max-width: 18ch;
+    }
+    .home-final-cta__media {
+      position: relative;
+      aspect-ratio: 4 / 5;
+      max-width: 480px; width: 100%;
+      justify-self: end;
+      border-radius: 16px;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse 50% 60% at 55% 40%, rgba(255,210,180,0.55), transparent 60%),
+        linear-gradient(160deg,#5a1f12 0%,#9a3422 50%,#c14a30 100%);
+    }
+    @media (max-width: 1023px) { .home-final-cta__media { justify-self: center; } }
+    .home-final-cta__frame {
+      position: absolute; inset: 8%;
+      border: 6px solid #FF3A00;
+      border-radius: 8px;
+      pointer-events: none;
+    }
+    .home-final-cta__stat {
+      position: absolute;
+      top: 24px; left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.85);
+      color: #fff; backdrop-filter: blur(12px);
+      border-radius: 16px;
+      padding: 16px 20px;
+      display: flex; align-items: center; gap: 12px;
+      font-family: var(--font-body);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+    .home-final-cta__stat::before {
+      content: ''; width: 32px; height: 32px;
+      border-radius: 50%;
+      background: conic-gradient(#FF3A00 0deg 280deg, rgba(255,255,255,0.2) 280deg 360deg);
+    }
+    .home-final-cta__stat-eyebrow {
+      font-family: var(--font-body); font-weight: 700;
+      font-size: 10px; letter-spacing: 0.1em;
+      text-transform: uppercase; color: rgba(255,255,255,0.85);
+      display: block; margin-bottom: 4px;
+    }
+    .home-final-cta__stat-num {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: 22px; line-height: 1; color: #fff;
+    }
+    .home-final-cta__stat-label { font-size: 11px; color: rgba(255,255,255,0.65); }
+    .home-final-cta__action {
+      position: absolute;
+      bottom: 40px; left: 50%;
+      transform: translateX(-50%);
+      background: #FF3A00; color: #fff;
+      border-radius: 999px;
+      padding: 12px 22px;
+      font-family: var(--font-body); font-weight: 700; font-size: 13px;
+      box-shadow: 0 8px 24px rgba(255,58,0,0.45);
+      display: inline-flex; align-items: center; gap: 8px;
+      white-space: nowrap;
+    }
+    .home-final-cta__action::before {
+      content: ''; width: 14px; height: 14px;
+      background: #fff;
+      mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 1v14M1 8h14' stroke='black' stroke-width='2' stroke-linecap='round' fill='none'/%3E%3C/svg%3E") no-repeat center / contain;
+      -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 1v14M1 8h14' stroke='black' stroke-width='2' stroke-linecap='round' fill='none'/%3E%3C/svg%3E") no-repeat center / contain;
+    }
+
+    @keyframes garage-door-grow {
+      from { transform: translateY(var(--gd-grow-from)); }
+      to   { transform: translateY(0); }
+    }
+    @keyframes garage-door-reveal {
+      from { transform: translateY(var(--gd-reveal-from)); }
+    }
+    @keyframes garage-door-bg-scale {
+      from { transform: scale(1); }
+      to   { transform: scale(1.1); }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       FOOTER — multi-column black + wordmark wipe
+       ═══════════════════════════════════════════════════════════════ */
+    .footer { position: relative; background: #000; }
+    .footer__main {
+      display: flex; flex-direction: column;
+      gap: var(--s2a-spacing-2xl);
+      padding: 64px var(--grid-margin-sm) 0;
+    }
+    @media (min-width: 768px) { .footer__main { padding-inline: var(--s2a-layout-lg); } }
+    .footer__cols {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 32px 20px;
+    }
+    @media (min-width: 900px) {
+      .footer__cols { grid-template-columns: repeat(6, 1fr); gap: 0 var(--s2a-spacing-xs); }
+    }
+    .footer__col { display: flex; flex-direction: column; gap: var(--s2a-spacing-lg); }
+    .footer__col-title {
+      font-family: var(--font-body); font-weight: 700; color: #fff;
+      font-size: 16px; line-height: 20px; letter-spacing: -0.2px;
+    }
+    .footer__col ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--s2a-spacing-xs); }
+    .footer__col ul li a {
+      font-family: var(--font-body); font-size: 16px; font-weight: 400;
+      color: rgba(255,255,255,0.64); line-height: 20px; letter-spacing: 0.16px;
+    }
+    .footer__col ul li a:hover { color: rgba(255,255,255,0.9); }
+    .footer__bottom {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+      padding-block: 32px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      margin-top: 48px;
+    }
+    .footer__legal { display: flex; align-items: center; gap: 32px; flex-wrap: wrap; }
+    .footer__legal-item {
+      font-family: var(--font-body);
+      font-size: 12px; font-weight: 700;
+      color: rgba(255,255,255,0.64);
+      letter-spacing: 0.04em;
+    }
+    .footer__legal-item a { color: rgba(255,255,255,0.64); }
+    .footer__legal-item a:hover { color: rgba(255,255,255,0.9); }
+    .footer__social { display: flex; gap: 16px; align-items: center; }
+    .footer__social-icon {
+      width: 24px; height: 24px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,0.1); border-radius: 6px;
+      color: rgba(255,255,255,0.7);
+      font-family: var(--font-body); font-size: 11px; font-weight: 700;
+    }
+    .footer__wordmark {
+      width: 100%; aspect-ratio: 1440 / 338;
+      position: relative; overflow: hidden; margin-top: 40px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .footer__wordmark svg {
+      width: 92%; height: auto;
+      color: #fff;
+      clip-path: inset(60% 0 0 0);
+      transition: clip-path 600ms cubic-bezier(0.42,0,0,1);
+    }
+    .footer__wordmark.is-revealed svg { clip-path: inset(0% 0 0 0); }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      .anim-enter { opacity: 1 !important; transform: none !important; }
+      .footer__wordmark svg { clip-path: inset(0% 0 0 0) !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       GNAV — module from gnav.md, sub-brand "for Business" injected.
+       Sits at top: 0 (module default — no offset override).
+       ═══════════════════════════════════════════════════════════════ -->
+  <header id="gnav">
+    <div class="gnav-inner">
+      <div class="gnav-left">
+        <img src="runtime/assets/adobe-logo.svg"       alt="Adobe" class="gnav-logo">
+        <img src="runtime/assets/adobe-logo-black.svg" alt="Adobe" class="gnav-logo-black">
+        <span class="gnav-subbrand">for Business</span>
+        <div class="gnav-logo-sm-wrap" aria-hidden="true">
+          <img src="runtime/assets/adobe-logo-sm.svg"       alt="" class="gnav-logo-sm">
+          <img src="runtime/assets/adobe-logo-sm-black.svg" alt="" class="gnav-logo-sm-black">
+        </div>
+        <button id="mobileNavToggle" class="gnav-hamburger" aria-label="Open menu" aria-expanded="false">
+          <span></span><span></span>
+        </button>
+        <nav class="gnav-links">
+          <a href="#" class="gnav-link" id="gnavProducts">Products <span class="gnav-chevron"><svg width="8" height="5" viewBox="0 0 8 5" fill="none" aria-hidden="true"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a href="#" class="gnav-link" id="gnavUseCases">AI <span class="gnav-chevron"><svg width="8" height="5" viewBox="0 0 8 5" fill="none" aria-hidden="true"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a href="#" class="gnav-link" id="gnavSolutions">Industries <span class="gnav-chevron"><svg width="8" height="5" viewBox="0 0 8 5" fill="none" aria-hidden="true"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a href="#" class="gnav-link" id="gnavLearnSupport">Roles <span class="gnav-chevron"><svg width="8" height="5" viewBox="0 0 8 5" fill="none" aria-hidden="true"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a href="#" class="gnav-link">Resources</a>
+          <a href="#" class="gnav-link">Support</a>
+        </nav>
+      </div>
+      <div class="gnav-right">
+        <button class="gnav-apps" aria-label="Apps">
+          <img src="runtime/assets/icons/S2_Icon_AppsAll_20_N.svg" alt="">
+        </button>
+        <a href="#" class="gnav-signin">Sign In</a>
+        <a href="#" class="gnav-cta">Get started</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       PAGE CONTENT — smooth-scroll wrapper (Lenis)
+       ═══════════════════════════════════════════════════════════════ -->
+  <div id="smooth-wrapper">
+  <div id="smooth-content">
+  <main>
+
+    <!-- ══════════════════════════════════════
+         HERO ANNOUNCE — Adobe + Semrush, full-width band ABOVE the
+         main hero copy. Sibling-above to the hero-pin-spacer so the
+         mosaic-convergence module's choreography is untouched.
+         content_json.announcement_banner
+         ══════════════════════════════════════ -->
+    <section class="hero-announce">
+      <div class="hero-announce__panel">
+        <img class="hero-announce__lockup"
+             src="assets/lockups/adobe-semrush.svg"
+             alt="Adobe + Semrush"
+             width="290" height="22">
+
+        <div class="hero-announce__copy">
+          <p class="hero-announce__head">Adobe completes the acquisition of Semrush.</p>
+          <p class="hero-announce__sub">Access the world's most powerful data for AI search optimization.</p>
+        </div>
+        <div class="hero-announce__ctas">
+          <a href="#" class="hero-announce__cta hero-announce__cta--primary">Learn about the product</a>
+          <a href="#" class="hero-announce__cta">Read the announcement</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         HERO — mosaic-convergence + hub-router
+         content_json.sections.hero
+         ══════════════════════════════════════ -->
+    <div class="hero-pin-spacer">
+      <section id="hero">
+
+        <div class="hero-text">
+          <div class="hero-app-id">
+            <span class="cx-mark" aria-hidden="true"></span>
+            <span class="t-eyebrow">ADOBE FOR BUSINESS</span>
+          </div>
+          <h1 class="t-title-1">Customer experience orchestration starts with Adobe CX Enterprise.</h1>
+          <p class="t-body-m">Deliver personalized, on-brand content and experiences across the entire customer lifecycle with Adobe's end-to-end agentic system for CXO.</p>
+          <div class="hero-ctas">
+            <a href="#" class="btn btn--solid-white">Learn more</a>
+          </div>
+        </div>
+
+        <!-- Desktop mosaic: 5 cols × 2 cards (10 images) -->
+        <div class="hero-image-grid" aria-hidden="true">
+          <div class="grid-col" data-col="1">
+            <div class="grid-card" data-grid-slot="1"><img src="runtime/assets/images/hero/col-1_img-01.png" alt="" width="584" height="788"></div>
+            <div class="grid-card" data-grid-row="2"><img src="runtime/assets/images/hero/col-1_img-02.png" alt="" width="584" height="584"></div>
+          </div>
+          <div class="grid-col" data-col="2">
+            <div class="grid-card" data-grid-slot="2"><img src="runtime/assets/images/hero/col-2_img-01.png" alt="" width="584" height="584"></div>
+            <div class="grid-card" data-grid-row="2"><img src="runtime/assets/images/hero/col-2_img-02.png" alt="" width="584" height="584"></div>
+          </div>
+          <div class="grid-col" data-col="3">
+            <div class="grid-card" data-grid-slot="3"><img src="runtime/assets/images/hero/col-3_img-01.png" alt="" width="584" height="584"></div>
+            <div class="grid-card" data-grid-row="2"><img src="runtime/assets/images/hero/col-3_img-02.png" alt="" width="584" height="788"></div>
+          </div>
+          <div class="grid-col" data-col="4">
+            <div class="grid-card" data-grid-slot="4"><img src="runtime/assets/images/hero/col-4_img-01.png" alt="" width="584" height="584"></div>
+            <div class="grid-card" data-grid-row="2"><img src="runtime/assets/images/hero/col-4_img-02.png" alt="" width="584" height="788"></div>
+          </div>
+          <div class="grid-col" data-col="5">
+            <div class="grid-card"><img src="runtime/assets/images/hero/col-5_img-01.png" alt="" width="584" height="584"></div>
+            <div class="grid-card" data-grid-slot="5" data-grid-row="2"><img src="runtime/assets/images/hero/col-5_img-02.png" alt="" width="584" height="584"></div>
+          </div>
+        </div>
+
+        <!-- Mobile-only fixed-width grid -->
+        <div class="hero-mobile-grid" aria-hidden="true">
+          <div class="hmg-col hmg-col--outer-left">
+            <div class="hmg-card"><img src="runtime/assets/images/hero/col-1_img-01.png" alt="" width="584" height="788"></div>
+            <div class="hmg-card"><img src="runtime/assets/images/hero/col-1_img-02.png" alt="" width="584" height="584"></div>
+          </div>
+          <div class="hmg-col hmg-col--left">
+            <div class="hmg-card"><img src="runtime/assets/images/hero/col-2_img-01.png" alt="" width="584" height="584"></div>
+            <div class="hmg-card"><img src="runtime/assets/images/hero/col-2_img-02.png" alt="" width="584" height="584"></div>
+          </div>
+          <div class="hmg-col hmg-col--center">
+            <div class="hmg-card"><img src="runtime/assets/images/hero/col-3_img-01.png" alt="" width="584" height="584"></div>
+            <div class="hmg-slot--sales"></div>
+          </div>
+          <div class="hmg-col hmg-col--right">
+            <div class="hmg-card"><img src="runtime/assets/images/hero/col-4_img-01.png" alt="" width="584" height="584"></div>
+            <div class="hmg-card"><img src="runtime/assets/images/hero/col-4_img-02.png" alt="" width="584" height="788"></div>
+          </div>
+          <div class="hmg-col hmg-col--outer-right">
+            <div class="hmg-card"><img src="runtime/assets/images/hero/col-5_img-01.png" alt="" width="584" height="584"></div>
+            <div class="hmg-card"><img src="runtime/assets/images/hero/col-5_img-02.png" alt="" width="584" height="584"></div>
+          </div>
+        </div>
+
+        <!-- Hub-router — 3 cards from content_json.sections.hero.feature_cards.
+             Each card carries only the JSON's title + description + CTA. -->
+        <div class="hero-hub-router" aria-hidden="true">
+          <div class="hhub-track">
+
+            <div class="hhub-card" data-index="0" data-cx="brand-intelligence">
+              <div class="hhub-card-header">
+                <span class="hhub-card-label">Adobe Brand Intelligence</span>
+              </div>
+              <div class="hhub-card-media">
+                <img class="hhub-card-img" src="assets/gen/hub-brand-intelligence.jpeg" alt="" width="1200" height="900">
+              </div>
+              <div class="hhub-card-footer">
+                <div class="hhub-card-copy">
+                  <p class="hhub-card-body">Create content with a continuously learning, agentic system that understands your full brand identity.</p>
+                  <a href="#" class="hhub-card-learn">Learn more</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="hhub-card" data-index="1" data-cx="cx-coworker">
+              <div class="hhub-card-header">
+                <span class="hhub-card-label">Adobe CX Enterprise Coworker</span>
+              </div>
+              <div class="hhub-card-media">
+                <img class="hhub-card-img" src="assets/gen/hub-cx-coworker.jpeg" alt="" width="1200" height="900">
+              </div>
+              <div class="hhub-card-footer">
+                <div class="hhub-card-copy">
+                  <p class="hhub-card-body">Execute complex, cross-system workflows using an AI agent that understands your business context.</p>
+                  <a href="#" class="hhub-card-learn">Learn more</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="hhub-card" data-index="2" data-cx="cx-analytics">
+              <div class="hhub-card-header">
+                <span class="hhub-card-label">Adobe CX Analytics</span>
+              </div>
+              <div class="hhub-card-media">
+                <img class="hhub-card-img" src="assets/gen/hub-cx-analytics.jpeg" alt="" width="1200" height="900">
+              </div>
+              <div class="hhub-card-footer">
+                <div class="hhub-card-copy">
+                  <p class="hhub-card-body">Bring your customer experience and enterprise data together, delivering fast insights and activation at scale.</p>
+                  <a href="#" class="hhub-card-learn">Learn more</a>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </section>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         ACROBAT-FEATURE-3UP — Business solutions
+         (eyebrow + Title 2 + body, then 3 feature cards.
+          Content_json doesn't define a wide-card slot — module's
+          .acrobat-wide is intentionally omitted on this page.)
+         content_json.sections.business_solutions
+         ══════════════════════════════════════ -->
+    <section class="acrobat-feature">
+      <div class="container">
+
+        <div class="acrobat-feature__header anim-enter">
+          <h2 class="title-2 acrobat-feature__title">Business solutions from Adobe &mdash; the customer experience orchestration leader.</h2>
+          <p class="body-md acrobat-feature__body">Adobe solutions bring together best-in-class products to help drive business growth.</p>
+        </div>
+
+        <div class="acrobat-cards">
+
+          <div class="acrobat-card anim-enter" data-tone="brand">
+            <div class="acrobat-card__asset">
+              <img class="acrobat-card__photo" src="assets/gen/solution-brand-visibility.jpeg" alt="" width="1200" height="900">
+              <div class="ac-fallback">Brand<br>visibility</div>
+            </div>
+            <div class="acrobat-card__copy">
+              <div class="acrobat-card__text">
+                <p class="acrobat-card__title">Brand visibility</p>
+                <p class="acrobat-card__body">Optimize visibility and engagement to ensure your brand is discoverable to both humans and AI agents.</p>
+              </div>
+              <a href="#" class="acrobat-cta">
+                Learn more
+                <svg viewBox="0 0 6 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 1L5 6L1 11"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <div class="acrobat-card anim-enter" data-tone="content">
+            <div class="acrobat-card__asset">
+              <img class="acrobat-card__photo" src="assets/gen/solution-content-supply.jpeg" alt="" width="1200" height="900">
+              <div class="ac-fallback">Content<br>supply chain</div>
+            </div>
+            <div class="acrobat-card__copy">
+              <div class="acrobat-card__text">
+                <p class="acrobat-card__title">Content supply chain</p>
+                <p class="acrobat-card__body">Transform and optimize your content supply chain through connected workflows and the power of AI.</p>
+              </div>
+              <a href="#" class="acrobat-cta">
+                Learn more
+                <svg viewBox="0 0 6 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 1L5 6L1 11"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <div class="acrobat-card anim-enter" data-tone="engagement">
+            <div class="acrobat-card__asset">
+              <img class="acrobat-card__photo" src="assets/gen/solution-customer-engagement.jpeg" alt="" width="1200" height="900">
+              <div class="ac-fallback">Customer<br>engagement</div>
+            </div>
+            <div class="acrobat-card__copy">
+              <div class="acrobat-card__text">
+                <p class="acrobat-card__title">Customer engagement</p>
+                <p class="acrobat-card__body">Scale personalization with connected data, insights, audiences, and journeys on an agentic experience platform.</p>
+              </div>
+              <a href="#" class="acrobat-cta">
+                Learn more
+                <svg viewBox="0 0 6 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 1L5 6L1 11"/></svg>
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         ANNOUNCE CAROUSEL — paged 3-up text-card carousel.
+         content_json.sections.recent_announcements (6 items, verbatim
+         from assets/source-fragments/more-announcements.plain.html)
+         ══════════════════════════════════════ -->
+    <section class="announce-carousel">
+      <div class="announce-carousel__header anim-enter">
+        <h2 class="announce-carousel__title">Recent announcements.</h2>
+      </div>
+
+      <div class="announce-carousel__viewport">
+        <div class="announce-carousel__track" id="announceTrack">
+
+          <article class="announce-card anim-enter">
+            <p class="announce-card__eyebrow">ADOBE ACQUIRES SEMRUSH</p>
+            <p class="announce-card__title">Access the world's most powerful data for AI search optimization.</p>
+            <a href="/products/semrush" class="announce-card__cta">Learn more</a>
+          </article>
+
+          <article class="announce-card anim-enter">
+            <p class="announce-card__eyebrow">CX MATURITY INDEX</p>
+            <p class="announce-card__title">Evaluate your organization's readiness for the age of AI-powered customer experience orchestration.</p>
+            <a href="/resources/customer-experience-ai-maturity-index" class="announce-card__cta">Start now</a>
+          </article>
+
+          <article class="announce-card anim-enter">
+            <p class="announce-card__eyebrow">PRODUCT INNOVATION</p>
+            <p class="announce-card__title">Adobe Engagement Intelligence optimizes customer journeys with goal-driven, decisioning intelligence.</p>
+            <a href="/products/engagement-intelligence" class="announce-card__cta">Learn more</a>
+          </article>
+
+          <article class="announce-card anim-enter">
+            <p class="announce-card__eyebrow">PARTNER NEWS</p>
+            <p class="announce-card__title">Adobe and NVIDIA power AI-first creative intelligence at scale.</p>
+            <a href="/support/partners/nvidia" class="announce-card__cta">Learn more</a>
+          </article>
+
+          <article class="announce-card anim-enter">
+            <p class="announce-card__eyebrow">PRODUCT RELEASE</p>
+            <p class="announce-card__title">Turn your best content into campaigns with Adobe GenStudio for Content Marketing.</p>
+            <a href="/products/genstudio/content-marketing" class="announce-card__cta">Learn more</a>
+          </article>
+
+          <article class="announce-card anim-enter">
+            <p class="announce-card__eyebrow">PARTNER NEWS</p>
+            <p class="announce-card__title">Adobe and Microsoft expand agentic innovation partnership.</p>
+            <a href="https://business.adobe.com/blog/introducing-adobe-marketing-agent-microsoft-365-copilot" class="announce-card__cta">Learn more</a>
+          </article>
+
+        </div>
+      </div>
+
+      <div class="announce-carousel__controls">
+        <button class="announce-carousel__arrow" id="announcePrev" type="button" aria-label="Previous">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M7.5 2L3.5 6L7.5 10"/></svg>
+        </button>
+        <button class="announce-carousel__arrow" id="announceNext" type="button" aria-label="Next">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4.5 2L8.5 6L4.5 10"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         TESTIMONIAL — Ford
+         content_json.sections.customer_testimonial
+         ══════════════════════════════════════ -->
+    <section class="testimonial">
+      <div class="container">
+        <div class="testimonial__grid">
+          <div class="anim-enter">
+            <span class="testimonial__logo">Ford</span>
+            <p class="testimonial__quote">"Our Adobe solutions haven't just made us faster. They've given us the time to be more creative, more strategic, and better at connecting with diverse audiences through the stories we tell."</p>
+            <p class="testimonial__attrib">Jordan Mammo, Managing Editor, Ford From the Road</p>
+            <a href="#" class="btn btn--outline">Read story</a>
+          </div>
+          <div class="testimonial__media anim-enter">
+            <div class="testimonial__frame"></div>
+            <span class="testimonial__tag">Approved assets</span>
+            <span class="testimonial__pill">From the Road</span>
+            <span class="testimonial__react">127</span>
+            <span class="testimonial__note">Use this hero for Q3 launch</span>
+            <span class="testimonial__strip"><span></span><span></span><span></span><span></span></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         BRANDS STRIP
+         content_json.sections.customer_logos
+         ══════════════════════════════════════ -->
+    <section class="brands-strip">
+      <div class="container">
+        <h2 class="brands-strip__title anim-enter">Adobe is transforming the world's biggest brands.</h2>
+        <div class="brands-strip__row anim-enter">
+          <span class="brands-strip__logo" style="font-family:Georgia,serif; font-style:italic;">Coca-Cola</span>
+          <span class="brands-strip__logo">QUALCOMM</span>
+          <span class="brands-strip__logo" style="font-family:Helvetica,sans-serif; font-style:italic;">Premier League</span>
+          <span class="brands-strip__logo" style="font-family:Georgia,serif;">Prudential</span>
+          <span class="brands-strip__logo" style="letter-spacing:0.3em;">CISCO</span>
+          <span class="brands-strip__logo">THE HOME DEPOT</span>
+        </div>
+        <div class="brands-strip__foot anim-enter"><a href="#" class="btn btn--outline">Read more stories</a></div>
+      </div>
+    </section>
+
+  </main>
+  </div><!-- /#smooth-content -->
+  </div><!-- /#smooth-wrapper -->
+
+  <!-- ══════════════════════════════════════
+       SEARCH SECTION — Brand Concierge (black, agentic)
+       content_json.sections.brand_concierge
+       ══════════════════════════════════════ -->
+  <section class="search-section">
+    <div class="search-section__inner">
+      <div class="search-section__copy anim-enter">
+        <h2 class="title-2 search-section__title">How can Adobe help your business today?</h2>
+        <p class="search-section__body">Ask Adobe Brand Concierge to learn about products, features, and business solutions.</p>
+      </div>
+
+      <form class="search-bar anim-enter" onsubmit="event.preventDefault();">
+        <div class="search-bar__icon-left">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <circle cx="7" cy="7" r="5"/><path d="M14 14L10.5 10.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <input class="search-bar__input" type="text" placeholder="Explore what's possible">
+        <button type="submit" class="search-bar__btn" aria-label="Send">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M2 8L14 8M9 3L14 8L9 13"/>
+          </svg>
+        </button>
+      </form>
+
+      <div class="search-section__chips anim-enter">
+        <button type="button" class="search-section__chip">How do I modernize my content workflow?</button>
+        <button type="button" class="search-section__chip">What are the benefits of using CXO agents?</button>
+        <button type="button" class="search-section__chip">What is Adobe CX Enterprise?</button>
+        <button type="button" class="search-section__chip">Talk to an expert about CXO products.</button>
+      </div>
+
+      <p class="search-section__disclaimer anim-enter">
+        Use of this beta AI chatbot is subject to Adobe's <a href="#">Privacy Policy</a>. Don't share sensitive data.
+        AI responses are not your Content, may be inaccurate, and any offers provided are non-binding. <a href="#">Generative AI Terms</a>.
+      </p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       PRODUCT GRID — Explore all Adobe for Business products
+       content_json.sections.explore_products
+       (JSON's active "AI & agents" tab provides 6 product names + 1 NEW
+       badge. No per-product descriptions exist in the JSON, so the
+       module's body slot is left empty. The "Explore all products" CTA
+       becomes the terminator tile.)
+       ══════════════════════════════════════ -->
+  <section class="product-section">
+    <div class="container">
+      <div class="product-section__header anim-enter">
+        <h2 class="title-2 product-section__title">Explore all Adobe for Business products.</h2>
+      </div>
+
+      <!-- Centered scaffolding only — sits above the full-width grid. -->
+      <div class="product-section__scaffold">
+        <!-- Tab strip — content_json.sections.explore_products.tabs -->
+        <div class="product-section__tabs anim-enter">
+          <button type="button" class="product-section__tab is-active">AI &amp; agents</button>
+          <button type="button" class="product-section__tab">Content &amp; workflows</button>
+          <button type="button" class="product-section__tab">Creativity &amp; design</button>
+          <button type="button" class="product-section__tab">Data &amp; analytics</button>
+          <button type="button" class="product-section__tab">Campaigns</button>
+          <button type="button" class="product-section__tab">Documents</button>
+        </div>
+
+        <!-- Tab content header — JSON's tab_content.title + description -->
+        <div class="product-section__pane anim-enter">
+          <h3 class="title-4 product-section__pane-title">AI at Adobe.</h3>
+          <p class="product-section__pane-body">Give your teams the productivity tools and always-on insights to deliver true personalization at scale with Adobe's AI solutions.</p>
+        </div>
+      </div>
+
+      <p class="product-section__list-heading anim-enter">Explore products.</p>
+
+      <div class="product-grid">
+
+        <div class="explore-card">
+          <div class="explore-card-container anim-enter">
+            <a class="explore-card-link-container" href="#">
+              <div class="explore-card-content">
+                <div class="explore-card-mark" data-mark="bi">Bi</div>
+                <div class="explore-card-text">
+                  <h3 class="title-4">Brand Intelligence <span class="explore-card-badge">NEW</span></h3>
+                  <p class="body-md">Measure and optimize how your brand shows up across channels and in AI search.</p>
+                </div>
+              </div>
+            </a>
+            <div class="explore-card-background"><img src="runtime/assets/images/hero/col-2_img-01.png" alt="" loading="lazy"></div>
+          </div>
+        </div>
+
+        <div class="explore-card">
+          <div class="explore-card-container anim-enter">
+            <a class="explore-card-link-container" href="#">
+              <div class="explore-card-content">
+                <div class="explore-card-mark" data-mark="ao">Ao</div>
+                <div class="explore-card-text">
+                  <h3 class="title-4">Experience Platform Agent Orchestrator</h3>
+                  <p class="body-md">Build, deploy, and orchestrate AI agents across your customer experience stack.</p>
+                </div>
+              </div>
+            </a>
+            <div class="explore-card-background"><img src="runtime/assets/images/hero/col-1_img-01.png" alt="" loading="lazy"></div>
+          </div>
+        </div>
+
+        <div class="explore-card">
+          <div class="explore-card-container anim-enter">
+            <a class="explore-card-link-container" href="#">
+              <div class="explore-card-content">
+                <div class="explore-card-mark" data-mark="lo">Lo</div>
+                <div class="explore-card-text">
+                  <h3 class="title-4">LLM Optimizer</h3>
+                  <p class="body-md">Make your content discoverable across AI assistants and large language models.</p>
+                </div>
+              </div>
+            </a>
+            <div class="explore-card-background"><img src="runtime/assets/images/hero/col-4_img-01.png" alt="" loading="lazy"></div>
+          </div>
+        </div>
+
+        <div class="explore-card">
+          <div class="explore-card-container anim-enter">
+            <a class="explore-card-link-container" href="#">
+              <div class="explore-card-content">
+                <div class="explore-card-mark" data-mark="bc">Bc</div>
+                <div class="explore-card-text">
+                  <h3 class="title-4">Brand Concierge</h3>
+                  <p class="body-md">Conversational AI that helps customers explore, learn, and take action on your brand.</p>
+                </div>
+              </div>
+            </a>
+            <div class="explore-card-background"><img src="runtime/assets/images/hero/col-5_img-01.png" alt="" loading="lazy"></div>
+          </div>
+        </div>
+
+        <div class="explore-card">
+          <div class="explore-card-container anim-enter">
+            <a class="explore-card-link-container" href="#">
+              <div class="explore-card-content">
+                <div class="explore-card-mark" data-mark="as">As</div>
+                <div class="explore-card-text">
+                  <h3 class="title-4">Experience Manager Sites Optimizer</h3>
+                  <p class="body-md">AI-powered recommendations that keep every page of your site performing.</p>
+                </div>
+              </div>
+            </a>
+            <div class="explore-card-background"><img src="runtime/assets/images/hero/col-3_img-02.png" alt="" loading="lazy"></div>
+          </div>
+        </div>
+
+        <div class="explore-card">
+          <div class="explore-card-container anim-enter">
+            <a class="explore-card-link-container" href="#">
+              <div class="explore-card-content">
+                <div class="explore-card-mark" data-mark="ea">Ea</div>
+                <div class="explore-card-text">
+                  <h3 class="title-4">Journey Optimizer Experimentation Accelerator</h3>
+                  <p class="body-md">Run more experiments in less time with AI-driven testing and personalization.</p>
+                </div>
+              </div>
+            </a>
+            <div class="explore-card-background"><img src="runtime/assets/images/hero/col-1_img-02.png" alt="" loading="lazy"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="product-section__foot anim-enter">
+        <a href="#" class="btn btn--ghost-white">Explore all products</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       STUDIO BANNER — final CTA (garage-door scroll-driven)
+       content_json.sections.final_cta
+       ══════════════════════════════════════ -->
+  <section class="home-final-cta">
+    <div class="home-final-cta__grid">
+      <div class="anim-enter">
+        <h2 class="home-final-cta__title">Let's talk about what Adobe for Business can do for you.</h2>
+        <a href="#" class="btn btn--solid-white">Get started</a>
+      </div>
+      <div class="home-final-cta__media anim-enter">
+        <div class="home-final-cta__stat">
+          <div>
+            <span class="home-final-cta__stat-eyebrow">Brand score</span>
+            <span class="home-final-cta__stat-num">2,480</span>
+            <span class="home-final-cta__stat-label">Engagement</span>
+          </div>
+        </div>
+        <div class="home-final-cta__frame"></div>
+        <a href="#" class="home-final-cta__action">Create customer journey</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       FOOTER — multi-column black + wordmark wipe
+       content_json.footer
+       ══════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="footer__main">
+
+      <div class="footer__cols">
+        <div class="footer__col">
+          <div class="footer__col-title">Contact us</div>
+          <ul>
+            <li><a href="#">Request a demo</a></li>
+          </ul>
+          <div class="footer__col-title" style="margin-top:24px">Our solutions</div>
+          <ul>
+            <li><a href="#">Customer engagement</a></li>
+            <li><a href="#">Content supply chain</a></li>
+            <li><a href="#">Brand visibility</a></li>
+            <li><a href="#">B2B CX orchestration</a></li>
+            <li><a href="#">AI for business</a></li>
+          </ul>
+        </div>
+
+        <div class="footer__col">
+          <div class="footer__col-title">Large &amp; medium<br>business</div>
+          <ul>
+            <li><a href="#">Explore products</a></li>
+            <li><a href="#">Adobe Analytics</a></li>
+            <li><a href="#">Adobe Express</a></li>
+            <li><a href="#">Adobe Firefly Enterprise Solutions</a></li>
+            <li><a href="#">Acrobat Sign</a></li>
+            <li><a href="#">Acrobat Studio</a></li>
+            <li><a href="#">Brand intelligence</a></li>
+            <li><a href="#">Frame.io</a></li>
+            <li><a href="#">GenStudio</a></li>
+            <li><a href="#">Real-Time CDP</a></li>
+          </ul>
+        </div>
+
+        <div class="footer__col">
+          <div class="footer__col-title">Individuals &amp;<br>small business</div>
+          <ul>
+            <li><a href="#">Explore all products</a></li>
+            <li><a href="#">Adobe Express</a></li>
+            <li><a href="#">Adobe Firefly</a></li>
+            <li><a href="#">Adobe Stock</a></li>
+            <li><a href="#">Creative Cloud</a></li>
+            <li><a href="#">Document Cloud</a></li>
+            <li><a href="#">Illustrator</a></li>
+            <li><a href="#">Photoshop</a></li>
+            <li><a href="#">Adobe Premiere</a></li>
+          </ul>
+        </div>
+
+        <div class="footer__col">
+          <div class="footer__col-title">Resources &amp;<br>support</div>
+          <ul>
+            <li><a href="#">Resource center</a></li>
+            <li><a href="#">Customer success stories</a></li>
+            <li><a href="#">Adobe business blog</a></li>
+            <li><a href="#">Customer support</a></li>
+            <li><a href="#">Creative Cloud support</a></li>
+            <li><a href="#">Community forums</a></li>
+            <li><a href="#">Development resources</a></li>
+          </ul>
+        </div>
+
+        <div class="footer__col">
+          <div class="footer__col-title">Adobe</div>
+          <ul>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Adobe Overview</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Investors</a></li>
+            <li><a href="#">Newsroom</a></li>
+            <li><a href="#">Corporate responsibility</a></li>
+            <li><a href="#">Affiliate program</a></li>
+            <li><a href="#">Supply chain</a></li>
+            <li><a href="#">Adobe for All</a></li>
+          </ul>
+        </div>
+
+        <div class="footer__col">
+          <div class="footer__col-title">Region</div>
+          <ul>
+            <li><a href="#">English (US)</a></li>
+          </ul>
+          <div class="footer__col-title" style="margin-top:24px">Connect</div>
+          <div class="footer__social">
+            <a href="#" aria-label="Facebook" class="footer__social-icon">f</a>
+            <a href="#" aria-label="X" class="footer__social-icon">x</a>
+            <a href="#" aria-label="Instagram" class="footer__social-icon">ig</a>
+            <a href="#" aria-label="LinkedIn" class="footer__social-icon">in</a>
+            <a href="#" aria-label="YouTube" class="footer__social-icon">yt</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer__bottom">
+        <div class="footer__legal">
+          <span class="footer__legal-item">© 2026 Adobe. All rights reserved.</span>
+          <span class="footer__legal-item"><a href="#">Privacy</a></span>
+          <span class="footer__legal-item"><a href="#">Terms of Use</a></span>
+          <span class="footer__legal-item"><a href="#">Cookie preferences</a></span>
+          <span class="footer__legal-item"><a href="#">Do not sell or share my personal information</a></span>
+          <span class="footer__legal-item"><a href="#">AdChoices</a></span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="footer__wordmark" id="footerWordmark">
+      <svg viewBox="0 0 280 64" fill="currentColor" aria-hidden="true">
+        <text x="140" y="56" text-anchor="middle" font-family="Adobe Clean Display, system-ui, sans-serif" font-weight="900" font-size="80" letter-spacing="-3">Adobe</text>
+      </svg>
+    </div>
+  </footer>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       SCROLL STACK — Lenis + GSAP + ScrollTrigger
+       Required by: hero-grid, hub-router, editorial-parallax, text-animator
+       ══════════════════════════════════════════════════════════════ -->
+  <script>
+    window.__reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  </script>
+  <script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+  <script src="runtime/vendor/gsap.min.js"></script>
+  <script src="runtime/vendor/ScrollTrigger.min.js"></script>
+  <script>
+    (function () {
+      if (window.__reducedMotion) return;
+      var lenis = new Lenis({ lerp: 0.1, smoothWheel: true });
+      lenis.on('scroll', ScrollTrigger.update);
+      gsap.ticker.add(function (time) { lenis.raf(time * 1000); });
+      gsap.ticker.lagSmoothing(0);
+      window.__lenis = lenis;
+    }());
+
+    // Nav scroll state
+    (function () {
+      var gnav = document.getElementById('gnav');
+      function update(e) {
+        var y = e ? e.scroll : window.scrollY;
+        gnav.classList.toggle('gnav--scrolled', y > 40);
+      }
+      if (window.__lenis) window.__lenis.on('scroll', update);
+      else window.addEventListener('scroll', update, { passive: true });
+    }());
+  </script>
+
+  <!-- Mega-nav + mobile-nav (graceful — these scripts no-op if their
+       targets aren't present; we ship the gnav triggers but no panel) -->
+  <script src="runtime/scripts/mega-nav.js"></script>
+  <script src="runtime/scripts/mobile-nav.js"></script>
+
+  <!-- Hero stack — orchestrator MUST load LAST -->
+  <script src="runtime/scripts/hub-router.js"></script>
+  <script src="runtime/scripts/hero-grid.js"></script>
+  <script src="runtime/scripts/hero-grid-mobile.js"></script>
+  <script src="runtime/scripts/hero-breakpoint-orchestrator.js"></script>
+
+  <!-- Editorial parallax + text animator -->
+  <script src="runtime/scripts/editorial.js"></script>
+  <script src="runtime/scripts/text-animate.js"></script>
+
+  <!-- Stagger reveal — all .anim-enter elements -->
+  <script src="runtime/scripts/stagger-reveal.js"></script>
+
+  <!-- Announce-carousel paged-3-up — prev/next arrows step the track
+       by one card width. Disables the arrow at each boundary; recomputes
+       per-page count on resize (3 desktop / 2 tablet / 1 mobile). -->
+  <script>
+    (function () {
+      var track = document.getElementById('announceTrack');
+      var prev  = document.getElementById('announcePrev');
+      var next  = document.getElementById('announceNext');
+      if (!track || !prev || !next) return;
+
+      var idx = 0;
+      function perPage() {
+        return window.innerWidth >= 1024 ? 3 : (window.innerWidth >= 768 ? 2 : 1);
+      }
+      function maxIdx() {
+        return Math.max(0, track.children.length - perPage());
+      }
+      function step() {
+        var max = maxIdx();
+        if (idx > max) idx = max;
+        if (idx < 0) idx = 0;
+        var card = track.querySelector('.announce-card');
+        var w = card ? card.offsetWidth + 8 : 320;
+        track.style.transform = 'translateX(' + (-idx * w) + 'px)';
+        prev.disabled = idx === 0;
+        next.disabled = idx === max;
+      }
+      prev.addEventListener('click', function () { idx--; step(); });
+      next.addEventListener('click', function () { idx++; step(); });
+      window.addEventListener('resize', step, { passive: true });
+      step();
+    }());
+  </script>
+
+  <!-- hub-router was loaded with hard-coded CARD_COUNT=4. content_json
+       gives only 3 hero feature_cards, so we shadow-recompute the track
+       offset for 3 cards once the orchestrator has built the desktop
+       layout. The original IIFE doesn't expose CARD_COUNT, so we just
+       neutralise its inline transform and let CSS center the row. -->
+  <script>
+    (function () {
+      var track = document.querySelector('.hhub-track');
+      if (!track) return;
+      function neutralise() {
+        var cards = track.querySelectorAll('.hhub-card');
+        if (cards.length < 4) track.style.transform = 'none';
+      }
+      neutralise();
+      window.addEventListener('resize', neutralise, { passive: true });
+    }());
+  </script>
+
+  <!-- Footer wordmark wipe — clip-path inset reveal as it enters viewport -->
+  <script>
+    (function () {
+      var w = document.getElementById('footerWordmark');
+      if (!w || window.__reducedMotion) { if (w) w.classList.add('is-revealed'); return; }
+      function check() {
+        var r = w.getBoundingClientRect();
+        if (r.top < window.innerHeight * 0.92) w.classList.add('is-revealed');
+      }
+      if (window.__lenis) window.__lenis.on('scroll', check);
+      else window.addEventListener('scroll', check, { passive: true });
+      check();
+    }());
+  </script>
+
+</body>
+</html>

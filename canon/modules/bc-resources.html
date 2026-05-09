@@ -1,0 +1,16 @@
+<!--
+  module:    bc-resources
+  extracted: stardust/products/brand-concierge.html:745-759
+  slots:     title, items (list of {kind, body})
+-->
+<section class="bc-resources">
+  <div class="bc-resources__header anim-enter">
+    <h2 class="bc-resources__title" data-slot="title">Resources title.</h2>
+  </div>
+  <div class="bc-resources__grid" data-slot-list="items">
+    <a class="bc-resource-card anim-enter" data-slot="link" href="#">
+      <span data-slot="kind">Blog</span>
+      <p data-slot="body">Resource body.</p>
+    </a>
+  </div>
+</section>

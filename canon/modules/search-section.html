@@ -1,0 +1,32 @@
+<!--
+  module:    search-section
+  extracted: stardust/index.html:1488-1521
+  slots:     title, body, chips (list of {label}), disclaimer
+  notes:     Same shape as bc-try but with different class names.
+             The form bar is frozen (decoration).
+-->
+<section class="search-section">
+  <div class="search-section__inner">
+    <div class="search-section__copy anim-enter">
+      <h2 class="title-2 search-section__title" data-slot="title">Section title.</h2>
+      <p class="search-section__body" data-slot="body">Section body.</p>
+    </div>
+    <form class="search-bar anim-enter" onsubmit="event.preventDefault();">
+      <div class="search-bar__icon-left">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <circle cx="7" cy="7" r="5"/><path d="M14 14L10.5 10.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <input class="search-bar__input" type="text" placeholder="Explore what's possible">
+      <button type="submit" class="search-bar__btn" aria-label="Send">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M2 8L14 8M9 3L14 8L9 13"/>
+        </svg>
+      </button>
+    </form>
+    <div class="search-section__chips anim-enter" data-slot-list="chips">
+      <button type="button" class="search-section__chip" data-slot="label">Prompt label.</button>
+    </div>
+    <p class="search-section__disclaimer anim-enter" data-slot="disclaimer">Disclaimer text.</p>
+  </div>
+</section>

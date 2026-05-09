@@ -1,13 +1,15 @@
 /**
- * Footer block — loads the stardust canon footer (/canon/footer.html) into
- * the page <footer>.
+ * Footer block — loads the static site chrome from /fragments/footer.html
+ * and injects it into the page <footer>. Pure fetch + innerHTML; no DA
+ * authoring, no slots, no decoration. Pairs with /styles/fragments/chrome.css
+ * (loaded eagerly via head.html).
  */
 
 export default async function decorate(block) {
-  const res = await fetch('/canon/footer.html');
+  const res = await fetch('/fragments/footer.html');
   if (!res.ok) {
     // eslint-disable-next-line no-console
-    console.error('Failed to load /canon/footer.html', res.status);
+    console.error('Failed to load /fragments/footer.html', res.status);
     return;
   }
   block.innerHTML = await res.text();

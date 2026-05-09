@@ -1,0 +1,48 @@
+<!--
+  module:    product-section
+  extracted: stardust/index.html:1531-1656
+  slots:     title, paneTitle, paneBody, listHeading, items (list of {mark, title, badge, body, image, link}), cta (link)
+  notes:     Tab strip (6 tabs) is frozen — author cannot add/remove
+             tabs without code changes. Tab activity is decorative.
+-->
+<section class="product-section">
+  <div class="container">
+    <div class="product-section__header anim-enter">
+      <h2 class="title-2 product-section__title" data-slot="title">Section title.</h2>
+    </div>
+    <div class="product-section__scaffold">
+      <div class="product-section__tabs anim-enter">
+        <button type="button" class="product-section__tab is-active">AI &amp; agents</button>
+        <button type="button" class="product-section__tab">Content &amp; workflows</button>
+        <button type="button" class="product-section__tab">Creativity &amp; design</button>
+        <button type="button" class="product-section__tab">Data &amp; analytics</button>
+        <button type="button" class="product-section__tab">Campaigns</button>
+        <button type="button" class="product-section__tab">Documents</button>
+      </div>
+      <div class="product-section__pane anim-enter">
+        <h3 class="title-4 product-section__pane-title" data-slot="paneTitle">Pane title.</h3>
+        <p class="product-section__pane-body" data-slot="paneBody">Pane body.</p>
+      </div>
+    </div>
+    <p class="product-section__list-heading anim-enter" data-slot="listHeading">Explore products.</p>
+    <div class="product-grid" data-slot-list="items">
+      <div class="explore-card">
+        <div class="explore-card-container anim-enter">
+          <a class="explore-card-link-container" data-slot="link" href="#">
+            <div class="explore-card-content">
+              <div class="explore-card-mark" data-mark="bi" data-slot="mark">Bi</div>
+              <div class="explore-card-text">
+                <h3 class="title-4" data-slot="title">Product Name</h3>
+                <p class="body-md" data-slot="body">Product description.</p>
+              </div>
+            </div>
+          </a>
+          <div class="explore-card-background"><img data-slot="image" src="" alt="" loading="lazy"></div>
+        </div>
+      </div>
+    </div>
+    <div class="product-section__foot anim-enter">
+      <a class="btn btn--ghost-white" data-slot="cta" href="#">Explore all products</a>
+    </div>
+  </div>
+</section>

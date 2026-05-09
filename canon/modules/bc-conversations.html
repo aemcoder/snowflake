@@ -1,0 +1,25 @@
+<!--
+  module:    bc-conversations
+  extracted: stardust/products/brand-concierge.html:726-742
+  slots:     title, body, cta (link)
+  notes:     The diagram on the right is decorative; node labels frozen
+             in template (would otherwise need a list slot for what's
+             ultimately decorative content).
+-->
+<section class="bc-conversations">
+  <div class="bc-conversations__grid">
+    <div class="anim-enter">
+      <h2 class="bc-conversations__title" data-slot="title">Section title.</h2>
+      <p class="bc-conversations__body" data-slot="body">Section body.</p>
+      <a class="btn btn--outline" data-slot="cta" href="#">Explore integrations</a>
+    </div>
+    <div class="bc-conversations__diagram anim-enter" aria-hidden="true">
+      <div class="bc-conversations__nodes">
+        <div class="center">Thinking</div>
+        <div class="leaf">Audience insights</div>
+        <div class="leaf">Content performance</div>
+        <div class="leaf">Brand assets</div>
+      </div>
+    </div>
+  </div>
+</section>

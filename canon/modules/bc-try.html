@@ -1,0 +1,28 @@
+<!--
+  module:    bc-try
+  extracted: stardust/products/brand-concierge.html:591-614
+  slots:     title, body, chips (list of single-cell prompts), disclaimer
+  notes:     The form bar (input + submit) is structural decoration, frozen.
+             Disclaimer text is a slot to allow editing legal copy.
+-->
+<section class="bc-try">
+  <div class="bc-try__inner">
+    <h2 class="bc-try__title" data-slot="title">Try section title.</h2>
+    <p class="bc-try__sub" data-slot="body">Try section subtitle.</p>
+    <div class="bc-try__chips" data-slot-list="chips">
+      <button type="button" class="bc-try__chip" data-slot="label">Prompt label.</button>
+    </div>
+    <form class="bc-try__bar" onsubmit="event.preventDefault();">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <circle cx="7" cy="7" r="5"/><path d="M14 14L10.5 10.5" stroke-linecap="round"/>
+      </svg>
+      <input type="text" placeholder="Ask a question">
+      <button type="submit" aria-label="Send">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+          <path d="M2 8L14 8M9 3L14 8L9 13"/>
+        </svg>
+      </button>
+    </form>
+    <p class="bc-try__disclaimer" data-slot="disclaimer">Disclaimer text.</p>
+  </div>
+</section>
