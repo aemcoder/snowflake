@@ -225,7 +225,7 @@ for (const pageRel of PAGES) {
     const slots = slotInventory($, m.element);
     results.push({
       page: m.page,
-      site: pathBucketOf(m.page),
+      bucket: pathBucketOf(m.page),
       tag: m.tag,
       moduleId: m.moduleId,
       classes: m.classes,
@@ -276,7 +276,8 @@ const summary = {
   skelMultiPage: [...bySkel.values()].filter((g) => pagesIn(g) > 1).length,
   shapeMultiPage: [...byShape.values()].filter((g) => pagesIn(g) > 1).length,
   variantMultiPage: [...byVariant.values()].filter((g) => pagesIn(g) > 1).length,
-  // cross-site reuse: groups whose modules span >1 site
+  // cross-bucket reuse: groups whose modules span >1 path-bucket
+  // (NOT cross-organization — see pathBucketOf comment)
   nameMultiBucket: [...byName.values()].filter((g) => bucketsIn(g) > 1).length,
   skelMultiBucket: [...bySkel.values()].filter((g) => bucketsIn(g) > 1).length,
   shapeMultiBucket: [...byShape.values()].filter((g) => bucketsIn(g) > 1).length,
