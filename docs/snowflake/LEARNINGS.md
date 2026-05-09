@@ -310,15 +310,19 @@ One block (`/blocks/stardust-module/`) handles every module via runtime template
 ### Polyfill dev-prod parity client-side
 Where the EDS backend does work the dev server proxy doesn't (table-to-block, metadata promotion), polyfill in `scripts.js` so the same code path produces equivalent results in both environments. Polyfills are idempotent so they're no-ops where the work is already done. (See DEC-005)
 
-### Branching pattern for new iterations *(found: iter-002)*
+### Branching pattern for new iterations *(found: iter-002, revised: iter-003)*
 
-Each iteration should descend from a clean main, with previous-iteration code carried forward:
+Each iteration starts from a clean `main` with **docs only** — no code merge from prior iterations. Per DEC-012, code and content are rebuilt/re-derived each iteration from the docs; only the LEARNINGS encyclopedia persists.
+
 ```
 git checkout main
 git checkout -b <site>-NN
-git merge <previous-iteration-branch>
+# main has docs only; iter-NN starts code work from scratch
 ```
-This keeps the branch lineage rooted in main (not chained off the previous iteration's branch) while reusing the foundation code. Naming convention: 4-char site name + `-NN` (DEC-007). (See DEC-009)
+
+Naming convention: 4-char site name + `-NN` (DEC-007).
+
+(See DEC-012 — current; DEC-009 — superseded but retained for history.)
 
 ### Frozen-inner-structure templating *(found: iter-002)*
 

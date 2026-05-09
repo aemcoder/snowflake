@@ -214,4 +214,30 @@ The remaining choice was the naming scheme inside `/media`:
 
 ---
 
+## DEC-012: Iterations start from `main` with docs only; code is rebuilt or re-derived per iteration
+
+**Status:** Accepted (iter-003), supersedes DEC-009.
+
+**Context:** DEC-009 prescribed branching from `main` and **merging the previous iteration's branch** to carry forward the bridge as foundation. The intent was to avoid re-implementing work each iteration. In practice this means each iteration accumulates code from prior iterations — fine when iterations are linear refinements, but it conflicts with the "snowflake" framing of this project: each iteration is unique; the LEARNINGS encyclopedia is the only persistent asset.
+
+**Decision:** Each iteration starts from `main` with **docs only** — no code merge from prior iterations. Per-iteration code is **rebuilt or re-derived from `docs/snowflake/`** (ARCHITECTURE + LEARNINGS + DECISIONS).
+
+```
+git checkout main
+git checkout -b <site>-NN
+# main has docs only; iter-NN starts code work from scratch
+```
+
+Per DEC-010, docs accumulate on `main` as the canonical encyclopedia. Per DEC-012, **only** docs carry forward — code and content are per-iteration.
+
+**Consequences:**
+- Iterations that need the bridge to render content (new-site migrations) must rebuild the generic decorator, polyfills, scoping pattern, slot vocabulary, header/footer fragment loaders, etc. from the docs.
+- This is a **feature**, not a cost: the rebuild step tests whether the docs are sufficient. If rebuild fails, docs are insufficient and must be improved before the iteration can proceed. Doc quality is now load-bearing for project velocity.
+- Iterations can use different implementations of the same docs — different language, different framework, different approach — as long as the realized behavior matches what the docs describe.
+- Iter-003 is the first iteration under this discipline. It happens to not need bridge code (the work is a `/media`-folder image migration, fully API-driven against DA + Admin API; verification renders against afbs-02's existing deployment because `/media` URLs are branch-independent). Useful initial test case for the principle.
+- Tradeoff: slower iterations (rebuild overhead, 1–2 days for a full bridge rebuild). Mitigation: cumulative doc improvements make subsequent rebuilds faster, and most iterations will scope smaller than "rebuild everything."
+- DEC-009 stays in this file per append-only convention; this entry supersedes it as the active guidance.
+
+---
+
 *New decisions go here. Append; don't rewrite.*
