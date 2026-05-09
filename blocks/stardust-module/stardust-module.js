@@ -30,10 +30,17 @@ async function fetchTemplate(moduleId) {
     throw new Error(`Canon template fetch failed for ${moduleId}: HTTP ${res.status}`);
   }
   const html = await res.text();
+  // Strip HTML comments before parsing — canon templates have a provenance
+  // comment at the top that may include nested `<!-- ... -->` examples and
+  // literal `<p>`/`<a>` references in the slot list. The HTML parser closes
+  // the outer comment at the first inner `-->` and then treats the leftover
+  // text (with `<p>` etc.) as real elements, producing spurious top-level
+  // empty <p>s and corrupting the canon DOM.
+  const sanitized = html.replace(/<!--[\s\S]*?-->/g, '');
   // Parse via <template> element so the inert document fragment doesn't eagerly
   // load <img>/<picture> placeholders before slot-fill replaces them.
   const tpl = document.createElement('template');
-  tpl.innerHTML = html;
+  tpl.innerHTML = sanitized;
   templateCache.set(moduleId, tpl);
   return tpl.content.cloneNode(true);
 }
