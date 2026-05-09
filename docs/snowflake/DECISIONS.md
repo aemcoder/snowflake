@@ -109,4 +109,64 @@ For decisions that apply only to a specific site, see `sites/<site>/DECISIONS.md
 
 ---
 
+## DEC-007: Iteration naming — `<short-4-chars-site-name>-NN`
+
+**Status:** Accepted (iter-002)
+
+**Context:** Each working session is one iteration. Without a naming convention, branches and DA folders pile up incoherently and previous iterations' content can be accidentally overwritten.
+
+**Decision:** Both the GitHub branch and the DA folder for an iteration use the prefix `<short-4-chars-site-name>-NN` where:
+- `<site>` is a 4-character mnemonic identifying the site being migrated (`expm` for experience-manager, `afbs` for Adobe-for-Business, etc.)
+- `NN` is the global iteration number (zero-padded; iter-001 used `experience-manager` legacy folder, iter-002 onward uses the new convention).
+
+DA URL prefix becomes: `https://da.live/edit#/aemcoder/snowflake/<site>-NN/<page>`.
+
+**Consequences:**
+- Multiple iterations can run in parallel without DA folder collisions.
+- Each iteration has a clean URL space for its content.
+- iter-001's content stays under the legacy `experience-manager/` folder (grandfathered).
+- A site that's iterated multiple times has multiple folders (afbs-02, afbs-03, ...) — each is a self-contained iteration of work on that site.
+
+---
+
+## DEC-008: Header and footer as code-deployed static fragments (no DA authoring)
+
+**Status:** Accepted (iter-002), supersedes DEC-002 partially (DEC-002 said "block tables per module" — chrome modules are now exempt)
+
+**Context:** iter-001 had `/canon/header.html` and `/canon/footer.html` loaded by the boilerplate header/footer block decorators. Functionally a "static fragment" pattern, but co-located with the per-module canon templates, which conflated chrome (sitewide static) with body modules (per-page authored).
+
+**Decision:** Lift chrome to an explicit static-fragment layer:
+- `/fragments/header.html` and `/fragments/footer.html` — code-deployed, never authored in DA.
+- `/styles/fragments/chrome.css` — chrome-specific styles extracted from per-page inline `<style>` blocks. Loaded eagerly via `head.html` on every page.
+- `/blocks/{header,footer}/header.js` — pure `fetch + innerHTML` loaders, no slot decoration.
+
+**Consequences:**
+- Chrome is uniform across pages (one static fragment per site, not per-page).
+- Authors cannot change chrome via DA — chrome edits require a code commit + branch deploy.
+- Acceptable for this project's R&D scope. Future iteration could promote chrome to author-editable using the same generic stardust-module decorator if needed.
+
+---
+
+## DEC-009: Iteration branch from main, then merge previous iteration as foundation
+
+**Status:** Accepted (iter-002)
+
+**Context:** A new iteration needs both (a) a clean lineage rooted in `main` (so `main` stays canonical and iterations don't chain off each other), and (b) the foundation code from prior iterations (so each iteration doesn't re-invent the bridge).
+
+**Decision:** The standard new-iteration workflow:
+```
+git checkout main
+git checkout -b <site>-NN
+git merge <previous-iteration-branch>
+```
+Branch is created from `main`, then the previous iteration's branch is merged in (fast-forward when main hasn't moved, or a merge commit otherwise). Result: branch points at main lineage, code includes everything from the previous iteration.
+
+**Consequences:**
+- Iter-NNs aren't chained — each is independent of the previous from a git standpoint.
+- main stays clean and small (no iterations are merged unless explicitly chosen).
+- Each iteration can be reviewed independently as a single PR against main.
+- If main moves between iterations (e.g., a hotfix lands), the new iteration picks it up via the initial branch-from-main; the merge of the previous iteration applies cleanly on top.
+
+---
+
 *New decisions go here. Append; don't rewrite.*
