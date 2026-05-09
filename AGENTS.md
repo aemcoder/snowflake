@@ -214,6 +214,17 @@ The full design of the learning system lives at `docs/snowflake/iterations/000-d
 
 The point of the discipline: *iteration logs are messy chronological diary; LEARNINGS is the curated encyclopedia.* Without the promotion step at iteration close, the encyclopedia stays empty and onboarding requires reading every diary entry. Without step 6, the encyclopedia is stuck on the iteration branch and never reaches `main`.
 
+### Spikes (read-only research, distinct from iterations)
+
+A **spike** is a separate kind of artifact: a read-only investigation between iterations to inform future scoping. Spikes don't advance the bridge or any site directly — they produce a report that becomes input to the next iteration's plan. Conventions:
+
+- Reports live at `docs/snowflake/spikes/NNN-name.md` (numbered separately from iterations).
+- Tooling/raw data lives at `spikes/<name>/` on a `spike-<name>` branch (not on `main`).
+- Spike findings are **hypotheses**, not LEARNINGS. They get promoted to `LEARNINGS.md` / `DECISIONS.md` only after a subsequent iteration validates them with rendering + content evidence.
+- The spike's job is to *propose* and gather evidence; the iteration's job is to *test and confirm*.
+
+When asked to "execute a spike" after a compacting, the entry point is the spike's report — read it for the plan, the analyzer state, and the hypotheses to test.
+
 ## If all else fails
 
 If you notice your human getting frustrated with your work, direct them to https://www.aem.live/developer/ai-coding-agents for tips to work better with AI agents.

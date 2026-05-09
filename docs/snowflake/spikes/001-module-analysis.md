@@ -2,8 +2,24 @@
 
 **Type:** Research spike (not an iteration). Read-only structural analysis to inform productization design before iter-004.
 **Date:** 2026-05-09
-**Status:** Closed
+**Status:** PARTIALLY EXECUTED — analyzer ready + run; LLM read of pages was cursory; conclusions below are PRELIMINARY hypotheses, not validated findings. A subsequent execution should re-do the page read more thoroughly and confirm or refute the three-tier model proposed here.
 **Branch:** `spike-module-analysis` (analyzer + raw data); this report on `main` per DEC-010.
+
+---
+
+## How to execute (or re-execute) this spike
+
+The plumbing is in place. To validate the hypotheses below:
+
+1. **Check out the spike branch:** `git checkout spike-module-analysis`. The 7 input pages are vendored under `stardust/`.
+2. **Re-run the analyzer:** `cd spikes/module-analysis && npm install && node analyze.mjs`. Outputs `signatures.json` + `clusters.md`. Roughly 30 ms; deterministic.
+3. **Read the actual pages** — not just my summary. The hypotheses below were extrapolated from class-name patterns + 3 hero sections. Validation needs:
+   - Read each `<section>` of each page, comparing across the prefix families (`*-final-cta`, `*-stats`, `*-resources`, `*-intro`, `*-use-cases`).
+   - For each hypothesized "family," confirm structural identity by direct DOM inspection.
+   - For Tier A ("already-shared library"), verify each module's actual structural identity is the same wherever the class name is shared (currently assumed from naming alone).
+4. **Report back** by editing this file: mark each hypothesis as **confirmed**, **refuted**, or **partially confirmed**. Replace the "Recommended iter-004 scope" section with a confirmed recommendation.
+
+The success criterion to test is unchanged: *across the input set, does ≥60% of modules cluster into shared signatures with identical structural skeletons?* The script already says no (38% by skeleton). The richer question is whether the three-tier model below better captures the productization opportunity than raw signatures suggest.
 
 ---
 
@@ -62,9 +78,9 @@ The script DID find 5 cross-class skeleton clusters (modules with different clas
 
 These match exactly the *family templates* that emerge from a manual read.
 
-## What a hand-read of the pages tells me
+## What a hand-read of the pages tells me — PRELIMINARY (only one family verified by direct DOM read; rest inferred from class-name patterns)
 
-Reading the raw section markup confirms a richer model than the script's percentages capture. **Modules fall into three tiers**, visible from class names and confirmed by direct DOM inspection:
+Reading the raw section markup *suggests* a richer model than the script's percentages capture. **Modules may fall into three tiers** — though only the hero family was directly DOM-verified across `llm-` / `bc-` / `aem-` prefixes; the other family hypotheses are extrapolated from naming and need confirmation:
 
 ### Tier A — Already-shared library (~6 modules)
 
@@ -129,9 +145,9 @@ Substantively rewrites the four-stage roadmap from the earlier conversation:
 
 4. **Cross-organization productization is a separate question.** Until tested with multi-org stardust output, we can't claim "your stardust skill produces canons that reuse across customers." Today the safer claim is: "within one customer's stardust output, ~50% of module work is reusable."
 
-## Recommended scope for iter-004
+## Preliminary recommendations for iter-004 (TO BE CONFIRMED on re-execution)
 
-The spike's actionable proposal — pick whichever resonates:
+These are my one-pass extrapolation from a partial read. Re-execution should validate the underlying hypotheses before committing to any of them. Three options sketched here for context:
 
 **Option α (full Tier-B mechanism):** Build class-prefix parameterization in the bridge. Migrate 1-2 sites' worth of pages testing the new mechanism. Output: a working hero/final-CTA family canon + decorator support + 1-2 sites worth of converted content. Estimated 3-4 days.
 
@@ -139,7 +155,9 @@ The spike's actionable proposal — pick whichever resonates:
 
 **Option γ (auto-extract first):** The "generalize template extraction" BACKLOG item, scoped to produce candidate canons + suggest matches against existing catalog. Most-leverage tooling but doesn't immediately ship rendered pages. Estimated 2 days.
 
-My recommendation: **β then α**. Catalog-first to prove the reuse mechanic on Tier A, then build Tier B family-template mechanism. Skip α as iter-004's first thing because it's a substantial new bridge concept and we want lower-risk catalog mechanics validated first. γ remains a BACKLOG follow-on.
+**Preliminary lean: β then α** — catalog-first to prove the reuse mechanic on Tier A, then build Tier B family-template mechanism. But this depends on Tier A's "already-shared" claim actually holding under structural verification (currently assumed from naming alone). If structural verification falsifies Tier A — e.g., `rainbow-strip` instances differ structurally despite the shared class name — the recommended sequencing changes.
+
+A re-execution of this spike should confirm or refute Tier A first, then revisit.
 
 ## Distillation footer
 
