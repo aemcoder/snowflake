@@ -178,6 +178,102 @@ async function loadStardustRuntime() {
     // eslint-disable-next-line no-console
     console.error(err);
   })));
+
+  initStardustPage();
+}
+
+/**
+ * Page-init for stardust pages: Lenis smooth-scroll, gnav scroll-state
+ * toggle, and a few page-specific UI handlers (announce-carousel arrows,
+ * hub-router 3-vs-4-card neutraliser, footer wordmark wipe).
+ *
+ * These were inline `<script>` blocks at the bottom of stardust source
+ * pages; we replicate them here so the bridge produces equivalent
+ * behavior on EDS-rendered pages. Each IIFE early-outs if its target
+ * elements aren't on this page.
+ */
+function initStardustPage() {
+  window.__reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Lenis smooth-scroll wrapper, ticked from gsap.ticker (matches stardust source)
+  if (!window.__reducedMotion && window.Lenis && window.gsap && window.ScrollTrigger) {
+    try {
+      const lenis = new window.Lenis({ lerp: 0.1, smoothWheel: true });
+      lenis.on('scroll', window.ScrollTrigger.update);
+      window.gsap.ticker.add((time) => { lenis.raf(time * 1000); });
+      window.gsap.ticker.lagSmoothing(0);
+      window.__lenis = lenis;
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.warn('Lenis init failed', e);
+    }
+  }
+
+  // Nav scroll state — toggle .gnav--scrolled past 40px scroll
+  (() => {
+    const gnav = document.getElementById('gnav');
+    if (!gnav) return;
+    const update = (e) => {
+      const y = e ? e.scroll : window.scrollY;
+      gnav.classList.toggle('gnav--scrolled', y > 40);
+    };
+    if (window.__lenis) window.__lenis.on('scroll', update);
+    else window.addEventListener('scroll', update, { passive: true });
+    update();
+  })();
+
+  // Announce-carousel — prev/next arrows step the track by one card
+  (() => {
+    const track = document.getElementById('announceTrack');
+    const prev = document.getElementById('announcePrev');
+    const next = document.getElementById('announceNext');
+    if (!track || !prev || !next) return;
+
+    let idx = 0;
+    const perPage = () => (window.innerWidth >= 1024 ? 3 : (window.innerWidth >= 768 ? 2 : 1));
+    const maxIdx = () => Math.max(0, track.children.length - perPage());
+    const step = () => {
+      const max = maxIdx();
+      if (idx > max) idx = max;
+      if (idx < 0) idx = 0;
+      const card = track.querySelector('.announce-card');
+      const w = card ? card.offsetWidth + 8 : 320;
+      track.style.transform = `translateX(${-idx * w}px)`;
+      prev.disabled = idx === 0;
+      next.disabled = idx === max;
+    };
+    prev.addEventListener('click', () => { idx -= 1; step(); });
+    next.addEventListener('click', () => { idx += 1; step(); });
+    window.addEventListener('resize', step, { passive: true });
+    step();
+  })();
+
+  // Hub-router shadow-recompute for 3 cards when content provides only 3
+  // (the upstream hub-router IIFE hard-codes CARD_COUNT=4)
+  (() => {
+    const track = document.querySelector('.hhub-track');
+    if (!track) return;
+    const neutralise = () => {
+      const cards = track.querySelectorAll('.hhub-card');
+      if (cards.length < 4) track.style.transform = 'none';
+    };
+    neutralise();
+    window.addEventListener('resize', neutralise, { passive: true });
+  })();
+
+  // Footer wordmark wipe — clip-path inset reveal as it enters viewport
+  (() => {
+    const w = document.getElementById('footerWordmark');
+    if (!w) return;
+    if (window.__reducedMotion) { w.classList.add('is-revealed'); return; }
+    const check = () => {
+      const r = w.getBoundingClientRect();
+      if (r.top < window.innerHeight * 0.92) w.classList.add('is-revealed');
+    };
+    if (window.__lenis) window.__lenis.on('scroll', check);
+    else window.addEventListener('scroll', check, { passive: true });
+    check();
+  })();
 }
 
 /**
