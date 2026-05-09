@@ -10,14 +10,14 @@
     "skelMultiPage": 15,
     "shapeMultiPage": 15,
     "variantMultiPage": 8,
-    "nameMultiBucket": 0,
-    "skelMultiBucket": 0,
-    "shapeMultiBucket": 0
+    "nameMultiBucket": 15,
+    "skelMultiBucket": 13,
+    "shapeMultiBucket": 12
   },
   "results": [
     {
       "page": "stardust/index.html",
-      "site": "afbs-main",
+      "bucket": "afbs-main",
       "tag": "section",
       "moduleId": "hero-announce",
       "classes": [
@@ -38,7 +38,7 @@
     },
     {
       "page": "stardust/index.html",
-      "site": "afbs-main",
+      "bucket": "afbs-main",
       "tag": "section",
       "moduleId": "hero",
       "classes": [],
@@ -57,7 +57,7 @@
     },
     {
       "page": "stardust/index.html",
-      "site": "afbs-main",
+      "bucket": "afbs-main",
       "tag": "section",
       "moduleId": "acrobat-feature",
       "classes": [
@@ -78,7 +78,7 @@
     },
     {
       "page": "stardust/index.html",
-      "site": "afbs-main",
+      "bucket": "afbs-main",
       "tag": "section",
       "moduleId": "announce-carousel",
       "classes": [
@@ -99,7 +99,7 @@
     },
     {
       "page": "stardust/index.html",
-      "site": "afbs-main",
+      "bucket": "afbs-main",
       "tag": "section",
       "moduleId": "testimonial",
       "classes": [
@@ -120,7 +120,7 @@
     },
     {
       "page": "stardust/index.html",
-      "site": "afbs-main",
+      "bucket": "afbs-main",
       "tag": "section",
       "moduleId": "brands-strip",
       "classes": [
@@ -141,7 +141,7 @@
     },
     {
       "page": "stardust/index.html",
-      "site": "afbs-main",
+      "bucket": "afbs-main",
       "tag": "section",
       "moduleId": "search-section",
       "classes": [
@@ -162,7 +162,7 @@
     },
     {
       "page": "stardust/index.html",
-      "site": "afbs-main",
+      "bucket": "afbs-main",
       "tag": "section",
       "moduleId": "product-section",
       "classes": [
@@ -183,7 +183,7 @@
     },
     {
       "page": "stardust/index.html",
-      "site": "afbs-main",
+      "bucket": "afbs-main",
       "tag": "section",
       "moduleId": "home-final-cta",
       "classes": [
@@ -204,7 +204,7 @@
     },
     {
       "page": "stardust/index.html",
-      "site": "afbs-main",
+      "bucket": "afbs-main",
       "tag": "header",
       "moduleId": "gnav",
       "classes": [],
@@ -223,7 +223,7 @@
     },
     {
       "page": "stardust/index.html",
-      "site": "afbs-main",
+      "bucket": "afbs-main",
       "tag": "footer",
       "moduleId": "footer",
       "classes": [
@@ -244,7 +244,7 @@
     },
     {
       "page": "stardust/products/llm-optimizer.html",
-      "site": "afbs-main",
+      "bucket": "afbs-main",
       "tag": "section",
       "moduleId": "llm-hero",
       "classes": [
@@ -265,7 +265,7 @@
     },
     {
       "page": "stardust/products/llm-optimizer.html",
-      "site": "afbs-main",
+      "bucket": "afbs-main",
       "tag": "section",
       "moduleId": "rainbow-strip",
       "classes": [
@@ -286,7 +286,7 @@
     },
     {
       "page": "stardust/products/llm-optimizer.html",
-      "site": "afbs-main",
+      "bucket": "afbs-main",
       "tag": "section",
       "moduleId": "semrush-promo",
       "classes": [
@@ -307,7 +307,7 @@
     },
     {
       "page": "stardust/products/llm-optimizer.html",
-      "site": "afbs-main",
+      "bucket": "afbs-main",
       "tag": "section",
       "moduleId": "llm-intro",
       "classes": [
@@ -328,7 +328,7 @@
     },
     {
       "page": "stardust/products/llm-optimizer.html",
-      "site": "afbs-main",
+      "bucket": "afbs-main",
       "tag": "section",
       "moduleId": "split-content",
       "classes": [
@@ -349,7 +349,7 @@
     },
     {
       "page": "stardust/products/llm-optimizer.html",
-      "site": "afbs-main",
+      "bucket": "afbs-main",
       "tag": "section",
       "moduleId": "llm-stats",
       "classes": [
@@ -370,7 +370,7 @@
     },
     {
       "page": "stardust/products/llm-optimizer.html",
-      "site": "afbs-main",
+      "bucket": "afbs-main",
       "tag": "section",
       "moduleId": "acrobat-feature",
       "classes": [
@@ -392,7 +392,7 @@
     },
     {
       "page": "stardust/products/llm-optimizer.html",
-      "site": "afbs-main",
+      "bucket": "afbs-main",
       "tag": "section",
       "moduleId": "(no class)",
       "classes": [],
@@ -411,7 +411,7 @@
     },
     {
       "page": "stardust/products/llm-optimizer.html",
-      "site": "afbs-main",
+      "bucket": "afbs-main",
       "tag": "section",
       "moduleId": "training-cta",
       "classes": [
@@ -432,7 +432,7 @@
     },
     {
       "page": "stardust/products/llm-optimizer.html",
-      "site": "afbs-main",
+      "bucket": "afbs-main",
       "tag": "section",
       "moduleId": "faq-accordion",
       "classes": [
@@ -453,7 +453,7 @@
     },
     {
       "page": "stardust/products/llm-optimizer.html",
-      "site": "afbs-main",
+      "bucket": "afbs-main",
       "tag": "section",
       "moduleId": "llm-final-cta",
       "classes": [
@@ -474,7 +474,7 @@
     },
     {
       "page": "stardust/products/llm-optimizer.html",
-      "site": "afbs-main",
+      "bucket": "afbs-main",
       "tag": "header",
       "moduleId": "gnav",
       "classes": [],
@@ -493,7 +493,7 @@
     },
     {
       "page": "stardust/products/llm-optimizer.html",
-      "site": "afbs-main",
+      "bucket": "afbs-main",
       "tag": "footer",
       "moduleId": "footer",
       "classes": [
@@ -514,7 +514,7 @@
     },
     {
       "page": "stardust/products/brand-concierge.html",
-      "site": "afbs-main",
+      "bucket": "afbs-main",
       "tag": "section",
       "moduleId": "bc-hero",
       "classes": [
@@ -535,7 +535,7 @@
     },
     {
       "page": "stardust/products/brand-concierge.html",
-      "site": "afbs-main",
+      "bucket": "afbs-main",
       "tag": "section",
       "moduleId": "bc-try",
       "classes": [
@@ -556,7 +556,7 @@
     },
     {
       "page": "stardust/products/brand-concierge.html",
-      "site": "afbs-main",
+      "bucket": "afbs-main",
       "tag": "section",
       "moduleId": "bc-intro",
       "classes": [
@@ -577,7 +577,7 @@
     },
     {
       "page": "stardust/products/brand-concierge.html",
-      "site": "afbs-main",
+      "bucket": "afbs-main",
       "tag": "section",
       "moduleId": "split-content",
       "classes": [
@@ -598,7 +598,7 @@
     },
     {
       "page": "stardust/products/brand-concierge.html",
-      "site": "afbs-main",
+      "bucket": "afbs-main",
       "tag": "section",
       "moduleId": "bc-use-cases",
       "classes": [
@@ -619,7 +619,7 @@
     },
     {
       "page": "stardust/products/brand-concierge.html",
-      "site": "afbs-main",
+      "bucket": "afbs-main",
       "tag": "section",
       "moduleId": "bc-why",
       "classes": [
@@ -640,7 +640,7 @@
     },
     {
       "page": "stardust/products/brand-concierge.html",
-      "site": "afbs-main",
+      "bucket": "afbs-main",
       "tag": "section",
       "moduleId": "bc-conversations",
       "classes": [
@@ -661,7 +661,7 @@
     },
     {
       "page": "stardust/products/brand-concierge.html",
-      "site": "afbs-main",
+      "bucket": "afbs-main",
       "tag": "section",
       "moduleId": "bc-resources",
       "classes": [
@@ -682,7 +682,7 @@
     },
     {
       "page": "stardust/products/brand-concierge.html",
-      "site": "afbs-main",
+      "bucket": "afbs-main",
       "tag": "section",
       "moduleId": "bc-webinar",
       "classes": [
@@ -703,7 +703,7 @@
     },
     {
       "page": "stardust/products/brand-concierge.html",
-      "site": "afbs-main",
+      "bucket": "afbs-main",
       "tag": "section",
       "moduleId": "bc-training",
       "classes": [
@@ -724,7 +724,7 @@
     },
     {
       "page": "stardust/products/brand-concierge.html",
-      "site": "afbs-main",
+      "bucket": "afbs-main",
       "tag": "section",
       "moduleId": "faq-accordion",
       "classes": [
@@ -745,7 +745,7 @@
     },
     {
       "page": "stardust/products/brand-concierge.html",
-      "site": "afbs-main",
+      "bucket": "afbs-main",
       "tag": "section",
       "moduleId": "inline-form",
       "classes": [
@@ -766,7 +766,7 @@
     },
     {
       "page": "stardust/products/brand-concierge.html",
-      "site": "afbs-main",
+      "bucket": "afbs-main",
       "tag": "section",
       "moduleId": "bc-final-cta",
       "classes": [
@@ -787,7 +787,7 @@
     },
     {
       "page": "stardust/products/brand-concierge.html",
-      "site": "afbs-main",
+      "bucket": "afbs-main",
       "tag": "header",
       "moduleId": "gnav",
       "classes": [],
@@ -806,7 +806,7 @@
     },
     {
       "page": "stardust/products/brand-concierge.html",
-      "site": "afbs-main",
+      "bucket": "afbs-main",
       "tag": "footer",
       "moduleId": "footer",
       "classes": [
@@ -827,7 +827,7 @@
     },
     {
       "page": "stardust/products/experience-manager/sites.html",
-      "site": "aem-section",
+      "bucket": "aem-section",
       "tag": "section",
       "moduleId": "aem-hero",
       "classes": [
@@ -848,7 +848,7 @@
     },
     {
       "page": "stardust/products/experience-manager/sites.html",
-      "site": "aem-section",
+      "bucket": "aem-section",
       "tag": "section",
       "moduleId": "rainbow-strip",
       "classes": [
@@ -869,7 +869,7 @@
     },
     {
       "page": "stardust/products/experience-manager/sites.html",
-      "site": "aem-section",
+      "bucket": "aem-section",
       "tag": "section",
       "moduleId": "aem-features",
       "classes": [
@@ -890,7 +890,7 @@
     },
     {
       "page": "stardust/products/experience-manager/sites.html",
-      "site": "aem-section",
+      "bucket": "aem-section",
       "tag": "section",
       "moduleId": "aem-use-cases",
       "classes": [
@@ -911,7 +911,7 @@
     },
     {
       "page": "stardust/products/experience-manager/sites.html",
-      "site": "aem-section",
+      "bucket": "aem-section",
       "tag": "section",
       "moduleId": "aem-forrester",
       "classes": [
@@ -932,7 +932,7 @@
     },
     {
       "page": "stardust/products/experience-manager/sites.html",
-      "site": "aem-section",
+      "bucket": "aem-section",
       "tag": "section",
       "moduleId": "brands-strip",
       "classes": [
@@ -953,7 +953,7 @@
     },
     {
       "page": "stardust/products/experience-manager/sites.html",
-      "site": "aem-section",
+      "bucket": "aem-section",
       "tag": "section",
       "moduleId": "aem-resources",
       "classes": [
@@ -974,7 +974,7 @@
     },
     {
       "page": "stardust/products/experience-manager/sites.html",
-      "site": "aem-section",
+      "bucket": "aem-section",
       "tag": "section",
       "moduleId": "acrobat-feature",
       "classes": [
@@ -996,7 +996,7 @@
     },
     {
       "page": "stardust/products/experience-manager/sites.html",
-      "site": "aem-section",
+      "bucket": "aem-section",
       "tag": "section",
       "moduleId": "faq-accordion",
       "classes": [
@@ -1017,7 +1017,7 @@
     },
     {
       "page": "stardust/products/experience-manager/sites.html",
-      "site": "aem-section",
+      "bucket": "aem-section",
       "tag": "section",
       "moduleId": "inline-form",
       "classes": [
@@ -1038,7 +1038,7 @@
     },
     {
       "page": "stardust/products/experience-manager/sites.html",
-      "site": "aem-section",
+      "bucket": "aem-section",
       "tag": "section",
       "moduleId": "aem-final-cta",
       "classes": [
@@ -1059,7 +1059,7 @@
     },
     {
       "page": "stardust/products/experience-manager/sites.html",
-      "site": "aem-section",
+      "bucket": "aem-section",
       "tag": "header",
       "moduleId": "gnav",
       "classes": [],
@@ -1078,7 +1078,7 @@
     },
     {
       "page": "stardust/products/experience-manager/sites.html",
-      "site": "aem-section",
+      "bucket": "aem-section",
       "tag": "footer",
       "moduleId": "footer",
       "classes": [
@@ -1099,7 +1099,7 @@
     },
     {
       "page": "stardust/prototypes/products/brand-concierge.html",
-      "site": "bc-prototype",
+      "bucket": "bc-prototype",
       "tag": "section",
       "moduleId": "bc-hero",
       "classes": [
@@ -1120,7 +1120,7 @@
     },
     {
       "page": "stardust/prototypes/products/brand-concierge.html",
-      "site": "bc-prototype",
+      "bucket": "bc-prototype",
       "tag": "section",
       "moduleId": "bc-try",
       "classes": [
@@ -1141,7 +1141,7 @@
     },
     {
       "page": "stardust/prototypes/products/brand-concierge.html",
-      "site": "bc-prototype",
+      "bucket": "bc-prototype",
       "tag": "section",
       "moduleId": "bc-intro",
       "classes": [
@@ -1162,7 +1162,7 @@
     },
     {
       "page": "stardust/prototypes/products/brand-concierge.html",
-      "site": "bc-prototype",
+      "bucket": "bc-prototype",
       "tag": "section",
       "moduleId": "bc-split",
       "classes": [
@@ -1183,7 +1183,7 @@
     },
     {
       "page": "stardust/prototypes/products/brand-concierge.html",
-      "site": "bc-prototype",
+      "bucket": "bc-prototype",
       "tag": "section",
       "moduleId": "bc-use-cases",
       "classes": [
@@ -1204,7 +1204,7 @@
     },
     {
       "page": "stardust/prototypes/products/brand-concierge.html",
-      "site": "bc-prototype",
+      "bucket": "bc-prototype",
       "tag": "section",
       "moduleId": "bc-why",
       "classes": [
@@ -1225,7 +1225,7 @@
     },
     {
       "page": "stardust/prototypes/products/brand-concierge.html",
-      "site": "bc-prototype",
+      "bucket": "bc-prototype",
       "tag": "section",
       "moduleId": "bc-conversations",
       "classes": [
@@ -1246,7 +1246,7 @@
     },
     {
       "page": "stardust/prototypes/products/brand-concierge.html",
-      "site": "bc-prototype",
+      "bucket": "bc-prototype",
       "tag": "section",
       "moduleId": "faq-accordion",
       "classes": [
@@ -1267,7 +1267,7 @@
     },
     {
       "page": "stardust/prototypes/products/brand-concierge.html",
-      "site": "bc-prototype",
+      "bucket": "bc-prototype",
       "tag": "section",
       "moduleId": "bc-final-cta",
       "classes": [
@@ -1288,7 +1288,7 @@
     },
     {
       "page": "stardust/prototypes/products/brand-concierge.html",
-      "site": "bc-prototype",
+      "bucket": "bc-prototype",
       "tag": "header",
       "moduleId": "gnav",
       "classes": [],
@@ -1307,7 +1307,7 @@
     },
     {
       "page": "stardust/prototypes/products/brand-concierge.html",
-      "site": "bc-prototype",
+      "bucket": "bc-prototype",
       "tag": "footer",
       "moduleId": "footer",
       "classes": [
@@ -1328,7 +1328,7 @@
     },
     {
       "page": "stardust/prototypes/products/brand-concierge-bolder.html",
-      "site": "bc-prototype",
+      "bucket": "bc-prototype",
       "tag": "section",
       "moduleId": "bc-hero",
       "classes": [
@@ -1349,7 +1349,7 @@
     },
     {
       "page": "stardust/prototypes/products/brand-concierge-bolder.html",
-      "site": "bc-prototype",
+      "bucket": "bc-prototype",
       "tag": "section",
       "moduleId": "bc-marquee",
       "classes": [
@@ -1370,7 +1370,7 @@
     },
     {
       "page": "stardust/prototypes/products/brand-concierge-bolder.html",
-      "site": "bc-prototype",
+      "bucket": "bc-prototype",
       "tag": "section",
       "moduleId": "bc-try",
       "classes": [
@@ -1391,7 +1391,7 @@
     },
     {
       "page": "stardust/prototypes/products/brand-concierge-bolder.html",
-      "site": "bc-prototype",
+      "bucket": "bc-prototype",
       "tag": "section",
       "moduleId": "bc-intro",
       "classes": [
@@ -1412,7 +1412,7 @@
     },
     {
       "page": "stardust/prototypes/products/brand-concierge-bolder.html",
-      "site": "bc-prototype",
+      "bucket": "bc-prototype",
       "tag": "section",
       "moduleId": "bc-split",
       "classes": [
@@ -1433,7 +1433,7 @@
     },
     {
       "page": "stardust/prototypes/products/brand-concierge-bolder.html",
-      "site": "bc-prototype",
+      "bucket": "bc-prototype",
       "tag": "section",
       "moduleId": "bc-use-cases",
       "classes": [
@@ -1454,7 +1454,7 @@
     },
     {
       "page": "stardust/prototypes/products/brand-concierge-bolder.html",
-      "site": "bc-prototype",
+      "bucket": "bc-prototype",
       "tag": "section",
       "moduleId": "bc-why",
       "classes": [
@@ -1475,7 +1475,7 @@
     },
     {
       "page": "stardust/prototypes/products/brand-concierge-bolder.html",
-      "site": "bc-prototype",
+      "bucket": "bc-prototype",
       "tag": "section",
       "moduleId": "bc-conversations",
       "classes": [
@@ -1496,7 +1496,7 @@
     },
     {
       "page": "stardust/prototypes/products/brand-concierge-bolder.html",
-      "site": "bc-prototype",
+      "bucket": "bc-prototype",
       "tag": "section",
       "moduleId": "faq-accordion",
       "classes": [
@@ -1517,7 +1517,7 @@
     },
     {
       "page": "stardust/prototypes/products/brand-concierge-bolder.html",
-      "site": "bc-prototype",
+      "bucket": "bc-prototype",
       "tag": "section",
       "moduleId": "bc-final-cta",
       "classes": [
@@ -1538,7 +1538,7 @@
     },
     {
       "page": "stardust/prototypes/products/brand-concierge-bolder.html",
-      "site": "bc-prototype",
+      "bucket": "bc-prototype",
       "tag": "header",
       "moduleId": "gnav",
       "classes": [],
@@ -1557,7 +1557,7 @@
     },
     {
       "page": "stardust/prototypes/products/brand-concierge-bolder.html",
-      "site": "bc-prototype",
+      "bucket": "bc-prototype",
       "tag": "footer",
       "moduleId": "footer",
       "classes": [
@@ -1578,7 +1578,7 @@
     },
     {
       "page": "stardust/prototypes/semrush-home.html",
-      "site": "semrush-prototype",
+      "bucket": "semrush-prototype",
       "tag": "section",
       "moduleId": "sr-hero",
       "classes": [
@@ -1599,7 +1599,7 @@
     },
     {
       "page": "stardust/prototypes/semrush-home.html",
-      "site": "semrush-prototype",
+      "bucket": "semrush-prototype",
       "tag": "section",
       "moduleId": "sr-brands",
       "classes": [
@@ -1620,7 +1620,7 @@
     },
     {
       "page": "stardust/prototypes/semrush-home.html",
-      "site": "semrush-prototype",
+      "bucket": "semrush-prototype",
       "tag": "section",
       "moduleId": "split-content",
       "classes": [
@@ -1642,7 +1642,7 @@
     },
     {
       "page": "stardust/prototypes/semrush-home.html",
-      "site": "semrush-prototype",
+      "bucket": "semrush-prototype",
       "tag": "section",
       "moduleId": "sr-toolkits",
       "classes": [
@@ -1663,7 +1663,7 @@
     },
     {
       "page": "stardust/prototypes/semrush-home.html",
-      "site": "semrush-prototype",
+      "bucket": "semrush-prototype",
       "tag": "section",
       "moduleId": "sr-stats",
       "classes": [
@@ -1684,7 +1684,7 @@
     },
     {
       "page": "stardust/prototypes/semrush-home.html",
-      "site": "semrush-prototype",
+      "bucket": "semrush-prototype",
       "tag": "section",
       "moduleId": "split-content",
       "classes": [
@@ -1706,7 +1706,7 @@
     },
     {
       "page": "stardust/prototypes/semrush-home.html",
-      "site": "semrush-prototype",
+      "bucket": "semrush-prototype",
       "tag": "section",
       "moduleId": "sr-testimonial",
       "classes": [
@@ -1727,7 +1727,7 @@
     },
     {
       "page": "stardust/prototypes/semrush-home.html",
-      "site": "semrush-prototype",
+      "bucket": "semrush-prototype",
       "tag": "section",
       "moduleId": "sr-resources",
       "classes": [
@@ -1748,7 +1748,7 @@
     },
     {
       "page": "stardust/prototypes/semrush-home.html",
-      "site": "semrush-prototype",
+      "bucket": "semrush-prototype",
       "tag": "section",
       "moduleId": "sr-final",
       "classes": [
@@ -1769,7 +1769,7 @@
     },
     {
       "page": "stardust/prototypes/semrush-home.html",
-      "site": "semrush-prototype",
+      "bucket": "semrush-prototype",
       "tag": "header",
       "moduleId": "sr-nav",
       "classes": [
@@ -1790,7 +1790,7 @@
     },
     {
       "page": "stardust/prototypes/semrush-home.html",
-      "site": "semrush-prototype",
+      "bucket": "semrush-prototype",
       "tag": "footer",
       "moduleId": "sr-footer",
       "classes": [
