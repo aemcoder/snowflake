@@ -61,7 +61,9 @@ blocks/
 
 scripts/scripts.js                  # adds promoteMetadataBlock + convertTablesToBlocks polyfills,
                                     # body.stardust early-out on buildHeroBlock + decorateButtons,
-                                    # loadStardustRuntime() after loadSections()
+                                    # loadStardustRuntime() after loadSections(),
+                                    # initStardustPage() for Lenis init + gnav scroll +
+                                    # announce-carousel + footer wordmark wipe (iter-003)
 
 styles/
   styles.css                        # boilerplate body typography scoped to body:not(.stardust)
@@ -101,6 +103,10 @@ Fetches `/canon/modules/<id>.html`, fills `[data-slot]` elements (preserving inl
 - `convertTablesToBlocks(main)` — turns `<table>` block markup into `<div class="blockname options">…</div>` for `decorateBlocks()` to find.
 
 Both are idempotent. The deployed `aem.page` backend does these transformations server-side; the polyfills keep the dev server proxy path equivalent.
+
+### `scripts/scripts.js` runtime + page-init (always; only on body.stardust)
+- `loadStardustRuntime()` — runs in `loadLazy()` after `loadSections()`. Loads vendor JS sequentially (gsap → ScrollTrigger → ScrollSmoother → lenis), then module JS in parallel (faq-accordion, hub-router, hero-grid, etc.). Early-outs if `body.stardust` is not set.
+- `initStardustPage()` — runs at end of `loadStardustRuntime`. Initializes Lenis smooth-scroll + sets `window.__lenis`, attaches the `.gnav--scrolled` toggle (>40px scroll), wires announce-carousel arrows, runs hub-router 3-vs-4-card neutraliser, sets up footer wordmark reveal-on-scroll. Each IIFE early-outs if its target elements aren't on the current page. (See iter-003 LEARNINGS § Inline page-init scripts must be ported.)
 
 ### Boilerplate scoping pattern
 Where the EDS boilerplate's CSS would clobber stardust styling, the boilerplate rule is scoped to `body:not(.stardust)` rather than overridden by `body.stardust`. Override-style fixes tend to out-specify per-module rules and silently kill them; scoping the boilerplate at its source is robust.

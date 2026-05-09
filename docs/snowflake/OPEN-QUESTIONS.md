@@ -54,6 +54,20 @@ Stardust v2.1 has `data-fragment` for content that appears on multiple pages (re
 
 If a stardust output uses fragments, how does the bridge translate? Direct mapping (each stardust `data-fragment` becomes an EDS fragment block) is plausible but unverified.
 
+## Q7. Should the bridge support named slot matching for list items? *(added: iter-003)*
+
+Iter-003 hit two cases (resource-grid, product-section) where canon's slot DOM order didn't match DA cell column order, causing positional misalignment that broke rendering. Each was fixed by reordering DA cells (`tools/fix-resource-grid.js`, `tools/fix-index-content.js`).
+
+The underlying brittleness: positional matching makes content sensitive to canon's element nesting choices. Named matching would help:
+
+- DA list rows could carry an OPTIONAL header row first (`item, link, kind, title`) defining column names; subsequent rows match by name.
+- Or canon could declare an explicit ordered slot list (`<container data-slot-list="items" data-slot-order="link,kind,title">`).
+- Or content could be column-positional but the decorator would prefer named matching when available, falling back to positional.
+
+Tradeoff: more flexibility for authors (column order doesn't matter) vs. more decorator complexity, and more authoring discipline needed (column names must match canon).
+
+Worth deciding before the next site is onboarded — would inform whether the proposed `tools/author-content.js` (BACKLOG) emits headered list rows or positional ones.
+
 ## Q6. SEO / metadata beyond `title` and `template`
 
 Today our metadata block carries `title` and `template`. Stardust pages need richer SEO metadata: OG image, description, canonical, JSON-LD for the page type. Stardust's `_meta.json` sidecar contains all of this (per the artifact-map docs). The bridge should consume it.

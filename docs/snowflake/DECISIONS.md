@@ -240,4 +240,34 @@ Per DEC-010, docs accumulate on `main` as the canonical encyclopedia. Per DEC-01
 
 ---
 
+## DEC-013: Canon authoring conventions and slot-root inclusion
+
+**Status:** Accepted (iter-003)
+
+**Context:** Iter-003 was the first iteration under DEC-012 (rebuild from docs). The bridge framework was reimplemented from `ARCHITECTURE.md` + `LEARNINGS.md` and 31 canon templates were re-extracted from stardust source. Several specific bugs surfaced — each rooted in an undocumented contract about how canon templates must be authored and how the decorator enumerates slots:
+
+1. **HTML parser closes nested comments early.** Canon provenance comments containing literal `<tag>` text or inner `<!-- ... -->` examples produced spurious top-level DOM elements (resource-grid bug: cards rendered as empty `<a></a>`).
+2. **`querySelectorAll` excludes the root.** When an item template's outer element carries `data-slot` (e.g. `<a data-slot="link">` wrapping kind/title), it was silently skipped from slot enumeration, shifting every cell by one column.
+3. **Canon image `src` resolved against the wrong base.** Stardust source uses paths relative to the source HTML location; once embedded by the decorator at `/<branch>/<page>`, those relatives produced 404s.
+
+**Decision:** Codify the conventions:
+
+**Canon authoring rules:**
+- Provenance comments must use square brackets `[tag]` not literal `<tag>`, `[module: foo]` not `<!-- module: foo -->`. The HTML5 parser doesn't support nested comments; literal HTML in comments produces spurious DOM.
+- Image `src` attributes must be absolute `/stardust/...` paths (rewrite at extraction time from stardust source's relative paths).
+- `data-slot` on the item-template root is supported and decorator-handled.
+- Provenance follows the structured format: `module:`, `extracted:`, `slots:`, `notes:` lines.
+
+**Decorator slot-enumeration rule:**
+- For list items, slots are enumerated as `[clone if hasAttribute('data-slot'), ...clone.querySelectorAll('[data-slot]')]`. The clone's root is included if it carries `data-slot`. DA cells map positionally to this enumeration in document order.
+
+These rules now live as conventions in LEARNINGS § Canon authoring conventions and § List-item slot enumeration. This DEC formalises them as project policy: canon authors and the decorator are both bound by them. Future canon-extraction tooling must enforce.
+
+**Consequences:**
+- Canon templates are checked at extraction time against these rules (currently manual; future tooling can lint).
+- The decorator's slot-enumeration is explicit about the root-inclusion. Refactoring it is now a breaking change to the slot contract.
+- HOWTO § Migrate a new module step 3 (slot marking) gains a "do not use literal `<tag>` in provenance comments" guideline.
+
+---
+
 *New decisions go here. Append; don't rewrite.*

@@ -37,17 +37,19 @@ A few smaller "common operations" (start dev server, push content, run pixel dif
 3. **Create the canon template.** Path: `/canon/modules/<id>.html`.
 
    - Copy the `<section>` HTML verbatim.
-   - Add a provenance + slot list comment at the top:
+   - **Rewrite relative image `src` paths to absolute `/stardust/...`** (per DEC-013). Stardust source uses paths relative to the source HTML location (`runtime/...`, `assets/...`, `<page>/assets/scraped/...`); these will 404 once the canon is fetched at runtime. Convert to `/stardust/runtime/...`, `/stardust/assets/...`, `/stardust/products/<page>/assets/scraped/...` at extraction time.
+   - Add a provenance + slot list comment at the top — **use `[tag]` not literal `<tag>`** in the comment body (per DEC-013; HTML5 doesn't allow nested comments and literal HTML inside the comment will produce spurious DOM):
      ```html
      <!--
        module:    <id>
        extracted: stardust/products/<site>/<page>.html:<line-from>-<line-to>
        slots:     <slot1> (text|link|image), <slot2>, ...
-       notes:     [any decoration that's frozen, any quirks]
+       notes:     describe structure with [tag] not <tag>; never embed [comment: ...] examples
      -->
      ```
-   - Add `data-slot="<name>"` to every editable element.
+   - Add `data-slot="<name>"` to every editable element. Note: list-item templates may carry `data-slot` on the **outer element** (e.g. `<a data-slot="link">` wrapping kind/title); the decorator includes the template root in slot enumeration (per DEC-013).
    - For repeating items, add `data-slot-list="<list-name>"` to the parent container; the first child becomes the per-item template (decorator clones it for each row in the DA block table).
+   - DA cells map **positionally** to `[data-slot]` elements in document order — column 1 → first slot, column 2 → second slot, etc. When canon's slot order doesn't match how an author would naturally fill the cells, either restructure the canon or reorder the DA columns to match.
    - Reference: existing `/canon/modules/aem-hero.html`, `rainbow-strip.html`, `faq-accordion.html`.
 
 4. **Wire any module-specific CSS / JS.**
