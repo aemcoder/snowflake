@@ -15,6 +15,9 @@ content/
 .agents/
 .claude/
 
+# Content migration scratch outputs
+tools/migrate-content.*.html
+
 # Ensure these files are tracked
 !CLAUDE.md
 !AGENTS.md

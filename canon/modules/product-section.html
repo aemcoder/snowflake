@@ -12,14 +12,16 @@
              The product-grid IS list-templated — first <div class="explore-card">
              is the per-item template; decorator clones once per "item" row.
              Per-card slots:
-               mark      → text inside the .explore-card-mark (2-letter abbrev)
-               mark-data → not slotted, frozen as data-mark on first clone
-               title     → text inside the <h3 class="title-4">
-               badge     → text inside the .explore-card-badge <span> (e.g. "NEW")
-                           — preserved verbatim if the row has no badge cell
-               body      → text inside the <p class="body-md">
-               image     → src on the background <img>
-               link      → href on the wrapping <a class="explore-card-link-container">
+               mark    → text inside the .explore-card-mark (2-letter abbrev)
+               heading → innerHTML of the <h3 class="title-4"> — author-supplied
+                         markup so a row can include or omit the inline NEW badge
+                         (<span class="explore-card-badge">NEW</span>) verbatim.
+               body    → text inside the <p class="body-md">
+               image   → src on the background <img>
+               link    → href on the wrapping <a class="explore-card-link-container">
+
+             Note: data-mark on .explore-card-mark is frozen per first clone
+             (it drives an icon palette, not author copy).
 -->
 <section class="product-section">
   <div class="container">
@@ -56,7 +58,7 @@
             <div class="explore-card-content">
               <div class="explore-card-mark" data-mark="bi" data-slot="mark">Bi</div>
               <div class="explore-card-text">
-                <h3 class="title-4"><span data-slot="title">Brand Intelligence</span> <span class="explore-card-badge" data-slot="badge">NEW</span></h3>
+                <h3 class="title-4" data-slot="heading">Brand Intelligence <span class="explore-card-badge">NEW</span></h3>
                 <p class="body-md" data-slot="body">Measure and optimize how your brand shows up across channels and in AI search.</p>
               </div>
             </div>
