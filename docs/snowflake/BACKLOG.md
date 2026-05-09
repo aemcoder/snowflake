@@ -91,3 +91,27 @@ Two findings communicate poorly as prose; would benefit from inline SVG or Merma
 - **Server-side vs client-side pipeline split** — show the two paths (dev proxy vs deployed) side-by-side, what each step does, where the polyfills run.
 
 Lower priority — the prose works for now. Worth doing if a future iteration finds itself re-explaining these to a stakeholder.
+
+### CLI helper for content publish workflow *(added: iter-002)*
+
+`aem content push` only stages drafts; preview + publish are separate Admin API calls (LEARNINGS § DA conventions § Preview + publish). Codify the multi-step flow as one `scripts/da-publish.sh <branch> <path>...` script that:
+1. Reads auth token from `.hlx/.da-token.json`
+2. POSTs to `https://admin.hlx.page/preview/{owner}/{repo}/{branch}/{path}` (multiple paths in parallel)
+3. POSTs to `https://admin.hlx.page/live/...` for the live publish step
+4. Reports HTTP status per path
+
+Saves recreating the curl chain every iteration. Branch coords (owner/repo) read from `content/.da-config.json`.
+
+### Migrate iter-002 body images from branch-relative URLs to DA dot-folders *(added: iter-002)*
+
+Iter-002 referenced body images via `https://<branch>--<repo>--<owner>.aem.page/stardust/...` for autonomous-pace reasons. Site-level BACKLOG (afbs) tracks the migration to canonical DA dot-folders. Generic-level note: a small uploader script (see "DA-upload helper script" above) would mechanize this for future iterations that hit the same shortcut.
+
+### Generalize per-page CSS extraction *(added: iter-002)*
+
+Iter-002's sed-based extraction of per-page CSS lost a selector at the chrome/page boundary (LEARNINGS § Per-page CSS extraction has off-by-N risk). Robust path: parse the CSS into rules using a real parser (postcss or similar), filter out rules whose selector matches `^\.gnav-`, `^\.footer__`, `^#gnav`, `^#footerWordmark`, then emit the rest. Could be the same tool that does the generalized template extraction.
+
+### Lazy per-page CSS loading *(added: iter-002)*
+
+`head.html` currently links the union of all migrated pages' per-page CSS files (sites-page.css, llm-optimizer-page.css, brand-concierge-page.css, index-page.css). Every page loads CSS that doesn't apply to it. Cost is moderate (~few hundred KB extra) but real.
+
+Approach: page declares which per-page CSS file via metadata (e.g., `<meta name="page-css" content="llm-optimizer-page">`); a small loader in `scripts.js` reads it and inserts the matching `<link>` before decoration. Or use the same `template` metadata as a discriminator if there are page templates beyond `stardust`.

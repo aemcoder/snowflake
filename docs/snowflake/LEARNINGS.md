@@ -4,7 +4,7 @@ Curated, distilled knowledge about the stardust↔EDS bridge. Each entry has ear
 
 For chronological narrative, see `iterations/`. For decisions, see `DECISIONS.md`.
 
-> **Provenance:** all entries below were surfaced in **iteration 001** unless an entry explicitly says otherwise. Future iterations should tag new entries with `(found: iter-NNN)`.
+> **Provenance:** entries below are tagged with the iteration that surfaced them. Untagged entries are from **iter-001**.
 
 ---
 
@@ -60,6 +60,26 @@ Git-style workspace for DA content:
 - `aem content status` / `diff` / `merge` — inspect / sync
 
 Auth token cached at `.hlx/.da-token.json` (gitignored).
+
+### Preview + publish via Admin API (`aem content push` is not enough) *(found: iter-002)*
+
+`aem content push` only stages drafts in DA's source/content endpoints. The page does NOT appear at `aem.page` / `aem.live` URLs until you explicitly **preview** (for `aem.page`) and **publish** (for `aem.live`):
+
+```bash
+TOKEN=$(jq -r .access_token .hlx/.da-token.json)
+
+# Preview — makes the page available at aem.page
+curl -X POST -H "Authorization: Bearer $TOKEN" \
+  "https://admin.hlx.page/preview/{owner}/{repo}/{branch}/{path}"
+
+# Publish — makes the page available at aem.live
+curl -X POST -H "Authorization: Bearer $TOKEN" \
+  "https://admin.hlx.page/live/{owner}/{repo}/{branch}/{path}"
+```
+
+`{path}` matches the DA-stored content path (without `.html` extension; index pages can use trailing `/`). `{branch}` matches the GitHub branch.
+
+In iter-001 the experience-manager content rendered at aem.page after just `aem content push`; we suspect a previous Sidekick session or background sync had already previewed it. Iter-002 surfaces the actual mechanism. (cross-ref: BACKLOG#cli-content-publish-helper)
 
 ---
 
@@ -213,3 +233,38 @@ One block (`/blocks/stardust-module/`) handles every module via runtime template
 
 ### Polyfill dev-prod parity client-side
 Where the EDS backend does work the dev server proxy doesn't (table-to-block, metadata promotion), polyfill in `scripts.js` so the same code path produces equivalent results in both environments. Polyfills are idempotent so they're no-ops where the work is already done. (See DEC-005)
+
+### Branching pattern for new iterations *(found: iter-002)*
+
+Each iteration should descend from a clean main, with previous-iteration code carried forward:
+```
+git checkout main
+git checkout -b <site>-NN
+git merge <previous-iteration-branch>
+```
+This keeps the branch lineage rooted in main (not chained off the previous iteration's branch) while reusing the foundation code. Naming convention: 4-char site name + `-NN` (DEC-007). (See DEC-009)
+
+### Frozen-inner-structure templating *(found: iter-002)*
+
+When a stardust module's visual choreography depends on specific DOM structure (mosaic image grids with N positioned tiles, carousel tracks with M items, animation cycles with hard-coded timing), full per-element slot extraction can break the runtime CSS animations. Pragmatic alternative:
+
+1. Slot only the top-level content (title/body/CTA, list items where natural).
+2. Freeze the rest of the inner structure verbatim (image references hard-coded, decorative elements left alone, animation hooks unchanged).
+
+Trade: less authoring depth, preserves visual fidelity. Acceptable for module-heavy pages where decomposing to per-element slots would risk visual regressions. Future iteration can fully decompose if/when authors need finer control. (Used on iter-002's `index-hero`, `product-section`, `testimonial`, and the 3 form-shaped modules.)
+
+### Per-page CSS extraction has off-by-N risk at chrome boundaries *(found: iter-002)*
+
+Sed-based slicing of a page's inline `<style>` block to remove chrome rules can lose a selector if the boundary cuts mid-rule (selector on one line, body on next). Caught in iter-002 when `.bc-hero {` got dropped, leaving `position: relative; ...` orphaned (broken CSS).
+
+Workaround for now: manually inspect the boundary lines and adjust the line range. Robust fix: parse the CSS into rules and skip-by-class-pattern, not skip-by-line-number — see BACKLOG generalized extraction.
+
+### EDS backend image transform pipeline *(found: iter-001, refined iter-002)*
+
+When DA content references an image (via `<img src="...">` cell), the deployed `aem.page` / `aem.live` backend does several things automatically:
+
+1. Fetches the image (from `content.da.live` for DA-uploaded media, or from the deployed branch for repo-relative paths).
+2. Re-hosts at a content-addressed URL (`media_<sha-256>.png?width=750&format=...&optimize=medium`).
+3. Generates responsive `<picture>` with multiple `srcset` entries.
+
+Result: the rendered page's `<img>` looks like a fully-optimized responsive picture even though the authored content had a single `<img src>` reference. Works whether the source is DA-uploaded or a branch-relative URL — but branch-relative URLs are locked to that branch's existence (cross-ref: site afbs LEARNINGS#branch-locked-image-urls).
