@@ -115,7 +115,13 @@ function expandList(canon, listName, itemRows) {
   listContainer.innerHTML = '';
   itemRows.forEach((cells) => {
     const clone = itemTemplate.cloneNode(true);
-    const slots = [...clone.querySelectorAll('[data-slot]')];
+    // Include the clone itself if it carries a data-slot — querySelectorAll
+    // returns DESCENDANTS only, but list-item templates often have data-slot
+    // on the outer element (e.g. <a data-slot="link"> wrapping kind/title).
+    const slots = [
+      ...(clone.hasAttribute && clone.hasAttribute('data-slot') ? [clone] : []),
+      ...clone.querySelectorAll('[data-slot]'),
+    ];
     // cells[0] is the 'item' marker; cells[1..] map to slots in document order
     slots.forEach((s, i) => {
       const valueCell = cells[i + 1];
