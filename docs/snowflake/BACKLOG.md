@@ -60,3 +60,34 @@ After every iteration, verify on the deployed feature branch:
 - No console errors
 
 Could be a simple `node scripts/smoke.js <branch>` that hits the URL and asserts.
+
+### Pixel-diff helper script
+
+LEARNINGS § Pixel-fidelity-measurement describes the methodology in prose. Codify as `scripts/pixel-diff.sh <module-selector> <orig-url> <eds-url>`:
+- Open both URLs at 1440×900 in headless Chrome
+- Disable animations + scroll-behavior
+- Wait for fonts ready
+- Element-screenshot the selector on both
+- Run `compare -metric AE -fuzz 1%`
+- Report diff_count / total_pixels and produce a diff-highlight image
+
+Saves recreating the curl/script chain every time we add a module.
+
+### DA-upload helper script
+
+The `aem content push` binary bug (LEARNINGS § External-bugs) means image uploads need a direct API call. Codify as `scripts/da-upload.sh <local-path> <da-path>`:
+- Read auth token from `.hlx/.da-token.json`
+- Detect MIME type from extension
+- PUT to `admin.da.live/source/<org>/<repo>/<da-path>`
+- Echo back the `contentUrl` for the document to reference
+
+Once `aem content push` is fixed upstream this script becomes obsolete; until then it's the canonical way to upload binaries.
+
+### Diagrams for the harder findings
+
+Two findings communicate poorly as prose; would benefit from inline SVG or Mermaid diagrams in LEARNINGS.md:
+
+- **Module-id-as-class collision** — show the DOM tree with both elements matching `.faq-accordion`, the runtime script attaching twice, the resulting toggle/untoggle.
+- **Server-side vs client-side pipeline split** — show the two paths (dev proxy vs deployed) side-by-side, what each step does, where the polyfills run.
+
+Lower priority — the prose works for now. Worth doing if a future iteration finds itself re-explaining these to a stakeholder.

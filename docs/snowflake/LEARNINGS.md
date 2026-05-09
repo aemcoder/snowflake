@@ -4,6 +4,8 @@ Curated, distilled knowledge about the stardust↔EDS bridge. Each entry has ear
 
 For chronological narrative, see `iterations/`. For decisions, see `DECISIONS.md`.
 
+> **Provenance:** all entries below were surfaced in **iteration 001** unless an entry explicitly says otherwise. Future iterations should tag new entries with `(found: iter-NNN)`.
+
 ---
 
 ## DA conventions
@@ -41,7 +43,7 @@ References in the document HTML use **absolute `content.da.live` URLs**, not rel
 <img src="https://content.da.live/{org}/{repo}/{parent}/.{docname}/<filename>">
 ```
 
-Relative paths like `./assets/image.png` resolve against the editor URL (`da.live/edit#/...`), which doesn't host content — broken images in the editor view. (found: iter-001)
+Relative paths like `./assets/image.png` resolve against the editor URL (`da.live/edit#/...`), which doesn't host content — broken images in the editor view.
 
 ### Image upload via API
 - Endpoint: `PUT https://admin.da.live/source/{org}/{repo}/{path-to-image}`
@@ -72,7 +74,7 @@ The deployed `aem.page` backend does several transformations the dev server's st
 | `Metadata` block → `<head>` `<meta>` tags | yes | no — needs polyfill |
 | `<img>` → `<picture>` with responsive variants | yes | no — image served as-authored |
 
-The bridge polyfills the first two in `scripts.js` so dev and prod render equivalently. Image responsive transformation is left as-is (dev shows the authored URL, deployed shows the auto-generated `<picture>`). (found: iter-001)
+The bridge polyfills the first two in `scripts.js` so dev and prod render equivalently. Image responsive transformation is left as-is (dev shows the authored URL, deployed shows the auto-generated `<picture>`). *(See DEC-005: Polyfill dev-prod parity client-side.)*
 
 ### `decorateTemplateAndTheme()` runs early
 In `loadEager()`, `decorateTemplateAndTheme()` reads `<meta name="template">` from `<head>` and adds the value as a `<body>` class. Anything that needs to influence this — like polyfilling a metadata block from `<main>` — must run BEFORE it.
@@ -85,7 +87,7 @@ In `loadEager()`, `decorateTemplateAndTheme()` reads `<meta name="template">` fr
 - Per-block CSS auto-loads from `/blocks/<block-name>/<block-name>.css`.
 - Per-block JS auto-loads from `/blocks/<block-name>/<block-name>.js` and runs `default(block)`.
 
-This convention conflicts with the bridge's choice to encode module ID as a block option — see "Module-id-as-class collision" below.
+This convention conflicts with the bridge's choice to encode module ID as a block option — see "Module-id-as-class collision" below. *(See DEC-004: Single generic decorator, which is the choice that creates this conflict.)*
 
 ---
 
@@ -104,7 +106,7 @@ body:not(.stardust) :is(h1, h2, h3, h4, h5, h6) {
 }
 ```
 
-This way per-module rules win on stardust pages by default, no overrides needed. (found: iter-001)
+This way per-module rules win on stardust pages by default, no overrides needed.
 
 ### Specific cascades that bite
 
@@ -115,7 +117,7 @@ This way per-module rules win on stardust pages by default, no overrides needed.
 - **`a:any-link { color: var(--link-color) }`** is fine because module CSS like `.footer__col ul li a { color: ... }` (4 elements + class) out-specifies it.
 
 ### EDS structural wrappers
-`decorateSections()` and `decorateBlocks()` add `<div class="section">` per section, `<div class="<block-name>-wrapper">` around each block, and a `<div class="<block-name>-container">` class on the section. These wrappers persist in the DOM. Make them layout-transparent on stardust pages with `display: contents` (in `styles/stardust/overrides.css`):
+`decorateSections()` and `decorateBlocks()` add `<div class="section">` per section, `<div class="<block-name>-wrapper">` around each block, and a `<div class="<block-name>-container">` class on the section. These wrappers persist in the DOM. Make them layout-transparent on stardust pages with `display: contents` (in `styles/stardust/overrides.css`). *(See DEC-001: Pixel-identical, not byte-identical — the wrappers stay; we make them invisible to layout.)*
 
 ```css
 body.stardust main > .section,
@@ -132,7 +134,7 @@ body.stardust .default-content-wrapper {
 
 The bridge encodes the module ID as a block option (`Stardust-Module (aem-hero)`), which EDS renders as a CSS class on the block: `<div class="stardust-module aem-hero block">`. The inner stardust template's root element typically has the same class: `<section class="aem-hero">`.
 
-Both match `document.querySelectorAll('.aem-hero')` — runtime scripts that select on module class name attach event handlers to BOTH, firing every event twice. Observed: FAQ accordion clicks expanded then immediately collapsed. (found: iter-001)
+Both match `document.querySelectorAll('.aem-hero')` — runtime scripts that select on module class name attach event handlers to BOTH, firing every event twice. Observed: FAQ accordion clicks expanded then immediately collapsed. *(See DEC-004: Single generic decorator — the choice that creates this collision.)*
 
 **Fix:** in the generic decorator, after replacing block content, strip the module-id class from the EDS block + its wrapper + section:
 
@@ -147,6 +149,8 @@ After the strip, only the inner stardust element carries the class.
 ---
 
 ## Pixel-fidelity measurement
+
+*(See DEC-001: Pixel-identical, not byte-identical — this is the methodology that validates the choice.)*
 
 ### Methodology
 
@@ -183,7 +187,7 @@ Reproducible: `aem content add foo.png && aem content commit && aem content push
 
 **Workaround:** direct `PUT https://admin.da.live/source/{org}/{repo}/{path}` with `multipart/form-data` field `data`. Returns 201.
 
-(found: iter-001 — backlog item to file upstream against `adobe/aem-cli`)
+(Backlog item to file upstream against `adobe/aem-cli` — see `BACKLOG.md`.)
 
 ### Adobe Clean Display lazy-loads weights
 The font face declares weights 400, 700, 900. Only the weights actually requested by visible elements load eagerly; others remain in `unloaded` state per `document.fonts`. This causes mild text-shift between first paint and font-loaded paint. Stardust modules use `font-display: swap`, so it's visually graceful, but pixel-diff timing matters — wait for fonts before screenshot.
@@ -198,6 +202,8 @@ The font face declares weights 400, 700, 900. Only the weights actually requeste
   - `<img>` or `<picture>`: replace with the cell's image; copy the original element's class onto the new image
   - default: replace innerHTML
 - `data-slot-list="<name>"` on a container — the first child becomes the per-item template; one clone per `item` row in the DA block table.
+
+*(See DEC-002: Block tables per module, and DEC-004: Single generic decorator.)*
 
 ### Derived static canon templates
 Templates committed to `/canon/modules/<id>.html` as derived artifacts. NOT hand-coded (would drift from stardust output). NOT generated at runtime from stardust HTML (would couple deployment to stardust availability). Source of truth is upstream stardust output; templates are extracted once per module + frozen until re-extraction is needed. (See DEC-003)
