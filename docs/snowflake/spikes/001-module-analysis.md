@@ -1,25 +1,21 @@
 # Spike 001: Module clustering / dedup analysis
 
 **Type:** Research spike (not an iteration). Read-only structural analysis to inform productization design before iter-004.
-**Date:** 2026-05-09
-**Status:** PARTIALLY EXECUTED — analyzer ready + run; LLM read of pages was cursory; conclusions below are PRELIMINARY hypotheses, not validated findings. A subsequent execution should re-do the page read more thoroughly and confirm or refute the three-tier model proposed here.
+**Date:** 2026-05-09 (analyzer authored + first pass) → 2026-05-09 (validation pass)
+**Status:** EXECUTED — analyzer authored + run, all 7 pages hand-read at section level, three-tier hypothesis tested against per-module DOM evidence. Findings below are STRUCTURAL conclusions; **operational validation** (does a class-prefix-parameterized canon actually render correctly?) remains for iter-004.
 **Branch:** `spike-module-analysis` (analyzer + raw data); this report on `main` per DEC-010.
 
 ---
 
-## How to execute (or re-execute) this spike
+## How to re-run the analyzer
 
-The plumbing is in place. To validate the hypotheses below:
+The analyzer is small, deterministic, and re-runnable. To inspect or extend it:
 
-1. **Check out the spike branch:** `git checkout spike-module-analysis`. The 7 input pages are vendored under `stardust/`.
-2. **Re-run the analyzer:** `cd spikes/module-analysis && npm install && node analyze.mjs`. Outputs `signatures.json` + `clusters.md`. Roughly 30 ms; deterministic.
-3. **Read the actual pages** — not just my summary. The hypotheses below were extrapolated from class-name patterns + 3 hero sections. Validation needs:
-   - Read each `<section>` of each page, comparing across the prefix families (`*-final-cta`, `*-stats`, `*-resources`, `*-intro`, `*-use-cases`).
-   - For each hypothesized "family," confirm structural identity by direct DOM inspection.
-   - For Tier A ("already-shared library"), verify each module's actual structural identity is the same wherever the class name is shared (currently assumed from naming alone).
-4. **Report back** by editing this file: mark each hypothesis as **confirmed**, **refuted**, or **partially confirmed**. Replace the "Recommended iter-004 scope" section with a confirmed recommendation.
+1. `git checkout spike-module-analysis` — the 7 input pages are vendored under `stardust/`.
+2. `cd spikes/module-analysis && npm install && node analyze.mjs` — outputs `signatures.json` (per-module records with three signatures, slots, fingerprints) + `clusters.md` (human-readable summary). Roughly 30 ms.
+3. Tweak constants at the top of `analyze.mjs`: `PAGES`, `SHAPE_ATTRS`, `LEAF_TAGS`, `pathBucketOf` if onboarding new input.
 
-The success criterion to test is unchanged: *across the input set, does ≥60% of modules cluster into shared signatures with identical structural skeletons?* The script already says no (38% by skeleton). The richer question is whether the three-tier model below better captures the productization opportunity than raw signatures suggest.
+To reproduce this report's verdicts, the data in `signatures.json` is sufficient — every "confirmed" / "refuted" claim below traces to a specific `skeletonSig` cluster in that file, cross-referenced with a hand-read of the relevant `<section>` to interpret what the structural delta means. Pages were read at the line offsets noted under "Validation method" below.
 
 ---
 
@@ -45,15 +41,17 @@ Falsifiable success criterion set up front: *across the input set, ≥60% of mod
 | `prototypes/products/brand-concierge-bolder.html` | bc-prototype | Another Brand Concierge alternative |
 | `prototypes/semrush-home.html` | semrush-prototype | Pre-acquisition Semrush home prototype |
 
-**Tooling:** `spikes/module-analysis/analyze.mjs` (Node + cheerio, 360 lines, ~30 ms run). Computes for each top-level `<section>` and `<header>`/`<footer>`:
+**Tooling:** `spikes/module-analysis/analyze.mjs` (Node + cheerio, ~360 lines, ~30 ms run). Computes for each top-level `<section>` and `<header>`/`<footer>`:
 - BEM-class module name
 - Three structural signatures, increasingly lenient: `skeleton` (tag tree only), `shape` (skeleton + key data-* attrs), `variant` (shape + BEM modifier suffixes)
 - Slot inventory (heading/paragraph/link/image/button/list counts)
 - Path-bucket (NOT a site identifier — see analyzer comment)
 
-Output: `spikes/module-analysis/{signatures.json, clusters.md}`. The script's data was the starting point; the headline insights below come from a hand-read of the actual pages, not the script's percentages.
+**Validation method (this pass):** for every multi-instance class-name and every cross-class skeleton cluster surfaced by the analyzer, a representative pair of `<section>` blocks was read directly from the source HTML and structurally compared. Specific reads cited inline below; the full per-module fingerprints are in `signatures.json`.
 
-## What the script finds
+Output: `spikes/module-analysis/{signatures.json, clusters.md}`.
+
+## What the analyzer finds
 
 Across 86 module instances on 7 pages:
 
@@ -64,115 +62,146 @@ Across 86 module instances on 7 pages:
 | Shape (skel + key data attrs) | 54 | 37.2% | 15 |
 | Variant (shape + BEM modifier) | 75 | 12.8% | 8 |
 
-**The 60% success criterion was NOT met by structural matching alone.** Class-name-based dedup (43%) actually clusters more than structural-skeleton (38%), because:
-- Authors apply BEM names that bundle similar shapes under one identity (e.g., `gnav` is one name even when its 3 instances have 3 different skeletons).
-- Conversely, structural matching splits family modules with different prefixes (`llm-hero` and `bc-hero` have IDENTICAL skeletons but the BEM-suffix-stripping is per-instance — `llm-hero__title` and `bc-hero__title` both yield `__title`, but the analyzer's per-class-prefix walk doesn't aggregate them under one canonical "hero" identity).
+**Cluster vs singleton breakdown:**
+- 48 / 86 modules (**55.8%**) belong to a structural cluster of ≥2 instances with identical skeleton.
+- 38 / 86 (44.2%) are structural singletons.
+- 16 class names have >1 instance on different pages; **8 of those 16 (50%) have a stable skeleton across instances; 8 do not.**
 
-The script DID find 5 cross-class skeleton clusters (modules with different class names but identical skeletons):
+**Verdict on the 60% success criterion:** **NEAR MISS — 55.8% with strict structural matching.** Close enough that fuzzy matching (treating a single optional element as equivalent) would push it across, but strict matching alone doesn't.
 
-1. **`c24d2ad2e13d`** — 6 occurrences across 4 names: `llm-final-cta`, `bc-final-cta`, `aem-forrester`, `aem-final-cta`. Final-CTA pattern.
-2. **`001c2ab6855b`** — 3 occurrences, 2 names: `rainbow-strip`, `bc-webinar`. Banner-strip pattern.
-3. **`d050276d353b`** — 3 occurrences, 2 names: `split-content`, `bc-split`. Image-and-copy-row pattern.
-4. **`2d5a515cded6`** — 2 occurrences, 2 names: `llm-hero`, `aem-hero`. Hero pattern (bc-hero is just barely off due to 1-vs-2 CTAs).
-5. **`ed277fa06c76`** — 2 occurrences, 2 names: `training-cta`, `bc-training`. Training-CTA pattern.
+Five cross-class skeleton clusters (different class names, identical skeleton) surface from the script:
 
-These match exactly the *family templates* that emerge from a manual read.
+1. **`c24d2ad2e13d`** — 6 occurrences across 4 names: `llm-final-cta`, `bc-final-cta`, `aem-forrester`, `aem-final-cta`. The "promo-with-image" final-CTA pattern.
+2. **`001c2ab6855b`** — 3 occurrences, 2 names: `rainbow-strip`, `bc-webinar`. Banner-strip pattern (`section(p,a)`).
+3. **`00d933bcbdf9`** — 3 occurrences, 2 names: `split-content` (bc), `bc-split`. Multi-article split-row pattern.
+4. **`40713b38f45f`** — 2 occurrences, 2 names: `llm-hero`, `aem-hero`. The 2-CTA hero variant.
+5. **`ed277fa06c76`** — 2 occurrences, 2 names: `training-cta`, `bc-training`. The minimal training-CTA pattern.
 
-## What a hand-read of the pages tells me — PRELIMINARY (only one family verified by direct DOM read; rest inferred from class-name patterns)
+These 5 clusters cover 16 of 86 module instances (18.6%) — they are the cross-class reuse opportunity surfaced by structure alone.
 
-Reading the raw section markup *suggests* a richer model than the script's percentages capture. **Modules may fall into three tiers** — though only the hero family was directly DOM-verified across `llm-` / `bc-` / `aem-` prefixes; the other family hypotheses are extrapolated from naming and need confirmation:
+## Validation: tier-by-tier verdicts
 
-### Tier A — Already-shared library (~6 modules)
+This section answers the question the original three-tier hypothesis posed. **Each item below is marked CONFIRMED / PARTIAL / REFUTED based on direct structural comparison of the relevant `<section>` blocks.**
 
-Same class name across pages and product sections. Stardust authors have already deduplicated these.
+### Tier A — "Class name = identity" (claim: same BEM class implies same structure)
 
-| Module | Used in | Variant axis |
-|---|---|---|
-| `rainbow-strip` | llm-optimizer, AEM Sites | (none) |
-| `brands-strip` | index, AEM Sites | (none — but has 2 different shapes; needs review) |
-| `acrobat-feature` (+ `--teal`) | llm-optimizer, AEM Sites | `--teal` modifier |
-| `faq-accordion` | llm-optimizer, brand-concierge, AEM Sites | (none) |
-| `inline-form` | brand-concierge, AEM Sites | (none — 2 different shapes; needs review) |
-| `split-content` | llm-optimizer, brand-concierge, semrush-home (×2 with sub-classes) | `sr-promos`, `sr-aivi` modifiers |
+Hand-read per-class-name verdict:
 
-These ARE the productization win available today: convert once, reference from anywhere.
+| Class | Instances | Skeletons | Verdict | Evidence |
+|---|---|---|---|---|
+| `faq-accordion` | 5 | 1 | **✅ CONFIRMED** — strongest cluster in the dataset | Identical `section(div(h2,ul(li(button,div(p))+)))` on llm-optimizer:638, brand-concierge:776, sites.html:1310, both prototype-bc pages |
+| `bc-use-cases` | 3 | 1 | **✅ CONFIRMED** | Identical `section(div(h2),div(article(div,h3,p)+))` on bc + 2 prototypes |
+| `bc-try` | 3 | 1 | **✅ CONFIRMED** | Identical search-and-chips structure across bc + 2 prototypes |
+| `bc-why` | 3 | 1 | **✅ CONFIRMED** | Identical 4-card grid across bc + 2 prototypes |
+| `bc-final-cta` | 3 | 1 | **✅ CONFIRMED** (also part of Tier B family) | Identical `section(div(div(h2,a),div(img)))` |
+| `rainbow-strip` | 2 | 1 | **✅ CONFIRMED** | Identical `section(p,a)` on llm-optimizer + sites.html |
+| `inline-form` | 2 | 1 | **✅ CONFIRMED** | Identical form structure on bc + sites.html |
+| `bc-split` | 2 | 1 | **✅ CONFIRMED** | Identical 3-article structure on the 2 prototypes |
+| `acrobat-feature` | 3 | 2 | **⚠️ PARTIAL** — 2/3 share | index variant adds `<div class="ac-fallback">…<br>…</div>` decoration; llm/aem variants don't (read: index:1309 vs llm:543) |
+| `bc-intro` | 3 | 2 | **⚠️ PARTIAL** — 2/3 share | bolder variant has `h2(span,br,span)` for word-cascade animation; standard is `h2` |
+| `gnav` | 6 | 2 | **⚠️ PARTIAL** — 5/6 share | index has its own gnav variant (subbrand layout); product pages share canonical gnav |
+| `footer` | 6 | 2 | **⚠️ PARTIAL** — 5/6 share | same pattern as gnav: index footer differs from canonical product footer |
+| `bc-hero` | 3 | 2 | **⚠️ PARTIAL** — 2/3 share | prototypes add `<div class="bc-hero__mesh">` and chat-bubble decorations; products has the bare hero |
+| `brands-strip` | 2 | 2 | **❌ REFUTED** | index version is logos-only `section(div(h2,div(span+),div(a)))`; aem version has logo+metric per item `section(h2,div(div(span,p)+),div(a))`. Different content models under the same name. |
+| `bc-conversations` | 3 | 3 | **❌ REFUTED** | All 3 instances structurally distinct |
+| `split-content` | 4 | 4 | **❌ REFUTED** | The class name is co-opted across very different shapes: llm-optimizer has 3 articles each with CTA (`section(div(article(...,a)+))`); bc has 3 articles where only middle has CTA (different skeleton); semrush uses two further unrelated shapes including video-based and single-article variants |
 
-### Tier B — Family templates (~5–7 templates × ~3–5 prefix variants)
+**Tier A confirmed for 8 of 16 multi-instance classes (50%).** Class-name as identity holds half the time. The half that fails clusters into two patterns:
+- *Decoration deltas* (acrobat-feature, bc-intro, bc-hero, gnav, footer) — same content payload, optional visual flourishes added on certain pages. A canon-with-optional-decorations design would unify them.
+- *Content-model deltas* (brands-strip, bc-conversations, split-content) — same name, semantically different module. These cannot be unified — they're independent modules masquerading as one identity.
 
-Same structural skeleton, different BEM prefix. Each new product section in a site contributes its own prefix. Today they're separate canons; with class-prefix parameterization they collapse to one canon per family.
+### Tier B — "Family templates" (claim: different prefix, same skeleton — collapsible via class-prefix parameterization)
 
-| Family | Prefix instances | Confirmed structural identity? |
-|---|---|---|
-| `*-hero` | `llm-`, `bc-`, `aem-`, `sr-` | yes (verified by direct read) |
-| `*-final-cta` | `llm-`, `bc-`, `aem-`, `home-`, `sr-` (`sr-final`) | mostly yes (script found 4-name cluster) |
-| `*-stats` | `llm-`, `sr-` | likely yes |
-| `*-resources` | `bc-`, `aem-`, `sr-` | likely (cards-grid pattern) |
-| `*-intro` | `llm-`, `bc-` | likely |
-| `*-use-cases` | `bc-`, `aem-` | likely |
-| `*-training` | `*` (training-cta), `bc-training` | yes (script found 2-name cluster) |
+| Family | Hypothesized prefixes | Verdict | Evidence |
+|---|---|---|---|
+| `*-final-cta` | `llm-`, `bc-`, `aem-`, `aem-forrester`, `home-`, `sr-` | **✅ CONFIRMED for 4 prefixes (6 instances)** | `llm-final-cta` (llm:756), `bc-final-cta` (×3), `aem-final-cta` (sites:1413), `aem-forrester` (sites:1090) all share `section(div(div(h2,a),div(img)))` *literally byte-for-byte* with prefix substitution. `home-final-cta` and `sr-final` use different shapes — outside the family. |
+| `*-training` | `*-cta`, `bc-` | **✅ CONFIRMED** | `training-cta` (llm:629) and `bc-training` share identical `section(div(h2,a))`. Note `training-cta` itself has no product prefix. |
+| `*-hero` | `llm-`, `bc-`, `aem-`, `sr-` | **⚠️ PARTIAL** — 2 of 5 prefix instances cluster | `llm-hero` and `aem-hero` are identical 2-CTA heroes (`40713b38f45f`). `bc-hero` (products) is the same shape modulo 1-vs-2 CTAs. `bc-hero` (prototypes) adds mesh+chat decorations. `sr-hero` is structurally different (SVG illustration in place of image). The family hypothesis holds for the 2-CTA variant; other instances are visually similar but structurally distinct. |
+| `*-stats` | `llm-`, `sr-` | **❌ REFUTED** | `llm-stats` is `section(div(h2),div(div(p+,a)+))`; `sr-stats` is `section(div(span,h2),div(div(div+,p)+))`. Different content shape (sr has image-stats, llm has number+source-link). |
+| `*-resources` | `bc-`, `aem-`, `sr-` | **❌ REFUTED** | All 3 are "resources card-grid" by intent but each has its own structure: `bc-resources` is span+p; `aem-resources` is svg+p; `sr-resources` has eyebrow+heading+2-tier card-grid. Same idea, three implementations. |
+| `*-intro` | `llm-`, `bc-` | **❌ REFUTED** | `llm-intro` is `section(div(h2))`; `bc-intro` is `section(h2)`. The wrapping `<div>` difference makes these distinct skeletons. (Both are "minimal heading-only sections"; could potentially be unified by a fuzzy-matching layer.) |
+| `*-use-cases` | `bc-`, `aem-` | **❌ REFUTED** | `bc-use-cases` is `section(div(h2),div(article(div,h3,p)+))` (icon-only article cards); `aem-use-cases` is `section(div(div(h2),div(article(div(img),h3,p)+)))` (image+heading+text article cards). Same idea, different content model and wrapping. |
 
-For the canon abstraction this implies: the canon's class skeleton needs the prefix as a parameter (today it's hardcoded). The bridge would render `<section class="${prefix}-hero">…<h1 class="${prefix}-hero__title">` etc. Probably a small `data-bem-prefix` attribute on the canon root + a decorator pass that rewrites BEM classes at render time.
+**Tier B confirmed for 2 of 7 hypothesized families.** The original "every product section gets its own prefix family" mental model is mostly wrong. The `*-final-cta` family is the standout case: 4 different class prefixes, 6 instances, *literally one template with prefix substitution*.
 
-### Tier C — Site-unique modules (~10-15 per site)
+Other "families" turned out to be **conceptual cousins** (same UX intent: a stats grid, a resources card-row, an intro heading) that authors implemented independently. They share a *naming convention* but not a *template*.
 
-No reuse across sites or product sections. Need per-iteration extraction. Examples:
-- afbs index: `hero-announce`, `index-hero`, `announce-carousel`, `testimonial`, `search-section`, `product-section`, `home-final-cta`
-- afbs llm-optimizer: `semrush-promo`, `llm-stats`, `(no class)` resource-grid
-- afbs brand-concierge: `bc-try`, `bc-conversations`, `bc-resources`, `bc-webinar`, `bc-marquee` (prototype)
-- AEM Sites: `aem-features`, `aem-use-cases`, `aem-forrester`, `aem-resources`
-- semrush-home: `sr-toolkits`, `sr-testimonial`, `sr-resources`, `sr-final`, `sr-nav`, `sr-footer`
+### Tier C — Site-unique modules
 
-These don't benefit from cross-page reuse mechanics; they benefit from the *automation* of extraction (BACKLOG: generalized extractor).
+The original list of singletons holds — see `clusters.md` "Singleton modules" section. Each path-bucket has 1-9 modules with skeletons that don't appear elsewhere in the dataset. These are genuine per-page unique modules. **Confirmed for the listed examples.**
 
-## What this dataset doesn't claim
+### Cross-class structural clusters NOT covered by Tier A/B framing
 
-- **Cross-organization reuse is untestable here.** All 7 pages are from one stardust output for one corporate web presence. To make a claim like "module X reuses across Site A and Site B from different organizations," we'd need stardust output from a different company. Not available in this dataset.
-- **Tier B confirmation depth is limited** — 4 of 7 family hypotheses (heroes, final-CTAs, training, resources) are well-supported by either script-clustering or direct read. The other 3 (stats, intro, use-cases) are *hypotheses* based on naming pattern; would need a per-family read to confirm structural identity.
-- **Variant axis specifics** — what changes between variants of the same family is partially captured (modifier classes like `--teal`, `sr-promos`) but a thorough taxonomy would need iteration.
+The analyzer surfaced one more useful pattern that didn't fit the original tier model:
 
-## What this means for productization
+- **`rainbow-strip` ≅ `bc-webinar`** (`001c2a` skeleton). Two completely independent modules (different names, different content meanings: one is a brand-rainbow announce-strip, the other is a webinar promo) that happen to share the identical minimal `section(p,a)` shape. This is a case where structural identity does NOT imply they should be one canon — they're semantically distinct. It demonstrates that **structural clustering must be filtered by author judgment**, not auto-merged.
 
-Substantively rewrites the four-stage roadmap from the earlier conversation:
+## What this means for productization (revised)
 
-1. **Catalog isn't one flat dedup table — it's three tiers.** Each tier has its own treatment:
-   - Tier A: classic shared library (DA's existing library mechanism per `docs.da.live/setup-library` likely fits).
-   - Tier B: canon with **class-prefix as a slot or block-option**. New mechanism in the bridge. Probably the highest leverage productization feature.
-   - Tier C: per-iteration auto-extract (BACKLOG already has this).
+The original four-stage roadmap is rewritten by the validation results:
 
-2. **Algorithmic dedup is a SUGGESTION ENGINE, not the source of truth.** Class-name-based grouping (43% reduction) and structural matching (38%) disagree because they measure different things. The right design is: tooling that surfaces *candidate* clusters for human review during extraction, presenting both naming and structural evidence; the human confirms which is "the same module."
+1. **Class-name-as-identity is unreliable (50% success rate).** The "automatic library by BEM class" path doesn't work without structural confirmation. A library tool that imports modules by class name will introduce silent structural drift.
 
-3. **The headline scaling claim is genuine within-site** — for a site with 100 pages and 30 unique modules, ~50% of modules will be Tier A (already-shared) or Tier B (family-collapsible), so ~15-20 canons would cover the site. ~30-40 templates total across the bridge ecosystem isn't far from where iter-003 already landed (31 canons for 3 pages of one product line). The system scales linearly until variant explosion happens (Tier B family with too many prefix variants), at which point class-prefix parameterization becomes load-bearing.
+2. **Class-prefix parameterization is high-leverage but narrowly applicable.** It pays off massively for one specific pattern (`*-final-cta`-style promo-with-image template): 4 class prefixes, 6 instances, *one template*. Other "families" don't reduce that way. The mechanism should exist but be applied selectively, on confirmed family structures, not as a default.
 
-4. **Cross-organization productization is a separate question.** Until tested with multi-org stardust output, we can't claim "your stardust skill produces canons that reuse across customers." Today the safer claim is: "within one customer's stardust output, ~50% of module work is reusable."
+3. **Structural clustering surfaces candidates, doesn't decide identity.** The `rainbow-strip ≅ bc-webinar` case shows two modules with identical structure that should NOT merge (different content meanings). Author judgment is the source of truth; the analyzer surfaces candidates.
 
-## Preliminary recommendations for iter-004 (TO BE CONFIRMED on re-execution)
+4. **The genuine reuse opportunity is concentrated in ~10-12 stable modules.** Among multi-instance classes:
+   - 8 confirmed-stable (faq-accordion, bc-use-cases, bc-try, bc-why, bc-final-cta, rainbow-strip, inline-form, bc-split)
+   - 5 partial-with-decoration-deltas (acrobat-feature, bc-intro, bc-hero, gnav, footer) — unifiable with optional-decoration support
+   - 1 cross-class family with prefix substitution (final-CTA: 4 prefixes → 1 template)
+   - 3 "named the same but different module" (brands-strip, bc-conversations, split-content) — must NOT be merged
 
-These are my one-pass extrapolation from a partial read. Re-execution should validate the underlying hypotheses before committing to any of them. Three options sketched here for context:
+   That's roughly 12-14 catalog entries covering ~50 of 86 module instances. Plus 38 singletons that need per-page work.
 
-**Option α (full Tier-B mechanism):** Build class-prefix parameterization in the bridge. Migrate 1-2 sites' worth of pages testing the new mechanism. Output: a working hero/final-CTA family canon + decorator support + 1-2 sites worth of converted content. Estimated 3-4 days.
+5. **The bridge scales linearly within one site.** For a 100-page site with 30 unique modules, the catalog stabilizes around the 12-14 "core" patterns + a long tail of singletons. New pages mostly compose from existing catalog entries; new patterns get added as candidates surface. This matches what iter-003 observed (31 canons for 3 pages of one product line — the canon count grows sub-linearly with page count).
 
-**Option β (catalog-first):** Set up the DA library mechanism for Tier A modules. Migrate one new site (or AEM-Sites' sites.html since we have it) using only existing canons + the library. Validates the catalog-driven path before building the family-template mechanism. Estimated 1-2 days.
+6. **Cross-organization reuse is still untestable from this dataset.** All 7 pages are one corporate web presence. The within-site-and-prefix-family findings DO transfer in principle, but the rate of true reuse across organizations is unknown until we have multi-org stardust output.
 
-**Option γ (auto-extract first):** The "generalize template extraction" BACKLOG item, scoped to produce candidate canons + suggest matches against existing catalog. Most-leverage tooling but doesn't immediately ship rendered pages. Estimated 2 days.
+## Recommended iter-004 scope
 
-**Preliminary lean: β then α** — catalog-first to prove the reuse mechanic on Tier A, then build Tier B family-template mechanism. But this depends on Tier A's "already-shared" claim actually holding under structural verification (currently assumed from naming alone). If structural verification falsifies Tier A — e.g., `rainbow-strip` instances differ structurally despite the shared class name — the recommended sequencing changes.
+The validation revises the preliminary recommendation. The original "Option β then α" sequencing assumed Tier A held; it mostly didn't. Here is the validated recommendation:
 
-A re-execution of this spike should confirm or refute Tier A first, then revisit.
+**Iter-004 recommendation: catalog-with-confirmation (revised Option β).** Build the DA library mechanism, but treat module imports as **structurally validated**, not name-based. Walk one new stardust page (candidate: `experience-manager/sites.html` since we already have the source) and migrate it using:
+
+1. **Existing iter-003 canons** for confirmed-stable modules already in the catalog (faq-accordion, etc.).
+2. **One new "family canon"** with class-prefix parameterization, scoped specifically to the `*-final-cta` family. Render `<section class="${prefix}-final-cta">…<h2 class="${prefix}-final-cta__title">` etc. via a small `data-bem-prefix` attribute on the canon root + a decorator pass that rewrites BEM classes at render time. This proves the parameterization mechanism on the one family where it definitely pays off.
+3. **Author-confirmation step** when a new page introduces a module name. The bridge surfaces analyzer output (cross-class clusters + same-name variants) as suggestions; a human accepts or rejects each match before the canon is reused. This avoids silent drift on names like `brands-strip` or `split-content`.
+4. **Skip Tier B for stats/resources/intro/use-cases.** The data says they don't share enough structure to template — re-extract per page.
+
+Estimated 2-3 days, contingent on the 1-page migration revealing further details. Output: a working family canon for final-CTA + 1 page migrated using a mix of existing canons, the new family canon, and a few per-page extractions. This delivers the productization narrative ("we can scale to a new page within a site") while honestly admitting the limits ("not every family-shaped name turns out to be a family-shaped template").
+
+**Deferred / for later iterations:**
+- Class-prefix parameterization for hero family (only 2 of 5 prefix instances cluster — would need a "decorations slot" mechanism added to the canon, which is a separate feature).
+- Variant axis taxonomy (which `--teal` / `sr-promos` modifiers actually change at render time).
+- Cross-organization claim (needs multi-org stardust input).
+- Generalized auto-extractor (Option γ) — still a useful tool; lower-priority than the catalog-mechanism work.
 
 ## Distillation footer
 
 Where this spike's outputs live:
 - **This report** lands on `main` per DEC-010 (research is documentation).
 - **Analyzer + raw data** (`spikes/module-analysis/analyze.mjs`, `signatures.json`, `clusters.md`) stays on the `spike-module-analysis` branch.
-- The signatures.json is consultable evidence; the analyzer is reusable for the next round.
+- The `signatures.json` is consultable evidence; the analyzer is reusable for future analysis rounds (e.g., when a different organization's stardust output becomes available).
 
-What this spike contributes to the encyclopedia (for iter-004 to read):
-- *(no LEARNINGS additions yet)* — the spike's findings are HYPOTHESES for iter-004 to test. After iter-004 actually executes on the three-tier model, we'll know which parts hold and what to distill.
-- *(no DECISIONS yet)* — same reason. The "use class-prefix parameterization" choice would become a DEC if/when iter-004 implements it.
-- BACKLOG: the existing "generalize template extraction" + "DA content authoring tool" entries are reaffirmed by the spike. No new ones — the spike's recommendation goes into iter-004's plan, not BACKLOG (it's the *next thing to do*, not a deferral).
+What this spike contributes — explicitly held back from LEARNINGS.md until iter-004 validates operationally:
 
-What we deliberately did NOT do in the spike:
-- Did not implement class-prefix parameterization (that's iter-004 if approved).
-- Did not write a Tier A library importer (also iter-004).
+- **Structural finding (validated this spike):** class-name-as-identity holds for 50% of multi-instance modules. *Hypothesis-tier finding* until iter-004 implements a catalog import flow and confirms the failure modes manifest as expected.
+- **Structural finding (validated this spike):** the `*-final-cta` family is one template with prefix substitution across 4 prefixes / 6 instances. *Hypothesis-tier finding* until iter-004 builds the class-prefix-parameterized canon and renders all 6 instances correctly.
+- **Cross-class clustering (validated this spike):** the analyzer surfaces 5 cross-class clusters; 4 of 5 represent real reuse opportunities, 1 of 5 is a false positive (rainbow-strip ≅ bc-webinar — same shape, different module). Implication: clustering surfaces candidates but author judgment decides identity.
+
+What gets promoted only AFTER iter-004:
+- "Class-prefix parameterization is the right mechanism for the final-CTA family" → DECISIONS once iter-004 builds and ships it.
+- "Catalog imports must structurally validate, not name-match" → LEARNINGS once iter-004 hits the failure mode in practice.
+- Any concrete API for the bridge's catalog/library mechanism → ARCHITECTURE once it exists.
+
+BACKLOG state:
+- "Generalize template extraction" remains queued; the spike's findings refine its design (cluster surface candidates, human confirms identity, separate decoration-deltas from content-model-deltas).
+- "DA content authoring tool from canon schema" remains queued; the spike doesn't change its priority.
+- New BACKLOG candidates (low priority): a lint-pass that flags "two modules sharing identical structure but different class names" (could surface false positives like rainbow-strip ≅ bc-webinar but also catch real renames like split-content/bc-split).
+
+What we deliberately did NOT do in this spike:
+- Did not implement class-prefix parameterization (that's the iter-004 deliverable if approved).
+- Did not write a catalog importer (also iter-004).
 - Did not run the analyzer on cross-organization input (no such input available).
-- Did not validate Tier B hypotheses for stats/intro/use-cases (deferred — would need per-family element diff).
+- Did not validate the *operational* claim that a class-prefix-parameterized canon renders correctly at all 6 final-CTA call sites — only the structural pre-condition that the 6 sites genuinely share one template skeleton.

@@ -17,6 +17,7 @@ A small tool that takes a stardust HTML file and produces candidate templates wo
 - Heuristics for slot identification: text nodes inside container elements; `<a>` href + text; `<img>`/`<picture>` src.
 - Emit `<id>.html` with `data-slot` markers + a slot schema comment.
 - Surface ambiguity (e.g. structural decoration text that probably shouldn't be a slot).
+- **Cross-reference candidate output against an existing canon catalog** (per spike-001 findings): use the structural-cluster analyzer to detect when a candidate's skeleton matches an existing canon, surface that as a "this might already be in the catalog" suggestion. Spike showed 50% of multi-instance class names are stable, 50% drift — so name-match alone isn't sufficient; structural confirmation is required.
 
 Produces candidate templates for human review. Doesn't try to be perfect; tries to make the manual review pass cheap.
 
@@ -128,6 +129,14 @@ A proper authoring tool would, given a canon template + a stardust source page (
 5. PUT the document, preview, publish.
 
 This eliminates the column-order ambiguity entirely (canon defines the schema; content matches by construction). Replaces the one-off `fix-*-content.js` scripts permanently. Plausible name: `tools/author-content.js` or part of a richer `da-client.js` library.
+
+### Class-prefix-parameterized canon for the `*-final-cta` family *(added: spike-001)*
+
+Spike-001 confirmed that 4 different BEM prefixes (`llm-`, `bc-`, `aem-final-cta`, `aem-forrester`) produce literally one structural template across 6 instances. Today each is a separate canon. A `data-bem-prefix` attribute on the canon root + a decorator pass that rewrites BEM classes at render time would collapse them to one canon. **This is the recommended scope for iter-004** (see `docs/snowflake/spikes/001-module-analysis.md` § Recommended iter-004 scope). Promote to DECISIONS once iter-004 builds and ships it.
+
+### Structural-cluster lint pass *(added: spike-001)*
+
+The analyzer can flag pairs of modules that share an identical skeleton but differ in class name. Some of these are real renames (e.g. `split-content` ≅ `bc-split` — same template, accidental duplicate identity); others are coincidental matches (e.g. `rainbow-strip` ≅ `bc-webinar` — same minimal `section(p,a)` shape, semantically different modules). A lint that surfaces both as "candidate consolidations" with author-confirmation gating would prevent silent drift in the canon catalog. Low priority; only useful once the catalog gets large enough that humans can't track it manually.
 
 ### Per-module pixel-diff campaign *(added: iter-003)*
 
