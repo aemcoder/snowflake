@@ -78,16 +78,17 @@ A few smaller "common operations" (start dev server, push content, run pixel dif
 
 7. **Upload images via direct API** (not `aem content push` — see LEARNINGS#external-bugs).
 
-   For each image referenced in the module's slots, upload to the canonical DA dot-folder (LEARNINGS#image-storage):
+   For migration-driven images, upload to `/media/<site-slug>/<filename>` per DEC-011 (LEARNINGS § Image storage — three patterns):
    ```bash
    TOKEN=$(jq -r .access_token .hlx/.da-token.json)
    curl -s -H "Authorization: Bearer $TOKEN" \
      -X PUT \
-     -F "data=@./content/<site>/.<page>/<filename>;type=<mime>" \
-     "https://admin.da.live/source/<org>/<repo>/<site>/.<page>/<filename>"
+     -F "data=@./<local-path>;type=<mime>" \
+     "https://admin.da.live/source/<org>/<repo>/media/<site-slug>/<filename>"
    ```
-   - `<page>` is the document name without `.html` (so `/blog/post-1.html` → `.post-1`)
-   - In the DA cell, reference the image as the absolute `content.da.live` URL the response returns
+   - `<site-slug>` is the 4-character site mnemonic from DEC-007 (e.g., `afbs`, `expm`).
+   - In the DA cell, reference the image as the absolute `https://content.da.live/<org>/<repo>/media/<site-slug>/<filename>` URL — branch-independent, survives iteration cuts.
+   - Per-document dot-folders (`/<site>/.<page>/<file>`) remain reserved for **author drag-drop** in DA's editor, not migration scripts.
 
 8. **Verify locally.**
    - Start dev server if not running: `npx -y @adobe/aem-cli up --no-open`
@@ -115,7 +116,7 @@ A few smaller "common operations" (start dev server, push content, run pixel dif
 
 - **A `<table>` inside the module that isn't a block.** `convertTablesToBlocks` will mistakenly treat it as a block. Today none of our modules do this; if a future one needs a real `<table>` (pricing comparison, spec sheet) the polyfill needs tightening — see BACKLOG.
 
-- **Image at non-canonical DA path.** If you upload to `<site>/assets/foo.png` instead of `<site>/.<page>/foo.png`, the DA editor will show broken images even though the file exists. Always use the dot-folder convention.
+- **Image at non-canonical DA path.** Two canonical locations exist: `/media/<site-slug>/<file>` for migration-driven uploads (DEC-011) and `/<parent>/.<docname>/<file>` for author drag-drop (the dot-folder convention). An ad-hoc location like `<site>/assets/foo.png` will store the binary but won't render correctly via the editor or `<picture>` transform.
 
 ---
 
@@ -134,22 +135,22 @@ A few smaller "common operations" (start dev server, push content, run pixel dif
    - Configure GitHub → DA → AEM via the aem.live console: install the AEM Code Sync GitHub app, register the org/repo on `da.live`.
    - Note the URL pattern: `https://main--<repo>--<org>.aem.page/<path>`.
 
-2. **Copy bridge code from this repo.**
+2. **Rebuild bridge framework from the docs** (per DEC-012: each iteration starts from `main` with docs only — no copy from prior iterations).
 
-   Files to copy verbatim (or adapt minimally):
-   - `blocks/stardust-module/{js,css}` — generic decorator
-   - `blocks/header/{js,css}` — overridden boilerplate header (loads `/canon/header.html`)
-   - `blocks/footer/{js,css}` — overridden boilerplate footer
-   - `scripts/scripts.js` — the `promoteMetadataBlock`, `convertTablesToBlocks`, `loadStardustRuntime`, body.stardust early-outs
-   - `styles/styles.css` — boilerplate body typography scoped to `body:not(.stardust)`
-   - `styles/stardust/overrides.css` — `display: contents` on EDS wrappers, visibility forces
+   Use `ARCHITECTURE.md` and `LEARNINGS.md` to (re)implement:
+   - `blocks/stardust-module/{js,css}` — generic decorator (slot vocabulary, template fetch+fill, module-id strip; LEARNINGS § Patterns we settled on, § Module-id-as-class collision)
+   - `blocks/header/{js,css}` and `blocks/footer/{js,css}` — pure `fetch + innerHTML` loaders for `/fragments/header.html` and `/fragments/footer.html` (per DEC-008)
+   - `scripts/scripts.js` — `promoteMetadataBlock`, `convertTablesToBlocks` polyfills + `loadStardustRuntime` + `body.stardust` early-outs (LEARNINGS § EDS pipeline; DEC-005 polyfill rationale)
+   - `styles/styles.css` — boilerplate body typography scoped to `body:not(.stardust)` (LEARNINGS § Boilerplate ↔ stardust conflicts)
+   - `styles/stardust/overrides.css` — `display: contents` on EDS wrappers, visibility forces (DEC-001)
 
-   Don't copy:
-   - `canon/modules/*.html` — these are per-site, will be re-extracted from the new site's stardust output
-   - `canon/header.html` and `canon/footer.html` — site-specific chrome
+   Per-site artifacts produced fresh during the iteration (see steps below):
+   - `canon/modules/*.html` — re-extracted from this iteration's stardust output
+   - `fragments/header.html` and `fragments/footer.html` — site-specific chrome (DEC-008)
+   - `styles/fragments/chrome.css` — chrome-specific styles extracted from per-page inline `<style>`
    - `styles/stardust/<page>-page.css` — per-site per-page CSS
-   - `content/` — DA workspace, will be initialized fresh
-   - `head.html` — modify to link the new site's runtime CSS subset
+   - `head.html` — links to the runtime CSS subset this site uses
+   - `content/` — DA workspace, initialized fresh via `aem content clone`
 
 3. **Vendor the new site's stardust runtime.**
    Copy the new site's runtime assets to `stardust/runtime/` (CSS, JS, fonts, images that the rendered page references via `/stardust/runtime/...`). Same shape as this repo today.
@@ -160,8 +161,9 @@ A few smaller "common operations" (start dev server, push content, run pixel dif
    For each unique `<section class="...">` in the new site's stardust HTML, follow `HOWTO § Migrate a new module` steps 1–4 to produce `canon/modules/<id>.html`. Today this is manual per module; future iteration may automate via the BACKLOG generalized-extractor item.
 
    Also extract:
-   - The site's chrome to `canon/header.html` and `canon/footer.html` (frozen as code initially; promote to DA-authored later)
-   - Per-page inline `<style>` block to `styles/stardust/<page>-page.css`
+   - The site's chrome to `fragments/header.html` and `fragments/footer.html` per DEC-008 (frozen as code initially; promote to DA-authored later if needed).
+   - Chrome-specific styles to `styles/fragments/chrome.css`.
+   - Per-page inline `<style>` block to `styles/stardust/<page>-page.css` (use a real CSS parser to filter chrome rules — sed-based slicing has off-by-N risk per LEARNINGS § Per-page CSS extraction).
 
 6. **Initialize the DA workspace.**
    ```bash
@@ -188,7 +190,7 @@ A few smaller "common operations" (start dev server, push content, run pixel dif
     - `LEARNINGS.md`, `DECISIONS.md`, `BACKLOG.md`, `OPEN-QUESTIONS.md` — empty stubs to be filled
 
 11. **Push the feature branch; verify deployed URL.**
-    Same as iter-001: branch, push, wait for Code Sync, hit `aem.page` URL, confirm. Merge to main when ready.
+    Branch, push, wait for Code Sync, hit `aem.page` URL, confirm. Per DEC-009 / DEC-010 / DEC-012, **iteration code stays on the iteration branch — never merge to `main`**. Only the closing-pass docs commit lands on `main` (see AGENTS.md § Closing-pass checklist step 6).
 
 12. **Close the iteration documentation pass** with the new site declared in the iteration's `Tracks:` header. Distill any new findings; many will probably be generic (apply across both this repo and the original) — see AGENTS.md § Iterating on this project.
 
