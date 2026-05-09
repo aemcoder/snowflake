@@ -4,9 +4,14 @@
  * Goal: walk a set of static stardust HTML pages and produce a structural
  * inventory of their top-level modules (typically <section> elements), with
  * signatures designed to detect:
- *   - exact module reuse (same module on multiple pages)
- *   - cross-site reuse (same module across different sites' stardust output)
+ *   - exact module reuse (same module on multiple pages within a site)
+ *   - cross-page reuse across product sections of one site
  *   - variants (same skeleton, different modifier classes / details)
+ *
+ * NOTE: this analyzer DOES NOT measure cross-organization reuse. The path-
+ * bucketing below (afbs-main / aem-section / *-prototype) groups by directory
+ * tree position, not site/organization boundary. For genuine cross-org claims
+ * we'd need stardust output from a different company.
  *
  * NOT in scope: rendering correctness, runtime CSS dependencies, slot fill —
  * those need conversion. This is a read-only structural pass.
