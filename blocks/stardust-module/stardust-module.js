@@ -58,17 +58,21 @@ function fillSlot(target, cell) {
   if (!target || !cell) return;
 
   if (target.tagName === 'A') {
-    const link = cell.querySelector('a');
-    if (link) {
-      target.href = link.href;
-      const newText = link.textContent.trim();
-      // Replace existing text nodes; keep non-text children (SVG icons, etc.)
+    // Replace existing text nodes only; keep non-text children (SVG icons,
+    // nested kind/title <p> elements when the link wraps a card).
+    const replaceText = (newText) => {
       [...target.childNodes].forEach((n) => {
         if (n.nodeType === Node.TEXT_NODE) n.remove();
       });
-      target.append(document.createTextNode(newText));
+      if (newText) target.append(document.createTextNode(newText));
+    };
+    const link = cell.querySelector('a');
+    if (link) {
+      target.href = link.href;
+      replaceText(link.textContent.trim());
     } else {
-      target.textContent = cell.textContent.trim();
+      // Cell has no <a> — defensive: just update text, never destroy children.
+      replaceText(cell.textContent.trim());
     }
     return;
   }
@@ -119,7 +123,7 @@ function expandList(canon, listName, itemRows) {
     // returns DESCENDANTS only, but list-item templates often have data-slot
     // on the outer element (e.g. <a data-slot="link"> wrapping kind/title).
     const slots = [
-      ...(clone.hasAttribute && clone.hasAttribute('data-slot') ? [clone] : []),
+      ...(clone.hasAttribute('data-slot') ? [clone] : []),
       ...clone.querySelectorAll('[data-slot]'),
     ];
     // cells[0] is the 'item' marker; cells[1..] map to slots in document order
