@@ -333,11 +333,82 @@ When a stardust module's visual choreography depends on specific DOM structure (
 
 Trade: less authoring depth, preserves visual fidelity. Acceptable for module-heavy pages where decomposing to per-element slots would risk visual regressions. Future iteration can fully decompose if/when authors need finer control. (Used on iter-002's `index-hero`, `product-section`, `testimonial`, and the 3 form-shaped modules.)
 
-### Per-page CSS extraction has off-by-N risk at chrome boundaries *(found: iter-002)*
+### Per-page CSS extraction has off-by-N risk at chrome boundaries *(found: iter-002, robust fix landed: iter-003)*
 
 Sed-based slicing of a page's inline `<style>` block to remove chrome rules can lose a selector if the boundary cuts mid-rule (selector on one line, body on next). Caught in iter-002 when `.bc-hero {` got dropped, leaving `position: relative; ...` orphaned (broken CSS).
 
-Workaround for now: manually inspect the boundary lines and adjust the line range. Robust fix: parse the CSS into rules and skip-by-class-pattern, not skip-by-line-number — see BACKLOG generalized extraction.
+Robust fix (iter-003): use a real CSS parser (postcss). Walk top-level rules and `@media` blocks; drop rules whose selectors match chrome patterns (`.gnav-`, `.gnav__`, `#gnav`, `.footer__`, `#footerWordmark`, `.subbrand`, `.megaPanel`, `.brand-link`, `.gnav-cta`); preserve everything else verbatim including comments, `:root` blocks, `@keyframes`, `prefers-reduced-motion` blocks. The iter-003 sub-agent built this and recovered a `prefers-reduced-motion` block iter-002's sed-based extraction had dropped.
+
+### Canon authoring conventions *(found: iter-003)*
+
+Conventions every canon template must follow. These were inferred painfully by debugging the resource-grid empty-cards bug across 4 hypotheses:
+
+1. **Provenance comments use square brackets, not literal HTML.** Use `[tag]` not `<tag>`, `[module: foo]` not `<!-- module: foo -->`. The HTML5 parser doesn't allow nested comments — when the outer comment contains an inner `-->`, the parser closes the outer at the inner `-->` and treats the leftover descriptive text (with literal `<p>` etc.) as **real elements**. Result: spurious top-level `<p>`/`<a>` elements that corrupt the canon DOM.
+2. **Image `src` must be absolute `/stardust/...` paths.** Stardust source HTML uses paths relative to the source file (`runtime/...`, `assets/...`, `<page>/assets/scraped/...`). When the canon is fetched at runtime and embedded in a page at `/<branch>/<path>`, those relatives resolve to the wrong absolute URL. Rewrite to `/stardust/runtime/...`, `/stardust/assets/...`, `/stardust/products/<page>/assets/scraped/...` at extraction time.
+3. **`data-slot` may be on the element-template root.** Item templates often wrap content in a link (e.g. `<a class="card" data-slot="link">…</a>`). The decorator handles this — see "List-item slot enumeration includes the template root" below.
+4. **Don't manually edit canon comments after extraction.** They're informational; future tooling will likely auto-generate them. Use a structured format: `module:`, `extracted:`, `slots:`, `notes:` lines as in existing canons.
+
+### List-item slot enumeration includes the template root *(found: iter-003)*
+
+`Element.querySelectorAll('[data-slot]')` returns descendants only — never the root. When an item template's outer element carries `data-slot` (common pattern for "card link" wrappers), it would silently be skipped, shifting every cell by one slot.
+
+The decorator now explicitly includes the clone itself when it carries `data-slot`:
+
+```js
+const slots = [
+  ...(clone.hasAttribute('data-slot') ? [clone] : []),
+  ...clone.querySelectorAll('[data-slot]'),
+];
+```
+
+This is part of the slot vocabulary's contract: list-item DA columns map positionally to `[data-slot]` elements **in document order, including the template root**.
+
+### EDS Media Bus can't resolve repo-relative URLs from DA cells *(found: iter-003, refines DEC-011)*
+
+If a DA `<img src="...">` cell references a repo-relative URL (e.g. `/stardust/runtime/assets/images/hero/foo.png`), the EDS image transform pipeline emits `<img src="about:error">`. Media Bus accepts:
+
+- `https://content.da.live/{org}/{repo}/<path>` URLs (DA-stored assets).
+- Absolute branch URLs (`https://{branch}--{repo}--{owner}.aem.page/<path>`) — though those are branch-locked and discouraged.
+- **NOT** repo-relative paths.
+
+Implication: any image referenced from a DA cell must live in DA's `/media/<site>/` (per DEC-011), regardless of whether you'd think of it as "content" or "decoration." Code-bus paths only work for direct rendering (canon templates referencing `/stardust/...` placeholders that get replaced by slot fill, OR canon-frozen images that the DA cell never sees).
+
+Concretely on iter-003: the index page's product-section cards referenced `/stardust/runtime/assets/images/hero/<file>.png` for card backgrounds. EDS rendered `src="about:error"`. Resolution: vendor those 13 hero images into `/media/afbs/` and rewrite the DA cell URLs to `content.da.live/.../media/afbs/<file>`.
+
+### Inline page-init scripts at end of stardust HTML must be ported *(found: iter-003)*
+
+Stardust source pages have inline `<script>` blocks at the very end of `<body>` that initialize Lenis smooth-scroll, attach a scroll listener that toggles `.gnav--scrolled` past 40px, set up announce-carousel arrows, neutralise the hub-router 3-vs-4-card transform, and reveal the footer wordmark on scroll. None of these live in `stardust/runtime/scripts/` — they exist *only* inline.
+
+These are load-bearing for visual/interactive fidelity:
+- Without Lenis, scroll feel differs and dependent scripts may not fire.
+- Without `.gnav--scrolled` toggle, chrome's `#gnav.gnav--scrolled .gnav-subbrand { color: #1a1a1a }` rule never activates.
+- Without footer-wordmark IIFE, the giant Adobe wordmark stays clipped on pages where it's reveal-on-scroll.
+
+The bridge ports them via `initStardustPage()` in `scripts.js`, called at the end of `loadStardustRuntime`. Each IIFE early-outs if its target elements aren't on the current page, so it's safe on every stardust page.
+
+### Inventory: runtime CSS, vendor JS, runtime JS *(found: iter-003 — doc gap closed)*
+
+`head.html` must link the union of runtime CSS files used across migrated pages. Inferred from sample stardust HTML heads on iter-003:
+
+```
+/stardust/runtime/styles/global/{reset,grid,typography}.css
+/stardust/runtime/styles/page.css
+/stardust/runtime/styles/bizpro-tokens.css
+/stardust/runtime/styles/{nav,mega-nav,mobile-nav,nav-offer}.css
+/stardust/runtime/styles/{rainbow-strip,split-content,acrobat-feature-3up,faq-accordion}.css
+/stardust/runtime/styles/{hero,hero-mobile,hero-grid,hero-hub-router}.css
+/stardust/runtime/styles/{inline-form,editorial,brands-strip,sticky-cta,offer-apps}.css
+/stardust/runtime/vendor/lenis.min.css
+```
+
+Vendor JS load order (sequential, dependent chain): `gsap.min.js` → `ScrollTrigger.min.js` → `ScrollSmoother.min.js` → `lenis.min.js`. Loaded by `loadStardustRuntime()` before module scripts.
+
+Runtime JS modules (loaded in parallel, each is self-contained / early-outs if its target absent):
+```
+faq-accordion, hub-router, hero-grid-mobile, stagger-reveal, text-animate,
+hero, hero-grid, mobile-nav, sticky-cta, mega-nav, reveal-tuner,
+hero-breakpoint-orchestrator, editorial
+```
 
 ### EDS backend image transform pipeline *(found: iter-001, refined iter-002)*
 

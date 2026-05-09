@@ -115,3 +115,27 @@ Iter-002's sed-based extraction of per-page CSS lost a selector at the chrome/pa
 `head.html` currently links the union of all migrated pages' per-page CSS files (sites-page.css, llm-optimizer-page.css, brand-concierge-page.css, index-page.css). Every page loads CSS that doesn't apply to it. Cost is moderate (~few hundred KB extra) but real.
 
 Approach: page declares which per-page CSS file via metadata (e.g., `<meta name="page-css" content="llm-optimizer-page">`); a small loader in `scripts.js` reads it and inserts the matching `<link>` before decoration. Or use the same `template` metadata as a discriminator if there are page templates beyond `stardust`.
+
+### DA content authoring tool that derives from canon schema *(added: iter-003)*
+
+Iter-003 surfaced a recurring need: when canon's slot DOM order doesn't match the DA cell column order, slot fill maps wrong cells to wrong slots. We patched it case-by-case with `tools/fix-resource-grid.js` and `tools/fix-index-content.js` — but the underlying problem is that DA content is authored without enforced reference to the canon schema.
+
+A proper authoring tool would, given a canon template + a stardust source page (or a content spec):
+1. Parse the canon to identify each module's slot order.
+2. For each module instance in the source, walk the canon's `[data-slot]` elements in lock-step with the source DOM, extracting per-slot values.
+3. For `data-slot-list` containers, iterate items in source order, extracting per-column values matching the canon item template's slot order.
+4. Emit DA-shaped `<table>` blocks with cells in the correct order.
+5. PUT the document, preview, publish.
+
+This eliminates the column-order ambiguity entirely (canon defines the schema; content matches by construction). Replaces the one-off `fix-*-content.js` scripts permanently. Plausible name: `tools/author-content.js` or part of a richer `da-client.js` library.
+
+### Per-module pixel-diff campaign *(added: iter-003)*
+
+Iter-003's deployed pages have full-page pixel diffs of 25–42% vs the original stardust HTML (vs 0.5–1.5% noise floor). Most of the diff is small per-module spacing/alignment deltas that accumulate down the page. A focused campaign:
+
+1. For each migrated module on each page, take element-screenshots of original + EDS rendering at 1440×900.
+2. Compare with `compare -metric AE -fuzz 1%` → localise which modules contribute most.
+3. Fix the top contributors (probably margin/padding/box-sizing cascades from EDS section wrappers).
+4. Iterate until full-page diffs are <3%.
+
+Estimated 1–2 iterations of focused work. Cross-ref site-level BACKLOG (afbs).

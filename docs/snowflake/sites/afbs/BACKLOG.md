@@ -6,9 +6,15 @@ Things to do specifically for this site. For generic bridge backlog, see `docs/s
 
 ## Up next
 
-### Migrate body images to DA `/media` folder
+### Pixel-fidelity parity to <3% per page *(added: iter-003)*
 
-Today the 3 pages reference body images via branch-relative URLs (`https://afbs-02--snowflake--aemcoder.aem.page/stardust/...`). This is a known shortcut from iter-002 (SITE-DEC-003).
+Iter-003 deployed pages have full-page pixel diffs of 25–42% vs originals. The brand-concierge +298 px height delta is fully explained by canonical chrome substitution (SITE-DEC-001) and is *expected*, not a regression. The remaining diff is per-module spacing/alignment deltas accumulating down the page.
+
+Closing the gap requires a per-module element-screenshot diff campaign — see generic BACKLOG § Per-module pixel-diff campaign for the methodology. Estimated 1–2 iterations of focused CSS cascade fixes.
+
+### Migrate body images to DA `/media` folder *(addressed: iter-003 — for new content; iter-002 content remains)*
+
+iter-003 produced fresh content at `/afbs-03/` with all images at `/media/afbs/<file>` per DEC-011. Iter-002's `/afbs-02/` content **still references `https://afbs-02--…aem.page/stardust/...`** branch-locked URLs. Today the 3 pages reference body images via branch-relative URLs (`https://afbs-02--snowflake--aemcoder.aem.page/stardust/...`). This is a known shortcut from iter-002 (SITE-DEC-003).
 
 Iter-003 research established that the canonical pattern for cross-document shared assets is the top-level `/media` folder (LEARNINGS § Image storage — three patterns), not per-document dot-folders. Dot-folders are designed for author drag-drop on a single doc; `/media` is designed for assets reused across documents — which describes our migration assets exactly. The `content.da.live/aemcoder/snowflake/media/<file>` URL is branch- and document-independent.
 

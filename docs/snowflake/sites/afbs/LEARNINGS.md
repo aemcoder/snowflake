@@ -48,3 +48,15 @@ Three modules with form-shaped UI:
 - `inline-form` — email + country select → no submission
 
 All are styled but non-functional. Wiring them to EDS forms (or a backend) is a generic backlog item (cross-ref `docs/snowflake/BACKLOG.md`).
+
+## Canonical chrome on product pages adds ~300 px height *(found: iter-003)*
+
+Per SITE-DEC-001, the canonical chrome from `index.html` is applied to all 3 pages. The original product-page chrome (in `stardust/products/llm-optimizer.html` and `stardust/products/brand-concierge.html`) is **shorter**:
+- No giant `#footerWordmark` Adobe text at the bottom.
+- Fewer footer columns (5 vs 6) with fewer items per column.
+
+When EDS renders these pages with the canonical chrome, the resulting page is ~300 px taller than the original product-page render. Specifically on iter-003:
+- `brand-concierge`: original 8290 px, EDS 8588 px → +298 px (matches the wordmark + larger-footer delta).
+- `llm-optimizer`: heights happen to match within 1 px because the wordmark adds ~+300 px and another section in EDS happens to be ~−300 px shorter (compensation, not fidelity).
+
+**This is expected behavior, not a regression.** Reading height-delta on product pages without accounting for the canonical-chrome substitution would mislead. The trade-off was accepted in SITE-DEC-001 — chrome uniformity > original-page chrome fidelity.
