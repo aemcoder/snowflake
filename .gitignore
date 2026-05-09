@@ -18,6 +18,9 @@ content/
 # Content migration scratch outputs
 tools/migrate-content.*.html
 
+# Playwright snapshot/screenshot scratch
+.playwright-mcp/
+
 # Ensure these files are tracked
 !CLAUDE.md
 !AGENTS.md
