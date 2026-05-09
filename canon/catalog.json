@@ -1,0 +1,10 @@
+{
+  "version": "1.0",
+  "_comment": "Module-id → canon mapping. The decorator fetches this once at page load. Schema: each entry has 'canon' (path to canon HTML) and optional 'bemPrefix' (when set, the decorator rewrites class placeholders __root/__suffix/--suffix to ${prefix}/${prefix}__suffix/${prefix}--suffix on the canon DOM before slot-fill). When a module-id is not in this map, the decorator falls back to /canon/modules/${moduleId}.html (no prefix rewrite) — this matches iter-003 behavior.",
+  "modules": {
+    "llm-final-cta": { "canon": "/canon/modules/final-cta.html", "bemPrefix": "llm-final-cta" },
+    "bc-final-cta":  { "canon": "/canon/modules/final-cta.html", "bemPrefix": "bc-final-cta" },
+    "aem-final-cta": { "canon": "/canon/modules/final-cta.html", "bemPrefix": "aem-final-cta" },
+    "aem-forrester": { "canon": "/canon/modules/final-cta.html", "bemPrefix": "aem-forrester" }
+  }
+}
