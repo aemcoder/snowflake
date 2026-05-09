@@ -177,6 +177,51 @@ Estimated 2-3 days, contingent on the 1-page migration revealing further details
 - Cross-organization claim (needs multi-org stardust input).
 - Generalized auto-extractor (Option γ) — still a useful tool; lower-priority than the catalog-mechanism work.
 
+## Reality test: catalog vs Adobe.com EDS source content
+
+Added after the validation pass, in response to the question *"do these patterns appear in real Adobe.com content, or are they an artifact of the stardust skill?"*
+
+**Test set:** 4 unseen `.plain.html` content fragments under `stardust/assets/` — these are real EDS-source content from Adobe.com (carousel content sources, hero marquees), NOT stardust output. They use the EDS Helix authoring vocabulary (`hero-marquee`, `editorial-card`, `brick`, `text`, `section-metadata`) instead of the stardust BEM-classed `<section>` vocabulary.
+
+| Fragment | EDS-vocabulary modules detected | Catalog match (spike) |
+|---|---|---|
+| `more-announcements.plain.html` | 1× section header (`text center xxl-heading`), 1× carousel container, 6× `editorial-card` (eyebrow + heading + link), final `section-metadata` styling | ✅ **Match: announce-carousel.** Identical content payload to the spike's `announce-carousel` module on afbs-index (heading + N cards each with eyebrow-p + heading + link) |
+| `semrush-announcement.plain.html` | 1× `hero-marquee` block (3 background pictures + logo lockup + h1 + body + 2 CTAs) | ✅ **Match: hero-with-decorative-bg.** Maps to the prototype-bc-hero variant (the "mesh + portrait + chat decoration" variant in the spike's hero family). The 3 bg-pictures equate to the bc-hero `__mesh > __blob×N` decoration layer. |
+| `summit-2026-marquee-intro.plain.html` | 1× `hero-marquee` (h1 + h2 + p + CTA), 3× `brick m-heading` (each with 3 stacked pictures + h2 + body + link) in a masonry grid | ⚠️ **Partial match.** Hero structure is richer than any spike hero (h1+h2+p combo). Brick-masonry maps to `acrobat-feature` (header + 3-up card grid) but each brick has 3 stacked pictures vs. 1 in stardust — structurally different at the leaf level. |
+| `summit-2026-marquee-pods.plain.html` | 1× `text center xxl-heading` header (h3 + p), 3× `brick m-heading` (2 pictures + h3 + p + link), 1× `text accent-bar` rainbow-gradient strip | ✅ **Match: acrobat-feature + rainbow-strip.** Section header + 3-up card grid is the `acrobat-feature` pattern. The accent-bar with rainbow gradient is the `rainbow-strip` pattern. Match is conceptual — not byte-identical structure. |
+
+**Vocabulary mapping (EDS source ↔ stardust catalog):**
+
+| EDS source block | Stardust catalog equivalent | Confidence |
+|---|---|---|
+| `hero-marquee` | `hero-announce` / `bc-hero` / `aem-hero` / `llm-hero` family | High — same content payload |
+| `editorial-card` (in carousel) | `announce-card` (in `announce-carousel`) | High — identical eyebrow+heading+link shape |
+| `brick m-heading` | `acrobat-card` (in `acrobat-feature`) | Medium — same intent; EDS bricks support 1-3 stacked pictures, stardust uses 1 |
+| `text accent-bar` (rainbow gradient) | `rainbow-strip` | High — same UX role |
+| `text center xxl-heading` (header block) | Section-header pattern (recurring sub-element) | High |
+| `carousel container` | `announce-carousel` outer | High |
+| `section-metadata` (style/background/masonry directives) | (no direct equivalent — stardust uses CSS in canon) | Conceptual — different mechanism, same effect |
+
+**Coverage:** ~80% of the modules in the 4 fragments have a clear catalog match (8 of ~10 distinct module instances). The 20% gap is in *richer leaf structure* (multiple stacked pictures per brick, h1+h2+p hero) — same conceptual modules, more complex inner content.
+
+**What this means for the spike's claims:**
+
+1. **The catalog generalizes beyond stardust output.** The same conceptual module patterns appear in Adobe.com's real production EDS content. The patterns are not artifacts of the stardust skill — they're universal Adobe.com module patterns that stardust *and* Adobe's own content authoring both express.
+
+2. **Markup vocabulary is the bridge's translation problem, not a catalog problem.** The catalog is at the "conceptual module" level (hero, announce-card, acrobat-feature, rainbow-strip). Different markup vocabularies (BEM `<section>` vs EDS `<div class="block">`) implement the same conceptual modules differently.
+
+3. **The within-site scaling claim is reinforced.** If Adobe authors hand-write `editorial-card` carousels and stardust auto-generates `announce-carousel` modules with the same content shape, then a productization tool that consumes EITHER format and emits canon templates will work — the conceptual module catalog is stable across both.
+
+4. **A new productization tool surfaces:** a "vocabulary translator" that maps EDS-source blocks to stardust-canon templates. Not in iter-004 scope, but newly visible as a path. Adds to BACKLOG.
+
+5. **The strongest spike finding (the `*-final-cta` family is one template with prefix substitution) is NOT directly testable from these fragments** — none of them is a final-CTA module. The reality test confirms catalog patterns generally, but doesn't add evidence specifically for the prefix-parameterization recommendation.
+
+**Counted discrepancy honestly noted:** the user reported expecting 17 HTML files in `stardust/`; I found 15 unique (7 spike pages + 4 unique fragments × 2 copies because each fragment appears under both `assets/` and `assets/source-fragments/`). The 4-vs-5 page test set is therefore the practical limit of this reality test as run; if more pages exist in a snapshot I haven't seen, the test could be extended. Not flagged as a blocker — 4 fragments yielded a strong enough signal.
+
+**New BACKLOG candidate from this test:**
+
+- *EDS-source-fragment to stardust-canon translator.* When iter-004's catalog mechanism is in place, a follow-up tool could read an Adobe.com `.plain.html` fragment, identify the modules using the vocabulary mapping above, and emit equivalent stardust canon entries. This unlocks the productization story across the *full* Adobe.com surface area, not just stardust-generated pages.
+
 ## Distillation footer
 
 Where this spike's outputs live:
@@ -189,6 +234,7 @@ What this spike contributes — explicitly held back from LEARNINGS.md until ite
 - **Structural finding (validated this spike):** class-name-as-identity holds for 50% of multi-instance modules. *Hypothesis-tier finding* until iter-004 implements a catalog import flow and confirms the failure modes manifest as expected.
 - **Structural finding (validated this spike):** the `*-final-cta` family is one template with prefix substitution across 4 prefixes / 6 instances. *Hypothesis-tier finding* until iter-004 builds the class-prefix-parameterized canon and renders all 6 instances correctly.
 - **Cross-class clustering (validated this spike):** the analyzer surfaces 5 cross-class clusters; 4 of 5 represent real reuse opportunities, 1 of 5 is a false positive (rainbow-strip ≅ bc-webinar — same shape, different module). Implication: clustering surfaces candidates but author judgment decides identity.
+- **Catalog generalizes beyond stardust output (validated by reality test):** ~80% of modules in 4 unseen Adobe.com EDS-source fragments map to spike catalog patterns at the conceptual level. *Hypothesis-tier finding* until iter-004 (or a later iteration) actually translates EDS source into a canon and renders correctly.
 
 What gets promoted only AFTER iter-004:
 - "Class-prefix parameterization is the right mechanism for the final-CTA family" → DECISIONS once iter-004 builds and ships it.

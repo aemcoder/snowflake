@@ -138,6 +138,12 @@ Spike-001 confirmed that 4 different BEM prefixes (`llm-`, `bc-`, `aem-final-cta
 
 The analyzer can flag pairs of modules that share an identical skeleton but differ in class name. Some of these are real renames (e.g. `split-content` ≅ `bc-split` — same template, accidental duplicate identity); others are coincidental matches (e.g. `rainbow-strip` ≅ `bc-webinar` — same minimal `section(p,a)` shape, semantically different modules). A lint that surfaces both as "candidate consolidations" with author-confirmation gating would prevent silent drift in the canon catalog. Low priority; only useful once the catalog gets large enough that humans can't track it manually.
 
+### EDS-source-fragment to stardust-canon translator *(added: spike-001 reality test)*
+
+Spike-001's reality-test pass confirmed that ~80% of modules in real Adobe.com EDS-source content (`.plain.html` fragments under `stardust/assets/`) map conceptually to spike catalog patterns, despite using a totally different markup vocabulary (`hero-marquee`, `editorial-card`, `brick`, `text` blocks vs. stardust BEM `<section>` modules). The mapping table is in the spike report.
+
+A productization follow-up (post iter-004): build a translator that consumes EDS-source `.plain.html` (or a live-fetched Adobe.com page), identifies modules via the vocabulary mapping, and emits equivalent canon entries. This unlocks bridging across the full Adobe.com surface area, not just stardust-generated pages. Low priority until iter-004's catalog mechanism is proven.
+
 ### Per-module pixel-diff campaign *(added: iter-003)*
 
 Iter-003's deployed pages have full-page pixel diffs of 25–42% vs the original stardust HTML (vs 0.5–1.5% noise floor). Most of the diff is small per-module spacing/alignment deltas that accumulate down the page. A focused campaign:
