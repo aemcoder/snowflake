@@ -169,4 +169,24 @@ Branch is created from `main`, then the previous iteration's branch is merged in
 
 ---
 
+## DEC-010: Documentation lands on `main`; iteration code stays on per-iteration branches
+
+**Status:** Accepted (iter-002 retrospective)
+
+**Context:** DEC-009 says iterations branch from `main` and merge the previous iteration to pull foundation code. That works for code, but docs accumulated on iteration branches end up invisible to anyone landing on the GitHub default view of the repo. Iter-001's docs and iter-002's docs were both stuck on their iteration branches; `main` was empty until late in iter-002.
+
+**Decision:** Treat documentation as **separate from code** for branching purposes:
+- **Iteration code** lives on the iteration branch (`<site>-NN`) and never gets merged to `main` (per DEC-009 — iterations are R&D experiments; main stays clean).
+- **Documentation** (any change under `docs/`, plus the iteration-discipline section in `AGENTS.md`) lands directly on `main` after the iteration's closing pass — via cherry-pick from the iteration branch, or via a commit made on a fresh `main` checkout.
+
+`main` becomes the canonical doc trunk. Future iterations branch from `main` and inherit the cumulative documentation automatically. Iteration branches still carry their own docs (they're committed there as part of the iteration), but the source of truth is `main`.
+
+**Consequences:**
+- A drop-in reader landing on the GitHub default view of the repo sees the current docs state.
+- The iteration's closing pass (per AGENTS.md § Iterating on this project) gains a step: land the docs commit(s) on `main`.
+- Code review of the iteration is independent of doc review — different audiences, different cadence.
+- iter-001's docs (commits `c1bd36d`, `59a7d7a`) and iter-002's closing-pass docs (commit `10a98e7`) were retroactively cherry-picked onto `main` at iter-002 close.
+
+---
+
 *New decisions go here. Append; don't rewrite.*

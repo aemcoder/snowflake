@@ -208,8 +208,11 @@ The full design of the learning system lives at `docs/snowflake/iterations/000-d
    - `Tracks: ...` header naming which scopes the iteration advanced
    - Goal, scope, what was built (with commit links), what was learned, struggles, deferred items, quality metrics (pixel diff, perf, etc.)
    - **Distillation footer** explicitly listing what was promoted to which file
+6. **Land the closing-pass docs commit on `main`** (per DEC-010). Documentation is treated separately from iteration code: code stays on the iteration branch, docs accumulate on `main` as the canonical trunk so future iterations (and drop-in readers on GitHub) inherit them automatically. Two equivalent paths:
+   - From the iteration branch with the docs commit already in place: `git checkout main && git cherry-pick <docs-commit-sha> && git push origin main`
+   - Directly on a fresh `main` checkout: `git checkout main && <edit docs files> && git commit && git push origin main`
 
-The point of the discipline: *iteration logs are messy chronological diary; LEARNINGS is the curated encyclopedia.* Without the promotion step at iteration close, the encyclopedia stays empty and onboarding requires reading every diary entry.
+The point of the discipline: *iteration logs are messy chronological diary; LEARNINGS is the curated encyclopedia.* Without the promotion step at iteration close, the encyclopedia stays empty and onboarding requires reading every diary entry. Without step 6, the encyclopedia is stuck on the iteration branch and never reaches `main`.
 
 ## If all else fails
 
