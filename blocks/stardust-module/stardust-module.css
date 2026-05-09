@@ -1,0 +1,9 @@
+/*
+ * stardust-module: a generic block whose visual styling comes entirely from
+ * the per-module CSS files under /stardust/runtime/styles/ and the
+ * /styles/stardust/sites-page.css extracted from the original page <style>.
+ *
+ * No per-block styles needed here. The empty rule below exists so EDS's
+ * loadCSS for /blocks/stardust-module/stardust-module.css doesn't 404.
+ */
+.stardust-module { display: contents; }

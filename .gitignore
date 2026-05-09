@@ -11,3 +11,11 @@ helix-importer-ui
 # Ensure these files are tracked
 !CLAUDE.md
 !AGENTS.md
+
+.hlx/.da-token.json
+
+content
+
+# Local-only Claude Code / agent runtime (not project source)
+.agents/
+.claude/

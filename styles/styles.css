@@ -73,15 +73,22 @@
 body {
   display: none;
   margin: 0;
+}
+
+body.appear {
+  display: block;
+}
+
+/* Boilerplate body typography defaults — scoped away from stardust pages
+ * so stardust's per-module `line-height` rules (e.g. `.footer__col ul li a
+ * { line-height: 20px }`) aren't overridden by an inherited 1.6 cascading
+ * to ancestor `<li>` elements (a 28.8px line-box dwarfing the 20px link). */
+body:not(.stardust) {
   background-color: var(--background-color);
   color: var(--text-color);
   font-family: var(--body-font-family);
   font-size: var(--body-font-size-m);
   line-height: 1.6;
-}
-
-body.appear {
-  display: block;
 }
 
 header {
@@ -98,12 +105,11 @@ footer .footer[data-block-status="loaded"] {
   visibility: visible;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+/* Heading & paragraph defaults: scoped away from stardust pages so per-module
+ * rules (e.g. .aem-hero__title, .faq-accordion__title) don't have to fight
+ * boilerplate margin/font-size defaults. Stardust modules style their own
+ * typography end-to-end. */
+body:not(.stardust) :is(h1, h2, h3, h4, h5, h6) {
   margin-top: 0.8em;
   margin-bottom: 0.25em;
   font-family: var(--heading-font-family);
@@ -112,19 +118,14 @@ h6 {
   scroll-margin: 40px;
 }
 
-h1 { font-size: var(--heading-font-size-xxl); }
-h2 { font-size: var(--heading-font-size-xl); }
-h3 { font-size: var(--heading-font-size-l); }
-h4 { font-size: var(--heading-font-size-m); }
-h5 { font-size: var(--heading-font-size-s); }
-h6 { font-size: var(--heading-font-size-xs); }
+body:not(.stardust) h1 { font-size: var(--heading-font-size-xxl); }
+body:not(.stardust) h2 { font-size: var(--heading-font-size-xl); }
+body:not(.stardust) h3 { font-size: var(--heading-font-size-l); }
+body:not(.stardust) h4 { font-size: var(--heading-font-size-m); }
+body:not(.stardust) h5 { font-size: var(--heading-font-size-s); }
+body:not(.stardust) h6 { font-size: var(--heading-font-size-xs); }
 
-p,
-dl,
-ol,
-ul,
-pre,
-blockquote {
+body:not(.stardust) :is(p, dl, ol, ul, pre, blockquote) {
   margin-top: 0.8em;
   margin-bottom: 0.25em;
 }

@@ -1,0 +1,29 @@
+<!--
+  module:    aem-hero
+  extracted: stardust/products/experience-manager/sites.html:976-994
+  slots:     eyebrow (text), title (text), body (text),
+             cta1 (link), cta2 (link), image (picture)
+  notes:     The play-icon SVG on cta1 is part of the template; the
+             decorator preserves child elements when filling link slots
+             (only text nodes are replaced) so authors only provide the
+             link's text and href.
+-->
+<section class="aem-hero">
+  <div class="aem-hero__grid">
+    <div class="aem-hero__copy">
+      <p class="aem-hero__eyebrow" data-slot="eyebrow">ADOBE EXPERIENCE MANAGER SITES</p>
+      <h1 class="aem-hero__title" data-slot="title">An agentic CMS to structure and scale modern experiences.</h1>
+      <p class="aem-hero__body" data-slot="body">Create and deliver high-performance experiences faster &mdash; built for agility and optimized for AI-driven discovery.</p>
+      <div class="aem-hero__ctas">
+        <a class="btn btn--solid-white" data-slot="cta1" href="#">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M3 1.5l9 5.5-9 5.5z"/></svg>
+          Watch overview
+        </a>
+        <a class="btn btn--ghost-white" data-slot="cta2" href="#">Book a demo</a>
+      </div>
+    </div>
+    <div class="aem-hero__media" aria-hidden="true">
+      <img data-slot="image" src="" alt="" width="720" height="518" class="aem-hero__bg">
+    </div>
+  </div>
+</section>

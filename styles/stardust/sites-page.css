@@ -1,0 +1,904 @@
+
+    /* ─── Bizpro tokens (s2a-*) — required by sections lifted from bizpro-hub ─── */
+    :root {
+      --s2a-color-blue-900: #3b63fb;
+      --s2a-color-blue-1000: #274dea;
+      --s2a-color-background-default: #ffffff;
+      --s2a-color-background-subtle: #f8f8f8;
+      --s2a-color-content-default: #000000;
+      --s2a-color-content-subtle: rgba(0,0,0,0.64);
+      --s2a-color-content-background-subtle: #505050;
+      --s2a-color-transparent-black-08: rgba(0,0,0,0.08);
+
+      --s2a-typography-font-size-eyebrow: 16px;
+      --s2a-typography-line-height-eyebrow: 20px;
+      --s2a-typography-letter-spacing-eyebrow: -0.2px;
+
+      --s2a-spacing-xs: 8px;
+      --s2a-spacing-sm: 12px;
+      --s2a-spacing-md: 16px;
+      --s2a-spacing-lg: 24px;
+      --s2a-spacing-xl: 32px;
+      --s2a-spacing-2xl: 40px;
+      --s2a-spacing-3xl: 48px;
+      --s2a-spacing-4xl: 64px;
+      --s2a-spacing-5xl: 80px;
+      --s2a-spacing-6xl: 96px;
+      --s2a-layout-lg: 124px;
+
+      --s2a-border-radius-sm: 8px;
+      --s2a-border-radius-md: 16px;
+      --s2a-border-radius-lg: 32px;
+      --s2a-border-radius-999: 999px;
+
+      --s2a-duration-fast: 200ms;
+      --s2a-duration-base: 400ms;
+      --s2a-easing-default: cubic-bezier(0.42, 0, 0, 1);
+
+      --grid-margin-sm: 24px;
+      --grid-margin-md: 8.333vw;
+    }
+
+    /* ─── Container + buttons + type utilities ─── */
+    .container { width: 100%; padding-inline: var(--grid-margin-sm); }
+    @media (min-width: 768px) { .container { padding-inline: var(--grid-margin-md); } }
+    @media (min-width: 1441px) { .container { max-width: 1920px; margin-inline: auto; } }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      height: 48px; width: fit-content; padding: 0 24px;
+      border-radius: 75px;
+      font-family: var(--font-body);
+      font-size: 14px; font-weight: 700; line-height: 18px;
+      border: 1.5px solid transparent;
+      text-decoration: none;
+      transition: background var(--s2a-duration-fast), border-color var(--s2a-duration-fast), color var(--s2a-duration-fast);
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .btn--primary { background: #000; color: #fff; border-color: #000; }
+    .btn--primary:hover { background: #1f1f1f; }
+    .btn--solid-white { background: #fff; color: #000; border-color: #fff; }
+    .btn--solid-white:hover { background: #e8e8e8; }
+    .btn--outline { background: transparent; color: #000; border-color: #000; }
+    .btn--outline:hover { background: rgba(0,0,0,0.04); }
+    .btn--ghost-white { background: transparent; color: #fff; border-color: #fff; backdrop-filter: blur(16px); }
+    .btn--ghost-white:hover { background: rgba(255,255,255,0.08); }
+
+    .eyebrow {
+      font-family: var(--font-body); font-weight: 700;
+      font-size: var(--s2a-typography-font-size-eyebrow);
+      line-height: var(--s2a-typography-line-height-eyebrow);
+      letter-spacing: var(--s2a-typography-letter-spacing-eyebrow);
+      text-transform: uppercase;
+      color: var(--s2a-color-content-background-subtle);
+    }
+    .title-2 {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(32px, 4.375vw, 56px); line-height: 1.0;
+      letter-spacing: clamp(-0.8px, -0.13vw, -1.68px);
+    }
+    .title-4 {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: 24px; line-height: 24px;
+      letter-spacing: -0.48px;
+    }
+    .body-md {
+      font-family: var(--font-body); font-weight: 400;
+      font-size: 16px; line-height: 20px;
+      letter-spacing: 0.16px;
+      max-width: 80ch;
+    }
+
+    /* ─── anim-enter init state — stagger-reveal.js drives the rest ─── */
+    .anim-enter { opacity: 0; transform: translateY(40px); will-change: opacity, transform; }
+
+    /* ─── Scraped-image fillers (per-page) ─────────────────────
+       Real CDN assets live under assets/scraped/ (PIPELINE.md S24
+       level 1 — fetched via tools/fetch-asset/). Each fills its
+       parent slot via object-fit: cover. Pseudo-element CSS-art
+       on the parents is kept dormant as a graceful fallback if
+       an image goes missing. */
+    .aem-hero__bg,
+    .aem-features__bg,
+    .aem-forrester__bg,
+    .aem-final-cta__bg {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+      border-radius: inherit;
+      z-index: 2;
+    }
+    /* Use cases — icon-header card (custom; not an acrobat-feature
+       photo card). The use case icons are 226x260 monochrome glyphs
+       on a transparent/white background; rendered as a small icon
+       header above headline + body. */
+    .aem-use-cases {
+      background: var(--s2a-color-background-subtle, #f8f8f8);
+      padding-block: var(--s2a-spacing-6xl, 96px);
+    }
+    .aem-use-cases__header {
+      text-align: center;
+      margin-bottom: var(--s2a-spacing-5xl, 80px);
+      padding-inline: var(--s2a-spacing-lg, 24px);
+    }
+    .aem-use-cases__title { color: #1a1a1a; }
+    .aem-use-cases__grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: var(--s2a-spacing-md, 16px);
+    }
+    @media (max-width: 767px) { .aem-use-cases__grid { grid-template-columns: 1fr; } }
+    .aem-use-case {
+      display: flex; flex-direction: column; gap: 16px;
+      padding: 32px 24px;
+      background: #fff;
+      border-radius: var(--s2a-border-radius-md, 16px);
+    }
+    .aem-use-case__icon {
+      width: 56px; height: 56px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .aem-use-case__icon img {
+      width: 48px; height: 48px;
+      object-fit: contain;
+    }
+    .aem-use-case__title {
+      font-family: var(--font-display, 'Adobe Clean Display', sans-serif);
+      font-weight: 900;
+      font-size: 24px; line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: #1a1a1a;
+    }
+    .aem-use-case__body {
+      font-family: var(--font-body, 'Adobe Clean', sans-serif);
+      font-weight: 400;
+      font-size: 16px; line-height: 1.45;
+      color: rgba(0, 0, 0, 0.64);
+    }
+    /* Integration card images fill the card asset region */
+    .acrobat-card__asset img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+
+    /* ─── gnav: the Get-started CTA matches signin height ─── */
+    .gnav-cta {
+      display: inline-flex; align-items: center; height: 40px;
+      padding: 0 20px; background: #fff; color: #000;
+      border-radius: 999px;
+      font-family: var(--font-body); font-size: 14px; font-weight: 700;
+      line-height: 18px; text-decoration: none;
+      transition: background 0.2s ease; margin-left: 4px;
+    }
+    .gnav-cta:hover { background: #e8e8e8; }
+    .gnav-subbrand {
+      font-family: var(--font-body); font-size: 16px; font-weight: 700;
+      color: #fff; letter-spacing: -0.01em;
+      padding-left: 8px; margin-left: 4px;
+      border-left: 1px solid rgba(255,255,255,0.24);
+      align-self: center; line-height: 18px; white-space: nowrap;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    #gnav.gnav--scrolled .gnav-subbrand {
+      color: #1a1a1a;
+      border-left-color: rgba(0,0,0,0.16);
+    }
+    @media (max-width: 767px) { .gnav-subbrand { display: none; } }
+
+    /* ═══════════════════════════════════════════════════════════════
+       HERO — composed from existing tokens (per option 3).
+       Two-column layout: title/body/CTAs on the left, UI mockup on
+       the right. Dark surface (matches the gnav default state).
+       ═══════════════════════════════════════════════════════════════ */
+    .aem-hero {
+      position: relative;
+      background:
+        radial-gradient(ellipse 60% 90% at 0% 50%, rgba(139,104,232,0.30), transparent 60%),
+        radial-gradient(ellipse 60% 90% at 100% 50%, rgba(254,54,0,0.14), transparent 60%),
+        #0c0820;
+      color: #fff;
+      padding: 120px var(--grid-margin-md, 8.333vw) 96px;
+    }
+    @media (max-width: 1023px) { .aem-hero { padding-inline: var(--grid-margin-sm); } }
+    .aem-hero__grid {
+      display: grid; grid-template-columns: 1fr 1.1fr;
+      gap: 64px;
+      align-items: center;
+      max-width: 1920px; margin-inline: auto;
+    }
+    @media (max-width: 1023px) {
+      .aem-hero__grid { grid-template-columns: 1fr; gap: 48px; }
+    }
+    .aem-hero__copy { display: flex; flex-direction: column; align-items: flex-start; gap: 24px; }
+    .aem-hero__eyebrow {
+      font-family: var(--font-body); font-weight: 700;
+      font-size: 14px; letter-spacing: 0.08em; text-transform: uppercase;
+      color: rgba(255,255,255,0.65);
+    }
+    .aem-hero__title {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(44px, 5vw, 72px);
+      line-height: 1.0;
+      letter-spacing: -0.03em;
+      max-width: 18ch;
+    }
+    .aem-hero__body {
+      font-family: var(--font-body); font-weight: 400;
+      font-size: 18px; line-height: 1.4;
+      color: rgba(255,255,255,0.78);
+      max-width: 56ch;
+    }
+    .aem-hero__ctas { display: inline-flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+
+    /* Hero mockup — composed CSS art that reframes the slot as a CMS
+       authoring UI (per PIPELINE.md M4 / S1 — image fallback by
+       reframing). Matches the live page intent (page preview +
+       toolbar + prompt chip + metric circles) without any external
+       imagery. */
+    .aem-hero__media {
+      position: relative;
+      aspect-ratio: 16 / 11;
+      border-radius: 24px;
+      overflow: hidden;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 70%),
+        linear-gradient(160deg,#1a0e3a 0%,#0c0820 100%);
+      isolation: isolate;
+    }
+    /* Page preview canvas */
+    .aem-hero__canvas {
+      position: absolute; inset: 12% 8% 18% 8%;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+      overflow: hidden;
+    }
+    /* Toolbar inside the canvas */
+    .aem-hero__canvas::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 28px;
+      background: #f4f4f4;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .aem-hero__canvas::after {
+      content: '';
+      position: absolute; top: 8px; left: 12px;
+      width: 40px; height: 12px;
+      background:
+        radial-gradient(circle at 6px 6px, #ff5f56 0 5px, transparent 5px),
+        radial-gradient(circle at 20px 6px, #ffbd2e 0 5px, transparent 5px),
+        radial-gradient(circle at 34px 6px, #27c93f 0 5px, transparent 5px);
+    }
+    /* Page content — striped tropical "DESTINO" pattern (matches the
+       live screenshot's beach/tile visual without copying the image) */
+    .aem-hero__page {
+      position: absolute; left: 0; right: 0; top: 28px; bottom: 0;
+      background:
+        repeating-linear-gradient(15deg,
+          #ffd24a 0 14px, #ff9d2a 14px 28px,
+          #ffffff 28px 42px, #ff9d2a 42px 56px);
+    }
+    .aem-hero__page::before {
+      /* "DESTINO PARADISIACO" headline approximation */
+      content: 'DESTINO';
+      position: absolute; top: 18%; left: 8%;
+      font-family: var(--font-display, 'Adobe Clean Display', sans-serif);
+      font-weight: 900; font-style: italic;
+      font-size: clamp(20px, 2.4vw, 36px);
+      color: #fff; letter-spacing: -0.02em;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    }
+    .aem-hero__page::after {
+      content: 'paradisíaco';
+      position: absolute; top: 32%; left: 8%;
+      font-family: 'Times New Roman', Georgia, serif;
+      font-style: italic; font-weight: 400;
+      font-size: clamp(16px, 2vw, 28px);
+      color: #fff;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    }
+    /* Floating "prompt chip" at top-left of the hero media */
+    .aem-hero__chip {
+      position: absolute; top: 6%; left: 4%;
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 14px;
+      background: rgba(255,255,255,0.92);
+      border-radius: 999px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+      font-family: var(--font-body, sans-serif);
+      font-size: 11px; font-weight: 600;
+      color: #1a1a1a;
+      max-width: 64%;
+    }
+    .aem-hero__chip::before {
+      content: '';
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ff7a4d 0%, #d94d22 100%);
+      flex-shrink: 0;
+    }
+    /* 3 metric circles at bottom-right (96% / 100% / 67%) */
+    .aem-hero__metrics {
+      position: absolute; right: 4%; bottom: 6%;
+      display: flex; gap: 8px;
+    }
+    .aem-hero__metric {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.95);
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 1px;
+      font-family: var(--font-body, sans-serif);
+      color: #1a1a1a;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+    }
+    .aem-hero__metric strong {
+      font-size: 14px; font-weight: 800; letter-spacing: -0.02em;
+    }
+    .aem-hero__metric span {
+      font-size: 7px; font-weight: 700; letter-spacing: 0.05em;
+      color: rgba(0,0,0,0.6); text-transform: uppercase;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       FEATURES — tabs + content panel
+       Reuses the tabs pattern we built into the home-page product
+       grid section. New here: a content panel with image-left,
+       copy + bullets-right.
+       ═══════════════════════════════════════════════════════════════ */
+    .aem-features {
+      background: #fff;
+      padding-block: var(--s2a-spacing-6xl);
+    }
+    .aem-features__header {
+      max-width: 760px; margin: 0 auto 48px;
+      text-align: center;
+      padding-inline: var(--grid-margin-sm);
+    }
+    .aem-features__title { color: #1a1a1a; margin-bottom: 16px; }
+    .aem-features__sub { color: rgba(0,0,0,0.64); }
+
+    .aem-features__tabs {
+      display: inline-flex; flex-wrap: wrap; gap: 4px;
+      margin: 0 auto var(--s2a-spacing-2xl);
+      background: rgba(0,0,0,0.06);
+      padding: 4px; border-radius: 999px;
+      max-width: calc(100% - 48px);
+    }
+    .aem-features__tabs-wrap {
+      display: flex; justify-content: center;
+      padding-inline: var(--grid-margin-sm);
+      margin-bottom: 48px;
+    }
+    .aem-features__tab {
+      padding: 8px 16px;
+      border: none; background: transparent;
+      color: rgba(0,0,0,0.7);
+      font-family: var(--font-body); font-size: 14px; font-weight: 700;
+      border-radius: 999px;
+      cursor: pointer; transition: background 0.2s, color 0.2s;
+      white-space: nowrap;
+    }
+    .aem-features__tab:hover { color: #1a1a1a; }
+    .aem-features__tab.is-active { background: #fff; color: #1a1a1a; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+
+    .aem-features__pane {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding-inline: var(--grid-margin-md, 8.333vw);
+    }
+    @media (max-width: 1023px) {
+      .aem-features__pane { grid-template-columns: 1fr; gap: 32px; padding-inline: var(--grid-margin-sm); }
+    }
+    /* Features pane media — reframed as a doc-editor mockup
+       (Microsoft Word doc with a marketing image inset). */
+    .aem-features__media {
+      aspect-ratio: 4 / 3;
+      border-radius: 16px;
+      background: linear-gradient(160deg, #f0e9d9 0%, #d6c8a3 100%);
+      position: relative;
+      overflow: hidden;
+      padding: 8%;
+    }
+    .aem-features__media::before {
+      /* doc canvas */
+      content: '';
+      position: absolute; inset: 14% 10% 14% 10%;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.14);
+    }
+    .aem-features__doc {
+      position: absolute; inset: 14% 10% 14% 10%;
+      padding: 6% 8%;
+      display: flex; flex-direction: column; gap: 8px;
+      z-index: 2;
+    }
+    .aem-features__doc-title {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: 14px; letter-spacing: -0.02em;
+      color: #1a1a1a;
+      margin-bottom: 4px;
+    }
+    .aem-features__doc-line {
+      height: 6px;
+      border-radius: 2px;
+      background: rgba(0,0,0,0.08);
+    }
+    .aem-features__doc-line--short { width: 64%; }
+    .aem-features__doc-img {
+      margin: 12px 0;
+      height: 56px;
+      border-radius: 6px;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,0.15) 0%, transparent 40%),
+        linear-gradient(160deg, #2d8f5e 0%, #5fb88a 60%, #c4e3c8 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .aem-features__doc-img::after {
+      /* "fresh greens" leafy marks */
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(circle at 20% 60%, rgba(255,255,255,0.4) 0 8px, transparent 8px),
+        radial-gradient(circle at 60% 30%, rgba(255,255,255,0.25) 0 6px, transparent 6px),
+        radial-gradient(circle at 80% 70%, rgba(255,255,255,0.3) 0 10px, transparent 10px);
+    }
+    .aem-features__copy { display: flex; flex-direction: column; gap: 20px; }
+    .aem-features__pane-title {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(28px, 3.2vw, 40px);
+      line-height: 1.05; letter-spacing: -0.02em;
+      color: #1a1a1a;
+    }
+    .aem-features__pane-body {
+      font-family: var(--font-body); font-weight: 400;
+      font-size: 16px; line-height: 1.5;
+      color: rgba(0,0,0,0.64);
+    }
+    .aem-features__bullets {
+      list-style: none; padding: 0; margin: 0;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .aem-features__bullet {
+      position: relative;
+      padding-left: 24px;
+      font-family: var(--font-body); font-weight: 400;
+      font-size: 15px; line-height: 1.45;
+      color: rgba(0,0,0,0.78);
+    }
+    .aem-features__bullet::before {
+      content: '';
+      position: absolute; left: 0; top: 8px;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #1a1a1a;
+    }
+    .aem-features__cta { margin-top: 8px; align-self: flex-start; }
+
+    /* ═══════════════════════════════════════════════════════════════
+       FORRESTER — black panel with overlay UI
+       Composed from studio-banner-style dark surface with custom
+       overlay grid (no scroll-driven garage door — the layout is
+       a static split, not a scroll-revealed banner).
+       ═══════════════════════════════════════════════════════════════ */
+    .aem-forrester {
+      background: #000;
+      padding-block: var(--s2a-spacing-6xl);
+    }
+    .aem-forrester__grid {
+      display: grid; grid-template-columns: 1fr 1.2fr;
+      gap: 64px;
+      align-items: center;
+      max-width: 1280px; margin: 0 auto;
+      padding-inline: var(--grid-margin-md, 8.333vw);
+    }
+    @media (max-width: 1023px) {
+      .aem-forrester__grid { grid-template-columns: 1fr; gap: 32px; padding-inline: var(--grid-margin-sm); }
+    }
+    .aem-forrester__title {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(32px, 3.5vw, 48px); line-height: 1.05;
+      letter-spacing: -0.02em; color: #fff;
+      margin-bottom: 24px;
+      max-width: 16ch;
+    }
+    /* Forrester mockup — reframed as an asset-management UI: a
+       laptop-shaped card with a road landscape preview + Upload/
+       Approved-assets chips + a small image-grid panel. */
+    .aem-forrester__media {
+      position: relative;
+      aspect-ratio: 16 / 11;
+      border-radius: 16px;
+      background: linear-gradient(160deg, #2a3548 0%, #18202c 100%);
+      overflow: hidden;
+    }
+    /* Laptop-shaped card */
+    .aem-forrester__laptop {
+      position: absolute; inset: 12% 14% 18% 14%;
+      border-radius: 12px;
+      background:
+        linear-gradient(180deg, #fff 0%, #fff 64%, #2d3a4f 64%, #2d3a4f 100%);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.45);
+      overflow: hidden;
+    }
+    .aem-forrester__laptop::before {
+      /* "From the Road" headline strip on the white doc area */
+      content: 'From the Road';
+      position: absolute; top: 14px; left: 18px;
+      font-family: var(--font-display); font-weight: 900;
+      font-size: 11px; letter-spacing: -0.01em;
+      color: #1a1a1a;
+    }
+    .aem-forrester__laptop::after {
+      /* image preview block — a road/landscape stand-in */
+      content: '';
+      position: absolute; inset: 30% 12% 42% 12%;
+      border-radius: 6px;
+      background:
+        linear-gradient(180deg, #4f5d72 0%, #6b3a1f 60%, #2a1a0b 100%);
+    }
+    /* Upload assets chip — top-right of the wrapper */
+    .aem-forrester__upload {
+      position: absolute; top: 18px; right: 18px;
+      padding: 6px 12px; border-radius: 999px;
+      background: #fff; color: #1a1a1a;
+      font-family: var(--font-body); font-weight: 700; font-size: 10px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+      display: inline-flex; align-items: center; gap: 6px;
+      z-index: 4;
+    }
+    .aem-forrester__upload::before {
+      content: '↑'; font-weight: 900; color: #2d8f5e;
+    }
+    /* Approved-assets panel — bottom-left of the wrapper */
+    .aem-forrester__approved {
+      position: absolute; bottom: 14%; left: 6%;
+      width: 30%;
+      padding: 8px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+      display: flex; flex-direction: column; gap: 4px;
+      z-index: 4;
+    }
+    .aem-forrester__approved span {
+      font-family: var(--font-body); font-weight: 700; font-size: 9px;
+      color: rgba(0,0,0,0.55); letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    .aem-forrester__approved-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 3px;
+    }
+    .aem-forrester__approved-grid div {
+      aspect-ratio: 1 / 1;
+      border-radius: 3px;
+    }
+    .aem-forrester__approved-grid div:nth-child(1) { background: linear-gradient(135deg, #c13a2b, #6e1d10); }
+    .aem-forrester__approved-grid div:nth-child(2) { background: linear-gradient(135deg, #2c68c2, #143a78); }
+    .aem-forrester__approved-grid div:nth-child(3) { background: linear-gradient(135deg, #2f7d3a, #1c4d22); }
+    .aem-forrester__approved-grid div:nth-child(4) { background: linear-gradient(135deg, #ffe066, #c4a800); }
+
+    /* ═══════════════════════════════════════════════════════════════
+       RESOURCES — 3-up grid of typed cards
+       Reuses the explore-card scaffold from bizpro product-grid but
+       on a light surface, with category-eyebrow + title (no body).
+       ═══════════════════════════════════════════════════════════════ */
+    .aem-resources {
+      background: #fff;
+      padding-block: var(--s2a-spacing-6xl);
+    }
+    .aem-resources__header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    .aem-resources__title { color: #1a1a1a; }
+    .aem-resources__grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding-inline: var(--grid-margin-md, 8.333vw);
+    }
+    @media (max-width: 767px) {
+      .aem-resources__grid { grid-template-columns: 1fr; }
+    }
+    .aem-resource-card {
+      display: flex; flex-direction: column;
+      gap: 10px;
+      padding: 24px;
+      background: #f8f8f8;
+      border-radius: 16px;
+      min-height: 160px;
+      text-decoration: none;
+      transition: background 0.2s ease;
+    }
+    .aem-resource-card:hover { background: #f1f1f1; }
+    .aem-resource-card__icon {
+      width: 24px; height: 24px;
+      color: #1a1a1a;
+    }
+    .aem-resource-card__category {
+      font-family: var(--font-body); font-weight: 700;
+      font-size: 11px; letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(0,0,0,0.55);
+    }
+    .aem-resource-card__title {
+      font-family: var(--font-body); font-weight: 700;
+      font-size: 15px; line-height: 1.35;
+      color: #1a1a1a;
+      flex: 1;
+    }
+    .aem-resources__foot {
+      text-align: center;
+      margin-top: 32px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       INTEGRATION CARD ART — mini-mockups per integration card.
+       Three variants matching the live page intent: DAM grid /
+       commerce product / analytics dashboard. CSS-art reframing —
+       no scraped imagery.
+       ═══════════════════════════════════════════════════════════════ */
+    .integration-art {
+      position: relative;
+      padding: 16px;
+      overflow: hidden;
+    }
+    /* DAM (assets) — 6-tile asset grid */
+    .integration-art--assets { background: linear-gradient(160deg,#dde8ec 0%,#b8d4dc 100%); }
+    .integration-art__grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: 8px;
+      width: 100%; height: 100%;
+    }
+    .integration-art__grid div {
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.10);
+    }
+    .integration-art__grid div:nth-child(1) { background: linear-gradient(135deg,#3b6e9a,#1f3d59); }
+    .integration-art__grid div:nth-child(2) { background: linear-gradient(135deg,#c1a37b,#7b6443); }
+    .integration-art__grid div:nth-child(3) { background: linear-gradient(135deg,#4a8a5b,#22573b); }
+    .integration-art__grid div:nth-child(4) { background: linear-gradient(135deg,#c5563d,#7c2c1c); }
+    .integration-art__grid div:nth-child(5) { background: linear-gradient(135deg,#d6a23b,#8a6219); }
+    .integration-art__grid div:nth-child(6) { background: linear-gradient(135deg,#7a4ec2,#3a1f73); }
+
+    /* Commerce — product card with price + Add to cart */
+    .integration-art--commerce {
+      background: linear-gradient(160deg,#e6dcec 0%,#cbb8de 100%);
+      display: flex; flex-direction: column; justify-content: space-between; gap: 8px;
+    }
+    .integration-art__product {
+      flex: 1;
+      border-radius: 8px;
+      background:
+        radial-gradient(circle at 50% 35%, rgba(255,255,255,0.6) 0 22%, transparent 22%),
+        linear-gradient(160deg,#3a2147 0%,#7a3d8e 100%);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    }
+    .integration-art__product-meta {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 6px 10px;
+      background: rgba(255,255,255,0.92);
+      border-radius: 8px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .integration-art__price {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: 13px; color: #1a1a1a; letter-spacing: -0.02em;
+    }
+    .integration-art__cart {
+      padding: 4px 10px;
+      background: #1a1a1a; color: #fff;
+      border-radius: 999px;
+      font-family: var(--font-body); font-weight: 700;
+      font-size: 9px; letter-spacing: 0.02em;
+    }
+
+    /* Analytics — 3 KPI tiles + bar chart */
+    .integration-art--analytics {
+      background: linear-gradient(160deg,#dceae0 0%,#aed1bd 100%);
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .integration-art__kpis {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
+    }
+    .integration-art__kpis div {
+      padding: 6px 8px;
+      background: rgba(255,255,255,0.92);
+      border-radius: 6px;
+      display: flex; flex-direction: column; gap: 1px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .integration-art__kpis strong {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: 13px; color: #1a1a1a; letter-spacing: -0.02em;
+    }
+    .integration-art__kpis span {
+      font-family: var(--font-body); font-weight: 700;
+      font-size: 7px; letter-spacing: 0.04em;
+      color: rgba(0,0,0,0.55); text-transform: uppercase;
+    }
+    .integration-art__chart {
+      flex: 1;
+      display: flex; align-items: flex-end; gap: 4px;
+      padding: 8px;
+      background: rgba(255,255,255,0.85);
+      border-radius: 6px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .integration-art__chart span {
+      flex: 1;
+      background: linear-gradient(180deg,#2bb673 0%,#1a7345 100%);
+      border-radius: 2px 2px 0 0;
+    }
+    .integration-art__chart span:nth-child(1) { height: 30%; }
+    .integration-art__chart span:nth-child(2) { height: 50%; }
+    .integration-art__chart span:nth-child(3) { height: 40%; }
+    .integration-art__chart span:nth-child(4) { height: 75%; }
+    .integration-art__chart span:nth-child(5) { height: 60%; }
+    .integration-art__chart span:nth-child(6) { height: 90%; }
+    .integration-art__chart span:nth-child(7) { height: 100%; }
+
+    /* ═══════════════════════════════════════════════════════════════
+       BOTTOM CTA — same dark studio-banner pattern as home page
+       ═══════════════════════════════════════════════════════════════ */
+    .aem-final-cta {
+      position: relative;
+      background: #000;
+      padding-block: var(--s2a-spacing-6xl);
+    }
+    .aem-final-cta__grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+      max-width: 1280px; margin: 0 auto;
+      padding-inline: var(--grid-margin-md, 8.333vw);
+    }
+    @media (max-width: 1023px) {
+      .aem-final-cta__grid { grid-template-columns: 1fr; gap: 32px; padding-inline: var(--grid-margin-sm); }
+    }
+    .aem-final-cta__title {
+      color: #fff;
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(32px, 3.5vw, 48px); line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+      max-width: 18ch;
+    }
+    /* Final-CTA portrait — composed CSS art reframing the slot as
+       portrait + UI overlays (per PIPELINE M4 reframing pattern).
+       The portrait is suggested via a warm gradient + a soft "head
+       and shoulders" radial; UI overlays at the corners hint at the
+       Microsoft Word toolbar + article preview from the live page. */
+    .aem-final-cta__media {
+      position: relative;
+      aspect-ratio: 4 / 3;
+      border-radius: 16px;
+      background:
+        /* highlight on the right (suggests a face turning to camera) */
+        radial-gradient(ellipse 50% 60% at 65% 45%, rgba(255,210,180,0.55), transparent 60%),
+        /* warm portrait-tone gradient */
+        linear-gradient(160deg,#3b1f10 0%,#7a3a1b 50%,#9a4a22 100%);
+      overflow: hidden;
+      isolation: isolate;
+    }
+    /* Top-left "Microsoft Word" toolbar overlay */
+    .aem-final-cta__overlay-toolbar {
+      position: absolute; top: 8%; left: 6%;
+      width: 44%;
+      padding: 6px 10px;
+      background: rgba(255,255,255,0.95);
+      border-radius: 6px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      display: flex; align-items: center; gap: 6px;
+      font-family: var(--font-body, sans-serif);
+      font-size: 9px; font-weight: 700;
+      color: #1a1a1a;
+    }
+    .aem-final-cta__overlay-toolbar::before {
+      content: '';
+      width: 14px; height: 14px;
+      border-radius: 3px;
+      background: #185ABD;
+      flex-shrink: 0;
+    }
+    /* Bottom-right "article preview" card */
+    .aem-final-cta__overlay-article {
+      position: absolute; right: 6%; bottom: 8%;
+      width: 50%;
+      padding: 12px 14px;
+      background: rgba(255,255,255,0.96);
+      border-radius: 8px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.35);
+      font-family: var(--font-body, sans-serif);
+    }
+    .aem-final-cta__overlay-article strong {
+      display: block;
+      font-size: 11px;
+      font-weight: 800;
+      color: #1a1a1a;
+      letter-spacing: -0.01em;
+      margin-bottom: 2px;
+    }
+    .aem-final-cta__overlay-article span {
+      display: block;
+      font-size: 9px;
+      color: rgba(0,0,0,0.55);
+      line-height: 1.3;
+    }
+    /* Color swatches strip — top-right */
+    .aem-final-cta__overlay-swatches {
+      position: absolute; top: 10%; right: 8%;
+      display: flex; gap: 4px;
+    }
+    .aem-final-cta__overlay-swatches span {
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+    }
+    .aem-final-cta__overlay-swatches span:nth-child(1) { background: #B23A1F; }
+    .aem-final-cta__overlay-swatches span:nth-child(2) { background: #6B6B6B; }
+    .aem-final-cta__overlay-swatches span:nth-child(3) { background: #E8DCC4; }
+    .aem-final-cta__overlay-swatches span:nth-child(4) { background: #38322B; }
+
+    /* ═══════════════════════════════════════════════════════════════
+       FOOTER — inherited shape from the home page (per content.json
+       _inherits_from). Inlined verbatim here pending a shared
+       footer module file (S6 follow-up).
+       ═══════════════════════════════════════════════════════════════ */
+    .footer { position: relative; background: #000; }
+    .footer__main {
+      display: flex; flex-direction: column;
+      gap: var(--s2a-spacing-2xl);
+      padding: 64px var(--grid-margin-sm) 0;
+    }
+    @media (min-width: 768px) { .footer__main { padding-inline: var(--s2a-layout-lg); } }
+    .footer__cols {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 32px 20px;
+    }
+    @media (min-width: 900px) {
+      .footer__cols { grid-template-columns: repeat(6, 1fr); gap: 0 var(--s2a-spacing-xs); }
+    }
+    .footer__col { display: flex; flex-direction: column; gap: var(--s2a-spacing-lg); }
+    .footer__col-title {
+      font-family: var(--font-body); font-weight: 700; color: #fff;
+      font-size: 16px; line-height: 20px; letter-spacing: -0.2px;
+    }
+    .footer__col ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--s2a-spacing-xs); }
+    .footer__col ul li a {
+      font-family: var(--font-body); font-size: 16px; font-weight: 400;
+      color: rgba(255,255,255,0.64); line-height: 20px; letter-spacing: 0.16px;
+    }
+    .footer__col ul li a:hover { color: rgba(255,255,255,0.9); }
+    .footer__bottom {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+      padding-block: 32px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      margin-top: 48px;
+    }
+    .footer__legal { display: flex; align-items: center; gap: 32px; flex-wrap: wrap; }
+    .footer__legal-item {
+      font-family: var(--font-body);
+      font-size: 12px; font-weight: 700;
+      color: rgba(255,255,255,0.64);
+      letter-spacing: 0.04em;
+    }
+    .footer__legal-item a { color: rgba(255,255,255,0.64); }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      .anim-enter { opacity: 1 !important; transform: none !important; }
+    }
+

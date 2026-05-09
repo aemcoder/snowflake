@@ -1,0 +1,73 @@
+/*
+ * Boilerplate-style neutralization for stardust pages.
+ *
+ * styles/styles.css carries defaults from the AEM EDS boilerplate (Roboto,
+ * default heading sizes, .section margins, .button styles, etc.) that
+ * conflict with stardust's per-module design system. When a page declares
+ *   <meta name="template" content="stardust">
+ * decorateTemplateAndTheme() adds `class="stardust"` to <body>, and the
+ * rules below neutralize the boilerplate so stardust's CSS is the only
+ * thing styling the page.
+ *
+ * The block/section/wrapper divs inserted by aem.js are made layout-
+ * transparent via `display: contents` so visual flow matches the original
+ * static stardust HTML.
+ */
+
+body.stardust {
+  display: block;
+}
+
+/* Section / block / default-content wrappers — visually transparent. */
+body.stardust main > .section,
+body.stardust main > .section > div,
+body.stardust .stardust-module-wrapper,
+body.stardust .default-content-wrapper {
+  display: contents;
+}
+
+/* Reset the EDS section content container (max-width 1200px, padding) since
+ * stardust modules manage their own width and inner padding. */
+body.stardust main > .section { margin: 0; padding: 0; }
+body.stardust main > .section > div { max-width: none; margin: 0; padding: 0; }
+
+/* The boilerplate sets header { height: var(--nav-height); } which clips
+ * the stardust gnav. Stardust controls header height itself. */
+body.stardust header { height: auto; }
+
+/* Boilerplate sets `body { display: none; }` until .appear is added.
+ * decorateMain() adds .appear in the eager phase; our override above lets
+ * the layout flow normally once that lands. */
+
+/* DO NOT add a `body.stardust h1..h6 { margin: 0 }` reset here. Such a
+ * rule (specificity 0,1,2) out-specifies per-module rules like
+ * `.faq-accordion__title { margin-bottom: 48px }` (specificity 0,1,0)
+ * and silently kills intended module spacing — observed as a 48px
+ * collapse of the FAQ section's internal layout. Per-module rules win
+ * by themselves over the boilerplate's element-only `h1..h6` margins. */
+
+/* Boilerplate `main img { max-width: 100%; }` is fine in spirit; keep it. */
+
+/* Boilerplate hides `header .header` and `footer .footer` until block-loaded.
+ * Our stardust footer template is itself a `<footer class="footer">` that
+ * lives INSIDE the EDS footer block — so the boilerplate selector matches
+ * it (the inner stardust <footer>) but the data-block-status loaded marker
+ * is on the outer block wrapper, not on the inner element. Force visible. */
+body.stardust footer .footer,
+body.stardust header .header {
+  visibility: visible;
+}
+
+/* Note on link colors: stardust modules style links per-module (footer cols,
+ * gnav links, hero CTAs etc.) with class-prefixed selectors that out-specify
+ * the boilerplate's `a:any-link { color: var(--link-color); }`. We do NOT
+ * blanket-override `a:any-link` here because doing so would over-specify and
+ * stomp module-level link colors. Default-content links on stardust pages
+ * are rare; if they appear bright blue and that's a problem, scope the fix
+ * to `body.stardust .default-content-wrapper a:any-link`, not all links. */
+
+/* Buttons: stardust uses .btn (BEM); the boilerplate's .button styles only
+ * apply if decorateButtons promoted an <a> — which it only does for
+ * <strong>/<em>-wrapped links. Authors of stardust pages use the cell-link
+ * pattern for slot CTAs, not <strong>-wrapped links, so .button decoration
+ * shouldn't fire. No override needed unless we see a regression. */

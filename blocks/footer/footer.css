@@ -1,20 +1,25 @@
-footer {
+/* Boilerplate footer block defaults — scoped away from stardust pages so
+ * the stardust canon footer (which provides its own padding, max-width,
+ * background, etc.) renders pixel-faithfully. The selector
+ * `footer .footer > div` was clobbering `.footer__main`'s `padding: 64px
+ * 124px 0` (specificity 0,1,2 vs 0,1,0). */
+body:not(.stardust) footer {
   background-color: var(--light-color);
   font-size: var(--body-font-size-xs);
 }
 
-footer .footer > div {
+body:not(.stardust) footer .footer > div {
   margin: auto;
   max-width: 1200px;
   padding: 40px 24px 24px;
 }
 
-footer .footer p {
+body:not(.stardust) footer .footer p {
   margin: 0;
 }
 
 @media (width >= 900px) {
-  footer .footer > div {
+  body:not(.stardust) footer .footer > div {
     padding: 40px 32px 24px;
   }
 }

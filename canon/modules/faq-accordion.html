@@ -1,0 +1,27 @@
+<!--
+  module:    faq-accordion
+  extracted: stardust/products/experience-manager/sites.html:1310-1371
+  slots:     title (text), items (list of {question, answer})
+  notes:     The <ul> has data-slot-list="items"; the first <li> inside is
+             the per-item template, repeated once per "item" row in the DA
+             block table. Item-level slots are "question" and "answer".
+             Behavior (open/close on click) comes from /stardust/runtime/scripts/faq-accordion.js,
+             loaded globally; it queries .faq-accordion__trigger so it picks
+             up rendered items automatically.
+-->
+<section class="faq-accordion">
+  <div class="faq-accordion__inner">
+    <h2 class="faq-accordion__title" data-slot="title">FAQs</h2>
+    <ul class="faq-accordion__list" data-slot-list="items">
+      <li class="faq-accordion__item">
+        <button class="faq-accordion__trigger" type="button">
+          <span data-slot="question">What is content personalization?</span>
+          <span class="faq-accordion__icon" aria-hidden="true"></span>
+        </button>
+        <div class="faq-accordion__panel">
+          <p class="faq-accordion__answer" data-slot="answer">Answer text goes here.</p>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>

@@ -67,6 +67,11 @@ function buildAutoBlocks(main) {
       });
     }
 
+    // The boilerplate's hero auto-block (h1 + first picture) collides with
+    // stardust pages that use the stardust-module/aem-hero block. Skip it
+    // when the page declares template=stardust.
+    if (document.body.classList.contains('stardust')) return;
+
     buildHeroBlock(main);
   } catch (error) {
     // eslint-disable-next-line no-console
@@ -114,11 +119,80 @@ function decorateButtons(main) {
 }
 
 /**
+ * Promote any `Metadata` block table at the bottom of <main> to <meta> tags
+ * in <head>, then remove it from <main>. The real EDS backend does this
+ * server-side; in dev (both `--html-folder drafts` and the live aem.page
+ * proxy when serving DA-authored fragments) it doesn't, so without this
+ * the `template: stardust` row never reaches `decorateTemplateAndTheme()`
+ * and `body.stardust` is never set, leaving boilerplate styles to clobber
+ * the page layout.
+ *
+ * Idempotent — re-runs are no-ops because the metadata table is removed
+ * after promotion.
+ */
+function promoteMetadataBlock(main) {
+  [...main.querySelectorAll('table')]
+    .filter((t) => t.rows[0]?.cells[0]?.textContent.trim().toLowerCase() === 'metadata')
+    .forEach((table) => {
+      [...table.rows].slice(1).forEach((row) => {
+        const name = row.cells[0]?.textContent.trim();
+        const value = row.cells[1]?.textContent.trim();
+        if (!name || !value) return;
+        if (document.head.querySelector(`meta[name="${name}"]`)) return;
+        const meta = document.createElement('meta');
+        meta.name = name;
+        meta.content = value;
+        document.head.append(meta);
+      });
+      table.parentElement?.remove();
+    });
+}
+
+/**
+ * Convert `<table>` block markup (the shape DA stores) into the nested
+ * `<div>` shape EDS's backend would produce. The real EDS backend does
+ * this transform server-side; the dev server's `--html-folder` static
+ * mount doesn't, so for local testing of authored content we polyfill it
+ * here. Idempotent — leaves already-converted content untouched.
+ *
+ * Header row first cell becomes the block name; parenthesized contents
+ * become block options (CSS classes), per EDS conventions.
+ */
+function convertTablesToBlocks(main) {
+  main.querySelectorAll('table').forEach((table) => {
+    const rows = [...table.rows];
+    if (rows.length === 0) return;
+    const headerCell = rows[0].cells[0];
+    if (!headerCell) return;
+    const headerText = headerCell.textContent.trim();
+    const m = headerText.match(/^([^(]+?)(?:\s*\(([^)]*)\))?$/);
+    if (!m) return;
+    const blockName = m[1].trim().toLowerCase().replace(/\s+/g, '-');
+    const options = (m[2] || '').split(',').map((s) => s.trim().toLowerCase().replace(/\s+/g, '-')).filter(Boolean);
+    const block = document.createElement('div');
+    block.className = [blockName, ...options].join(' ');
+    rows.slice(1).forEach((row) => {
+      const rowDiv = document.createElement('div');
+      [...row.cells].forEach((cell) => {
+        const cellDiv = document.createElement('div');
+        while (cell.firstChild) cellDiv.append(cell.firstChild);
+        rowDiv.append(cellDiv);
+      });
+      block.append(rowDiv);
+    });
+    table.replaceWith(block);
+  });
+}
+
+/**
  * Decorates the main element.
  * @param {Element} main The main element
  */
 // eslint-disable-next-line import/prefer-default-export
 export function decorateMain(main) {
+  // promoteMetadataBlock(main) is called from loadEager() before
+  // decorateTemplateAndTheme, so it doesn't need to run again here.
+  convertTablesToBlocks(main);
   decorateIcons(main);
   buildAutoBlocks(main);
   decorateSections(main);
@@ -132,8 +206,12 @@ export function decorateMain(main) {
  */
 async function loadEager(doc) {
   document.documentElement.lang = 'en';
-  decorateTemplateAndTheme();
+  // Promote the in-body metadata block to <head> meta tags BEFORE
+  // decorateTemplateAndTheme runs (it reads body.template via getMetadata).
+  // In production EDS the backend does this server-side; here we polyfill.
   const main = doc.querySelector('main');
+  if (main) promoteMetadataBlock(main);
+  decorateTemplateAndTheme();
   if (main) {
     decorateMain(main);
     document.body.classList.add('appear');
@@ -148,6 +226,41 @@ async function loadEager(doc) {
   } catch (e) {
     // do nothing
   }
+}
+
+/**
+ * Load stardust runtime scripts after the main sections are decorated.
+ * These scripts (faq-accordion, stagger-reveal, gnav scroll state) query
+ * the DOM at execution time and attach listeners; they need stardust-module
+ * blocks to have rendered first, so we load them only after loadSections().
+ */
+function loadStardustRuntime() {
+  if (!document.body.classList.contains('stardust')) return;
+  // Reduced-motion flag — name owned by stardust runtime scripts; do not rename.
+  /* eslint-disable no-underscore-dangle */
+  if (typeof window.__reducedMotion === 'undefined') {
+    window.__reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+  /* eslint-enable no-underscore-dangle */
+  // gnav scroll state — pulled inline from the source page.
+  const gnav = document.getElementById('gnav');
+  if (gnav) {
+    const update = () => gnav.classList.toggle('gnav--scrolled', window.scrollY > 40);
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+  }
+  // Module runtime scripts. Loaded as classic scripts so each one
+  // re-executes against the current DOM (matches the source page pattern).
+  const scripts = [
+    '/stardust/runtime/scripts/stagger-reveal.js',
+    '/stardust/runtime/scripts/faq-accordion.js',
+  ];
+  scripts.forEach((src) => {
+    const s = document.createElement('script');
+    s.src = src;
+    s.defer = true;
+    document.head.append(s);
+  });
 }
 
 /**
@@ -168,6 +281,8 @@ async function loadLazy(doc) {
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
+
+  loadStardustRuntime();
 }
 
 /**
