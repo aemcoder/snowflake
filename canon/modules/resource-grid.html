@@ -1,18 +1,17 @@
 <!--
   module:    resource-grid
   extracted: stardust/products/llm-optimizer.html:590-626
-  slots:     title (text), items (list of {kind, title, link})
-  notes:     The source <section> has no class — it's identified by the
-             <!-- module: resource-grid --> hint comment in the surrounding
-             stardust source. Synthesized class "resource-grid" added here so
-             the bridge can match it to a canon template.
+  slots:     title (text), items (list of [kind, title, link])
+  notes:     The source [section] has no class — identified only by an inline
+             [module: resource-grid] hint comment in the source. Synthesized
+             class "resource-grid" added so the bridge can match this canon.
              Original uses inline styles + per-card SVG icons; structure preserved.
              First card is the per-item template; the file-icon SVG is frozen
              (webinar-variant icon swap deferred — ref: site BACKLOG).
              Cells:
-               kind  → text inside the kind <p>
-               title → text inside the resource-card title <p>
-               link  → href on the surrounding <a>; existing inline-styled SVG/decoration preserved.
+               kind  - text inside the kind paragraph
+               title - text inside the resource-card title paragraph
+               link  - href on the surrounding anchor; inline SVG/decoration preserved.
 -->
 <section class="resource-grid" style="background: #fff; padding-block: var(--s2a-spacing-6xl);">
   <div class="resource-grid__header" style="text-align: center; margin-bottom: 48px;">
