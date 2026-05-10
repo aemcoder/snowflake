@@ -562,3 +562,171 @@ Iter-04 declared "all 7 pages rendering end-to-end" based on `localhost:3000` de
 - PageSpeed Insights score logged
 
 `localhost:3000` rendering is a useful smoke test but not a completion signal.
+
+### Canon-driven content extraction *(added: iter-005)*
+
+The canonical extractor pattern: read the canon's `[data-slot]` /
+`[data-slot-list]` annotations to derive a slot schema, then extract
+source values by class match scoped to the section. Each canon is the
+self-describing contract; the extractor doesn't need per-module hand
+coding. iter-04's `extract-sites-content.mjs` hand-tailored every
+module; iter-05's `extract-iter05-content.mjs` walks ANY canon
+generically.
+
+**Three matching mechanics matter:**
+
+1. **Selector specificity ordering.** When a slot's canon element has
+   multiple classes, prefer the most-specific (`--modifier` > `__suffix`
+   > plain). Two sibling slots sharing a base class — e.g.
+   hero-announce cta1 + cta2 both `.hero-announce__cta` — disambiguate
+   because cta1's element also has `--primary`. Without this, both
+   slots claim cta1's source value.
+
+2. **Consumed-set tracking.** Within a section, claim each source
+   element only once. The extractor walks single-slots in canon
+   document order; each picks the first unclaimed source match. This
+   handles "ambiguous selectors with deterministic source order."
+
+3. **`:nth-of-type` fallback.** Some canon slots have no class (their
+   identifying feature is position — e.g. resource-grid's per-card
+   `<p data-slot="kind">` / `<p data-slot="title">` are sibling `<p>`s
+   with only inline styles). When a canon element has no class, the
+   selector falls back to `tag:nth-of-type(N)` for N = its position
+   among same-tag siblings in the canon. Source must be structurally
+   isomorphic for this to work — true for canons that were extracted
+   from source in the first place.
+
+**Family canons** (`__root`, `__suffix` placeholders): apply
+`bemPrefix` to the canon HTML *before* parsing into cheerio. The
+decorator does the same substitution at runtime; doing it once at
+extraction time means the canon's `[data-slot]` elements have the
+same classes the deployed source will have — selectors match.
+
+**List container fallback.** When the canon's container selector
+doesn't match source (canon adds a synthetic class like
+`.resource-grid__cards`), fall back to "parent of the first item-class
+match." Lets canons add synthetic identification classes without
+breaking extraction.
+
+### DA authoring sanitization strips structural-tag classes *(added: iter-005)*
+
+DA's authoring policy strips `class=` attributes from certain
+structural tags during upload — `<li>` is the empirical confirmation.
+Emitted `<li class="split-content__bullet">Text</li>` arrives at the
+deployed `.plain.html` as `<li><p>Text</p></li>` — both the class AND
+the bare-text-in-`<li>` are reshaped. The `<p>` wrap is documented
+elsewhere (§ DA wraps cell-level text in `<p>`); the class stripping
+was the iter-05 discovery.
+
+**Decorator workaround:** capture the canon's item-template class
+BEFORE `target.innerHTML = …`, then re-apply to each new `<li>`
+child after the slot fill. The canon defines the per-page CSS hook
+class; DA strips it from the cell; the decorator restores it.
+
+Pattern is generic — likely applies to any structural tag DA's
+sanitizer rewrites. Test before relying on class survival across
+DA-authored content.
+
+### `<ul>` unwrap mirrors `<p>` unwrap in fillSlot *(added: iter-005)*
+
+DA's HTML policy wraps cell-level content: bare text becomes `<p>`,
+bullet runs become `<ul>`. The decorator's default fillSlot has long
+unwrapped a single `<p>` when target is also a `<p>` (avoids
+`<p><p>…</p></p>`). The same logic must apply to single `<ul>`-wrapped
+cells when target is `<ul>` — without it, bullets land nested as
+`<ul class="split-content__bullets"><ul><li><p>…</p></li>…</ul></ul>`,
+inflating split-content drift to >100%.
+
+```js
+const isPWrap = onlyChild?.tagName === 'P' && onlyChild.textContent.trim() === cell.textContent.trim();
+const isUlWrap = onlyChild?.tagName === 'UL' && target.tagName === 'UL';
+if (isPWrap || isUlWrap) target.innerHTML = onlyChild.innerHTML;
+```
+
+### Empty link cell removes target *(added: iter-005)*
+
+Some source modules have row-templated lists where SOME items have a
+CTA and others don't — e.g. split-content has 3 articles; only the 2nd
+has a CTA in the source. The canon's item template always renders the
+CTA. The decorator's fillSlot for `<a>` cleared text + kept the `<a>`
+element, leaving phantom empty `<a>` nodes in the deployed DOM.
+
+Fix: if the cell contains neither an `<a>` nor any text, REMOVE the
+target. The empty-cell signal carries "this slot has no value for this
+item." The decorator treats "no value" as "remove the optional
+element," not "render with empty content."
+
+### `<picture>` wrapper class propagation *(added: iter-005)*
+
+EDS server-side optimization converts `<img>` cells into `<picture>`
+wrappers with format-specific `<source>` children. When the decorator's
+fillSlot for IMG/PICTURE clones the cell's image, the cloned element
+may be a `<picture>`, not an `<img>`. The canon's class additions
+(e.g. `<canon>.…__bg`) must go on BOTH the `<picture>` and its inner
+`<img>` — per-page CSS targets `<img>.<canon>__bg` rather than the
+wrapper.
+
+```js
+target.classList.forEach((c) => {
+  newImg.classList.add(c);
+  if (newImg.tagName === 'PICTURE') {
+    const inner = newImg.querySelector('img');
+    if (inner) inner.classList.add(c);
+  }
+});
+```
+
+When the html-diff side collapses `<picture> → <img>` for comparison,
+copy the wrapper's classes to the inner `<img>` first — source-side
+canons mount classes directly on `<img>`; html-diff must compare
+class sets equivalently regardless of which element EDS-pipeline
+processing chose to host them on.
+
+### Runtime-injected DOM/style normalization is per-pattern *(added: iter-005)*
+
+GSAP transforms, hub-router clip-paths, scroll-trigger pointer-events
+properties, JS-state classes (`hhub-ready`, `hhub-card--flying`,
+`is-active`), and JS-injected sibling elements (`<div class="hhub-card-bg">`
+under each hub-router card) all appear in deployed JS-enabled DOM and
+never in JS-disabled source. Each is its own contract; there's no
+silver-bullet "strip all runtime injections" because legitimate
+JS-set DOM (slot-filled content, decorator output) also lives there.
+
+Html-diff normalization strips them by:
+- inline `style=` containing transform/translate/rotate/scale/
+  clip-path/pointer-events → drop the whole attr
+- specific class names (the JS-state markers) → drop the class
+- specific class-name selectors for injected siblings → drop the
+  element
+
+When a new module-page combination surfaces runtime injections not
+in the normalizer, add them to the relevant strip list with a
+comment naming the injecting script.
+
+### Per-item attribute slots are the next-biggest bridge gap *(added: iter-005)*
+
+Several modules have *per-item* attributes that vary across the item
+list — but the canon's first item-template freezes one value, and
+clones inherit it verbatim. Examples surfaced in iter-005:
+- product-section: `data-mark="bi|ao|lo|bc|as|ea"` per card
+- acrobat-feature (3up variant): `data-tone="brand|content|engagement"`
+  + per-card `<div class="ac-fallback">…</div>` fallback text
+- brands-strip: per-logo inline `style="font-family:…"` to mimic
+  brand wordmarks (Coca-Cola Georgia italic; CISCO letter-spacing;
+  QUALCOMM no style)
+
+All share one fix: **per-item attribute slots** (BACKLOG #53,
+originally scoped for video `<source src>` on Semrush). The
+`data-slot-attr="<attr>"` extension lets the cell value write to a
+named attribute on the cloned element. iter-005 confirmed the same
+mechanism solves all three drift sources — promoted #53 to Tier 1.
+
+### Iteration content is re-extracted, not cargo-culted *(added: iter-005)*
+
+Per DEC-017. Each `iter-NNN` derives `content/iter-NNN/*.html` from
+the canonical stardust source, not from prior `content/iter-N-1/`
+or `content/<site-branch>/` outputs. This isn't pedantic process —
+it's the only thing that meaningfully tests the bridge end-to-end.
+Cargo-culted content tests "can we re-upload old content?", which is
+a different (and weaker) claim than "can the bridge rebuild this page
+from canonical input?"
