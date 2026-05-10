@@ -83,15 +83,18 @@ The most-frequent commands during an iteration. Each links to where the conventi
 | Operation | Command | Reference |
 |---|---|---|
 | Start dev server | `npx -y @adobe/aem-cli up --no-open --forward-browser-logs` | `AGENTS.md` § Setup Commands |
-| Authenticate with DA (browser flow, one-time) | `npx -y @adobe/aem-cli content clone --path /` | `LEARNINGS.md` § DA conventions |
+| Authenticate with DA (browser flow) | `npx -y @adobe/aem-cli content clone --path /<scoped-path>` (use a narrow path; `/` with `--force` is destructive — see LEARNINGS § `aem content clone --force`) | `LEARNINGS.md` § DA conventions |
 | Stage / commit / push DA content | `aem content add <files> && aem content commit -m '...' && aem content push` | `LEARNINGS.md` § DA conventions |
 | Upload an image binary (workaround for CLI bug) | `curl -X PUT -F "data=@<file>" -H "Authorization: Bearer $TOKEN" admin.da.live/source/<org>/<repo>/<path>` | `LEARNINGS.md` § External bugs |
+| **Unified DA upload (canons + content + images + publish)** *(iter-004)* | `node tools/da-upload.mjs --what canons\|content\|images\|publish\|all` | `LEARNINGS.md` § Catalog mechanism |
+| **Rewrite stardust→DA media URLs in content files** *(iter-004)* | `node tools/rewrite-content-urls.mjs` (uses `tools/migrate-images.*.json` as the mapping) | iter-004 log |
+| **Preview + publish via Admin API** | `curl -X POST -H "Authorization: Bearer $TOKEN" admin.hlx.page/{preview\|live}/{owner}/{repo}/{branch}/{path}` | `LEARNINGS.md` § Preview + publish |
 | Pixel-diff a module | `compare -metric AE -fuzz 1% orig.png eds.png /tmp/diff.png` | `LEARNINGS.md` § Pixel-fidelity measurement |
 | Local preview of DA-served page | `http://localhost:3000/<page-path>` (no `.html`, no `drafts/`) | `ARCHITECTURE.md` § Two paths from authored content to rendered page |
 | Deployed feature-branch preview | `https://<branch>--<repo>--<org>.aem.page/<page-path>` | site `OVERVIEW.md` |
 | Lint | `npm run lint` | `AGENTS.md` § Setup Commands |
 
-Helper scripts for the curl-heavy operations (pixel-diff and DA upload) are tracked in `BACKLOG.md` — they're verbose enough that codifying them is worth it once we run them more than a handful more times.
+Helper scripts for the curl-heavy operations (pixel-diff is still in BACKLOG; DA upload landed as `tools/da-upload.mjs` in iter-004) are tracked in `BACKLOG.md` for further hardening (retry, dedup, manifest consolidation).
 
 ---
 

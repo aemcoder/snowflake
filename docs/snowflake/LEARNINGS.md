@@ -419,3 +419,93 @@ When DA content references an image (via `<img src="...">` cell), the deployed `
 3. Generates responsive `<picture>` with multiple `srcset` entries.
 
 Result: the rendered page's `<img>` looks like a fully-optimized responsive picture even though the authored content had a single `<img src>` reference. Works whether the source is DA-uploaded or a branch-relative URL — but branch-relative URLs are locked to that branch's existence (cross-ref: site afbs LEARNINGS#branch-locked-image-urls).
+
+---
+
+## Catalog mechanism + class-prefix parameterization *(added: iter-004 — operationally validated)*
+
+### Mechanism
+
+`/canon/catalog.json` is a small data file that maps every authored `module-id` to a `{ canon: <path>, bemPrefix?: <string> }` record. The bridge decorator (`blocks/stardust-module/stardust-module.js`) fetches the catalog once per page load and uses it for two things:
+
+1. **Routing.** Multiple module-ids can point to the same canon file. The `*-final-cta` family (4 module-ids: `llm-final-cta`, `bc-final-cta`, `aem-final-cta`, `aem-forrester`) all route to `canon/modules/final-cta.html`.
+2. **Per-instance class rewriting.** When a catalog entry carries `bemPrefix`, the decorator walks the cloned canon DOM and rewrites placeholder class names per-instance:
+   - `__root` → `${prefix}` (canon outer-section base class)
+   - `__<suffix>` → `${prefix}__<suffix>` (BEM-element class)
+   - `--<suffix>` → `${prefix}--<suffix>` (BEM-modifier class)
+
+Real utility classes (`btn`, `btn--solid-white`, `anim-enter`, `title-2`) survive untouched because they don't start with `__` or `--` at index 0. The placeholder convention is exact (leading `__` / `--` only); BEM-shaped classes that carry a base name first cannot collide.
+
+Fallback: when a module-id is not in `catalog.json`, the decorator fetches `/canon/modules/${moduleId}.html` directly with no prefix rewrite. This preserves iter-003's per-prefix-canon behavior for single-canon modules.
+
+See DEC-014 for the full decision rationale. Operationally validated on `iter-04--snowflake--aemcoder.aem.page/iter-04/<page>` — 9 module instances render through 2 family canons (`final-cta.html` + `training-cta.html`) with correct prefix-rewritten BEM classes.
+
+### Family canon decision criteria
+
+Spike-001 surfaced both real reuse (cross-class clusters that should fold) and false-positive structural matches (same shape, different module purpose). Decision rules:
+
+| Situation | Treatment |
+|---|---|
+| N module-ids share identical structural skeleton AND identical content intent (e.g. all `*-final-cta` are "promo with image") | Family canon with `bemPrefix` per id |
+| N module-ids share identical skeleton but DIFFERENT content intent (e.g. `rainbow-strip` is a brand banner; `bc-webinar` is a promo strip — both `section(p,a)`) | Separate per-id canons even though they look structurally identical |
+| One module-id has variants across pages where most-but-not-all share structure (e.g. afbs `acrobat-feature` has fallback div; llm/aem variants don't) | Single per-id canon optimized for majority structure; minority variants need own canon or accept decoration delta |
+
+The analyzer (`spikes/module-analysis/analyze.mjs`) surfaces *candidate* clusters; author/reviewer decides whether each cluster's intent is shared. Mechanically auto-merging by structure alone is unsafe (per spike: `rainbow-strip ≅ bc-webinar` is a false positive).
+
+---
+
+## Deploy gotchas *(added: iter-004)*
+
+### `stardust/runtime/` must be committed for deployed preview to work
+
+Iter-04's first deploy had 38 of 50 console 404s on every page because `stardust/runtime/{styles,vendor,scripts,assets/fonts,assets/icons}` was not in git. The whole stardust runtime layer (per-module CSS, vendor JS, fonts, icons) is loaded by `head.html` from `/stardust/runtime/...` paths — the deployed branch must contain them. Iter-03 had `stardust/` committed (142 files); iter-04 missed it because `stardust/` was treated as untracked "source input" rather than deploy-required.
+
+**Rule:** `stardust/runtime/` (~80 files, ~11 MB) is deploy-required and must be committed. The rest of `stardust/` (source HTML pages, raw assets under `stardust/products/...`) is OPTIONALLY committed:
+- *If you reference `stardust/products/.../assets/scraped/...` URLs in DA content directly*, those paths are deploy-required too. Better practice: migrate images to `/media/<site>/` per DEC-011 and rewrite URLs (so the deployed branch never references `stardust/products/` paths).
+- *If all image references go through `/media/`*, then `stardust/products/` can stay untracked.
+
+### Chrome blocks must cargo-cult alongside fragments
+
+Cargo-culting `fragments/header.html` + `fragments/footer.html` from a previous iteration is insufficient by itself — they're consumed by `blocks/header/header.js` + `blocks/footer/footer.js` whose iter-03+ implementations are custom (~20-line `fetch` + `innerHTML` loaders that fetch the fragments). The boilerplate `header.js` / `footer.js` instead fetch `/nav.plain.html` / `/footer.plain.html` and fail with `TypeError: Cannot read properties of null (reading 'firstElementChild')` if those paths don't exist.
+
+**Rule:** Cargo-cult the full chrome layer atomically: `fragments/{header,footer}.html` + `blocks/header/header.{js,css}` + `blocks/footer/footer.{js,css}` + `styles/fragments/chrome.css`. Missing any one of these breaks chrome rendering.
+
+### `aem content clone --force` is destructive — side-effects to expect
+
+Running `npx -y @adobe/aem-cli content clone --path / --force` from the project root:
+
+1. **Wipes existing files under `content/`** before downloading. Files that exist locally but NOT in DA become 0-byte files (or are removed entirely on some versions). Lost iter-04 agent-generated content this way.
+2. **Rewrites `.gitignore`** to ignore `content/` and `.hlx/.da-token.json`. Silently changes git tracking.
+3. **Creates `content/.git`** turning `content/` into a git submodule from git's perspective. Subsequent `git add content/iter-N/` fails with "Pathspec is in submodule".
+
+**Recovery:** revert `.gitignore` (`git checkout HEAD -- .gitignore`), `trash content/.git` (per global "never rm -rf" rule), `git rm --cached -f content` to remove the submodule pointer, re-add content as plain dir.
+
+**Prevention:** scope the clone to a specific path: `aem content clone --path /afbs-03 --force` (only the afbs-03 sub-tree), not `--path /`. Or refresh auth without cloning (token-only refresh — TBD; the CLI doesn't expose this cleanly today). Or move local-only-content out of `content/` before re-clone, restore after.
+
+### DA token expiry causes silent 401 cascade
+
+The DA token at `.hlx/.da-token.json` has an `expires_at` field (Unix ms). It silently expires on its written timestamp; subsequent `PUT https://admin.da.live/source/...` requests return 401 with empty body. The first canon-upload run in iter-04 failed 53/53 with no helpful error because the token had expired the night before.
+
+**Pre-flight in upload tools:**
+```js
+const tok = JSON.parse(readFileSync('.hlx/.da-token.json', 'utf8'));
+if (tok.expires_at <= Date.now()) {
+  throw new Error(`DA token expired at ${new Date(tok.expires_at).toISOString()}. Re-run: npx -y @adobe/aem-cli content clone --path /afbs-03 --force`);
+}
+```
+
+Codify this in `tools/da-upload.mjs` and any future upload helper.
+
+### Per-batch deploy verification is the only real completion check
+
+Iter-04 declared "all 7 pages rendering end-to-end" based on `localhost:3000` decoration. The deployed preview at `iter-04--snowflake--aemcoder.aem.page/iter-04/<page>` had massive 404 problems that local rendering masked (the proxy fallback resolved `/stardust/runtime/...` to `main--`, where some files exist transiently).
+
+**Rule (per DEC-015 batch process):** A page is not "done" until rendered on the deployed feature-branch preview with:
+- 0 console 404s (or all 404s explicitly classified as known-noise — e.g. sticky-cta on pages without `.sticky-cta` element)
+- Chrome present (gnav + footer)
+- All slot fills correct (no empty headings, no broken links, no broken images)
+- Pixel-diff measured (per BACKLOG § Pixel-diff campaign infrastructure)
+- Mobile/tablet viewport check (per iter-002 BACKLOG)
+- PageSpeed Insights score logged
+
+`localhost:3000` rendering is a useful smoke test but not a completion signal.

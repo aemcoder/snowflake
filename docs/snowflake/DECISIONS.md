@@ -270,4 +270,65 @@ These rules now live as conventions in LEARNINGS § Canon authoring conventions 
 
 ---
 
+## DEC-014: Class-prefix-parameterized canons via `canon/catalog.json`
+
+**Status:** Accepted (iter-004 — operationally validated on deployed preview)
+
+**Context:** Spike-001 found that some module families share one structural skeleton across multiple BEM prefixes. Strongest case: the `*-final-cta` family — `llm-final-cta`, `bc-final-cta` (×3), `aem-final-cta`, `aem-forrester` are all `section(div(div(h2,a),div(img)))` byte-for-byte modulo prefix substitution. Iter-003's bridge required one canon file per prefix (6+ near-duplicates). The spike proposed a class-prefix-parameterized canon backed by a data-driven mapping; iter-004 implements and validates it.
+
+**Decision:** Introduce a catalog file at `/canon/catalog.json` that maps every authored `module-id` to a `{ canon: <path>, bemPrefix?: <string> }` record. The bridge decorator:
+
+1. Fetches `/canon/catalog.json` once per page load (cached).
+2. For each block, resolves `module-id` → `{canon, bemPrefix}` via the catalog. Falls back to `/canon/modules/${moduleId}.html` (no prefix rewrite) when the id is unmapped — preserves iter-003 behavior for single-canon modules.
+3. Fetches the canon HTML once per `canon` path (cached).
+4. If `bemPrefix` is set: walks every element with a `class` attribute in the cloned canon DOM and rewrites placeholder class names:
+   - `__root` → `${prefix}` (the canon's outer-section base class)
+   - `__<suffix>` → `${prefix}__<suffix>` (BEM-element classes)
+   - `--<suffix>` → `${prefix}--<suffix>` (BEM-modifier classes)
+5. Real utility classes (`btn`, `btn--solid-white`, `anim-enter`, `title-2`) stay untouched because they don't start with `__` or `--` at index 0. The placeholder convention is exact (leading `__` / `--`); BEM-shaped classes that carry a base name first (e.g. `btn--solid-white`) cannot collide.
+
+Family-canon files (e.g. `canon/modules/final-cta.html`) author placeholder classes; per-prefix canon files (e.g. `bc-resources.html`, `aem-features.html`) keep literal BEM classes and don't appear in `catalog.json` at all.
+
+**Consequences:**
+- 6 instances of the final-CTA family render through one canon file (`final-cta.html`) on iter-04, replacing 4 per-prefix iter-03 canons. The training-cta family (`training-cta.html`) similarly covers `training-cta` + `bc-training`. Net: -4 canon files, +1 catalog file, identical rendered output.
+- Adding a new BEM prefix to an existing family is a one-line catalog entry — no canon work needed.
+- Cross-class structural clusters surfaced by the analyzer that are *semantically* distinct (per spike: `rainbow-strip` ≅ `bc-webinar` — same shape, different module purpose) deliberately do NOT use family canons. Author labels by module-id; identical structure across canons is acceptable redundancy when meaning differs.
+- The placeholder convention `__root` / `__<suffix>` / `--<suffix>` is now project policy. Future canon-extraction tooling must emit placeholders for the family-canon case and literal BEM classes for the single-canon case. The convention is documented in `blocks/stardust-module/stardust-module.js` file header and in LEARNINGS § Class-prefix-parameterization mechanism.
+- The `canon/catalog.json` schema is `{ version, modules: { [moduleId]: { canon, bemPrefix? } } }`. Schema evolution requires bumping `version`.
+
+**Cross-refs:** spike-001 § Recommended iter-004 scope; LEARNINGS § Class-prefix-parameterization mechanism + § Family canon decision criteria.
+
+---
+
+## DEC-015: Migration runs in small batches with per-batch closing-pass
+
+**Status:** Accepted (iter-004 retrospective)
+
+**Context:** Iter-04 attempted to migrate all 7 stardust pages in one iteration. The mechanism work succeeded (Phase 1-2 validated end-to-end), but per-page content quality, deployed-preview verification, and the closing-pass discipline all got compressed past the point of doing each well. The first deploy had ~50 console 404s because runtime CSS/JS wasn't committed and chrome blocks weren't cargo-culted — both detectable issues that survived because the closing-pass and deploy-verification steps were skipped.
+
+User feedback at close: "quality is the key result, getting all converted pages 1:1 with the originals. And maybe to help achieve that, the complete website migration should be an iterative process itself, looking at common pages and treat them in batches, with checking+improvements loops between each batch."
+
+**Decision:** Future migration iterations operate on **batches**, not "all pages at once". Each batch:
+
+- Covers 1–3 related pages (same product family, same design language, or one new page in isolation).
+- Has its own closing-pass: deploy verified ✓, pixel-diff measured ✓, perf checked (PageSpeed) ✓, mobile viewport checked ✓, LEARNINGS distilled ✓ — *before* the next batch starts.
+- Lands its docs commit on `main` (per DEC-010) at batch close, not at end-of-iteration.
+- Sub-batches an iteration if 2+ batches fit in one session; sequences across iterations otherwise.
+
+Candidate batch boundaries for the existing 7-page set:
+- **Batch A:** afbs 3 product pages (regression test — does the iter-04 mechanism produce ≥ iter-03 quality on the same content?)
+- **Batch B:** AEM Sites (1 page, validates family-canon mechanism on a NEW page outside afbs)
+- **Batch C:** BC prototypes pair (2 pages, distinct prototype design language)
+- **Batch D:** Semrush (1 page, distinct design system + video slot extension)
+
+**Consequences:**
+- Each batch's closing-pass is the quality gate. No batch declared done until its deployed preview passes pixel-diff + perf + mobile + LEARNINGS distillation.
+- The pixel-diff campaign (BACKLOG, iter-003) is now a P0 prerequisite for batch-mode work — without it, "1:1 fidelity" is unmeasurable.
+- Iteration log captures one or more batches; LEARNINGS distill per batch as findings emerge.
+- The all-7-pages "iter-04 mechanism shipped" claim stands, but the deployed pages need per-batch quality passes before being treated as production-ready.
+
+**Cross-refs:** DEC-010 (docs on main); BACKLOG § Pixel-diff campaign infrastructure; spike-001 § Recommended iter-004 scope (sub-batched).
+
+---
+
 *New decisions go here. Append; don't rewrite.*

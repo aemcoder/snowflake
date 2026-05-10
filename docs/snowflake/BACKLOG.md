@@ -130,9 +130,9 @@ A proper authoring tool would, given a canon template + a stardust source page (
 
 This eliminates the column-order ambiguity entirely (canon defines the schema; content matches by construction). Replaces the one-off `fix-*-content.js` scripts permanently. Plausible name: `tools/author-content.js` or part of a richer `da-client.js` library.
 
-### Class-prefix-parameterized canon for the `*-final-cta` family *(added: spike-001)*
+### Class-prefix-parameterized canon for the `*-final-cta` family *(shipped: iter-004)*
 
-Spike-001 confirmed that 4 different BEM prefixes (`llm-`, `bc-`, `aem-final-cta`, `aem-forrester`) produce literally one structural template across 6 instances. Today each is a separate canon. A `data-bem-prefix` attribute on the canon root + a decorator pass that rewrites BEM classes at render time would collapse them to one canon. **This is the recommended scope for iter-004** (see `docs/snowflake/spikes/001-module-analysis.md` § Recommended iter-004 scope). Promote to DECISIONS once iter-004 builds and ships it.
+**Status:** SHIPPED. Iter-04 built `canon/catalog.json` + the `applyBemPrefix` decorator pass + `canon/modules/final-cta.html` family canon. 6 instances of the family render correctly on the deployed preview via prefix-rewritten BEM classes. The `training-cta` family followed the same pattern (2 instances). See DEC-014 for the decision; LEARNINGS § Catalog mechanism for the documented convention.
 
 ### Structural-cluster lint pass *(added: spike-001)*
 
@@ -143,6 +143,50 @@ The analyzer can flag pairs of modules that share an identical skeleton but diff
 Spike-001's reality-test pass confirmed that ~80% of modules in real Adobe.com EDS-source content (`.plain.html` fragments under `stardust/assets/`) map conceptually to spike catalog patterns, despite using a totally different markup vocabulary (`hero-marquee`, `editorial-card`, `brick`, `text` blocks vs. stardust BEM `<section>` modules). The mapping table is in the spike report.
 
 A productization follow-up (post iter-004): build a translator that consumes EDS-source `.plain.html` (or a live-fetched Adobe.com page), identifies modules via the vocabulary mapping, and emits equivalent canon entries. This unlocks bridging across the full Adobe.com surface area, not just stardust-generated pages. Low priority until iter-004's catalog mechanism is proven.
+
+### Pixel-diff campaign infrastructure *(elevated to P0: iter-004 → iter-005)*
+
+Per DEC-015 (batched-iteration model), pixel-diff is now a closing-pass quality gate per batch — not just an optional follow-up. Iter-005 needs to build:
+
+1. **`scripts/pixel-diff.sh <module-selector> <orig-url> <eds-url>`** per the existing BACKLOG § Pixel-diff helper script entry: opens both URLs at 1440×900 in headless Chrome, disables animations + scroll-behavior, waits for fonts ready, element-screenshots the selector on both, runs `compare -metric AE -fuzz 1%`, reports `diff_count / total_pixels` and produces a diff-highlight image.
+2. **`scripts/pixel-diff-page.sh <page-slug>`** that takes a full-page-vs-original screenshot pair AND per-module screenshots, reports per-module diff scores.
+3. **A "module catalog" for each migrated page** identifying which selector to use for each module (already implicit in the canon structure — each canon has a known outer `section` class).
+
+Without this, "1:1 fidelity" is unmeasurable and the batch process can't gate.
+
+### Video `<source src>` slot support *(added: spike-001 → iter-004)*
+
+Semrush's `sr-promos` module has 2 article rows with embedded `<video><source src="..."></video>` elements. The current `fillSlot` only specialises `<a>`, `<img>`, `<picture>`, and default-innerHTML. Iter-04 ships sr-promos with frozen video URLs in the canon (author cannot replace via slot). A 5-line extension to `fillSlot` for `data-slot-attr="<attr>"` would let the slot value write to the named attribute on `<video>` / `<source>`. Specifically:
+```js
+if (target.dataset.slotAttr) {
+  target.setAttribute(target.dataset.slotAttr, cell.textContent.trim());
+  return;
+}
+```
+After this, sr-promos.html canon rewrites the `<source>` elements with `data-slot-attr="src"` and DA cell carries the URL as text.
+
+### Consolidate content-extractor patterns *(added: iter-004)*
+
+Iter-04 ended up with three different content-source patterns: programmatic Node extract (`tools/extract-sites-content.mjs`), sub-agent-direct-write (Semrush + 2 BC prototypes), and copy-from-iter-02 (3 afbs pages). Each has different fidelity guarantees. Iter-05 should converge on one: a deterministic per-page extractor (mirror of `extract-sites-content.mjs` but parameterized — read stardust source, walk modules, emit `<table>` blocks with slot rows by reading the canon's `[data-slot]` schema). Output: one tool, one command per page, one deterministic content file.
+
+### Consolidate image manifests *(added: iter-004)*
+
+Iter-04 has three migration manifest formats: top-level array (`migrate-images.semrush-home.json`), top-level object with `items` key (`migrate-images.bc-prototypes.json`), my own ad-hoc array (`migrate-images.sites.json`). And no content-hash dedup. Iter-03's `tools/migrate-images.js` had a richer pattern (hash dedup, collision-aware namespacing); iter-05 should adopt one format that supports both within-page and cross-page dedup.
+
+### URL-rewriter for cargo-culted iter-N→iter-M content *(added: iter-004)*
+
+`tools/rewrite-content-urls.mjs` only handles `https://main--snowflake--aemcoder.aem.page/...` source prefixes. The 3 afbs content files (cargo-culted from `content/afbs-02/`) still reference `https://afbs-02--snowflake--aemcoder.aem.page/...` — those URLs depend on the afbs-02 branch's preview staying alive. The rewriter needs to:
+- Handle `afbs-02--` / `afbs-03--` / any branch-locked prefix.
+- Map source paths via `/media/<site>/` for already-migrated images (today: afbs images at `/media/afbs/`).
+- Log every URL it sees but doesn't have a mapping for (so silent skips don't hide breakage).
+
+### `tools/node_modules/` cleanup *(added: iter-004)*
+
+`tools/node_modules/` got committed to the iter-04 branch because `.gitignore`'s `node_modules/*` rule only matches root-level. Fix: change to `node_modules/` (matches at any depth), then `git rm -r --cached tools/node_modules` + commit. Repo history is permanently bloated but new commits clean up.
+
+### Hero family canon (`llm-hero` ≅ `aem-hero`) *(added: spike-001 — deferred from iter-004)*
+
+Spike-001's 2nd-strongest cross-class cluster: `llm-hero` and `aem-hero` share skeleton `40713b38f45f` (the 2-CTA hero variant). Iter-04 kept them as separate per-prefix canons. Now that DEC-014's mechanism is shipped, this is a one-line catalog change + a `hero-2cta.html` family canon. Worth doing once a batch needs `aem-hero` or another `*-hero` prefix.
 
 ### Per-module pixel-diff campaign *(added: iter-003)*
 
