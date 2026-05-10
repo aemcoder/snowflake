@@ -35,7 +35,9 @@ const PAGES = {
     modules: [
       { id: 'hero-announce', sel: 'section.hero-announce' },
       { id: 'index-hero', sel: 'section#hero' },
-      { id: 'acrobat-feature', sel: 'section.acrobat-feature' },
+      // Index page has the 3-card variant w/o --teal modifier; use the
+      // dedicated 3up canon so canon ↔ source match structurally.
+      { id: 'acrobat-feature-3up', sel: 'section.acrobat-feature' },
       { id: 'announce-carousel', sel: 'section.announce-carousel' },
       { id: 'testimonial', sel: 'section.testimonial' },
       { id: 'brands-strip', sel: 'section.brands-strip' },

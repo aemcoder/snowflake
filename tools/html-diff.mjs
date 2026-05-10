@@ -130,8 +130,24 @@ const EXTRACT_SECTIONS_FN = `(wrapperSelector, pageUrl) => {
     // they don't carry transform/translate.
     root.querySelectorAll('[style]').forEach((el) => {
       const s = el.getAttribute('style') || '';
-      if (/\\b(transform|translate|rotate|scale)\\s*:/.test(s)) el.removeAttribute('style');
+      if (/\\b(transform|translate|rotate|scale|clip-path|pointer-events)\\s*:/.test(s)) {
+        el.removeAttribute('style');
+      }
     });
+    // Strip JS-state-marker classes injected by runtime scripts that don't
+    // exist in the static source. These are stardust-runtime conventions:
+    //   hhub-ready          on hero-hub-router after hub-router.js runs
+    //   hhub-card--flying   on hub cards during scroll-driven animation
+    //   is-active           on tabs/buttons selected by tab-strip scripts
+    // Each pattern shows up in deployed JS-enabled DOM but never in source.
+    const STATE_CLASSES = ['hhub-ready', 'hhub-card--flying'];
+    root.querySelectorAll(STATE_CLASSES.map((c) => '.' + c).join(',')).forEach((el) => {
+      STATE_CLASSES.forEach((c) => el.classList.remove(c));
+    });
+    // Strip JS-injected sibling elements that animate the hub-router cards.
+    // The hub-router.js script inserts <div class="hhub-card-bg"> per card
+    // as the scroll-driven background; not present in source.
+    root.querySelectorAll('.hhub-card-bg').forEach((el) => el.remove());
     // Unwrap DA's automatic <li><p>text</p></li> → <li>text</li>. DA's HTML
     // authoring policy wraps cell-level text in <p>; when a cell value is
     // a list of bullets, each <li>'s contents get auto-wrapped. The wrap is
