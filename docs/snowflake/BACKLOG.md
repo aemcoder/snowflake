@@ -18,8 +18,8 @@ Code/tooling work, each landing in a specific upcoming session. Every Tier-1 ite
 
 | ID | Item | Why blocking | → Lands in |
 |---|---|---|---|
-| **#8** | **Pixel-diff campaign infrastructure** — `scripts/pixel-diff.sh <selector> <orig> <eds>` + `scripts/pixel-diff-page.sh <page>`. Per-module + full-page diff scores. | Without measurement "1:1 fidelity" is unmeasurable. Universal blocker — every batch closing-pass needs this. | **Tooling 1** |
-| **#25** | **URL-rewriter handles cargo-culted iter-N→iter-M prefixes** — extend `tools/rewrite-content-urls.mjs` to handle `afbs-02--`, `afbs-03--`, any `<branch>--snowflake--aemcoder.aem.page` source URL. Log unmapped URLs (no silent skips). | Batch A reuses iter-02 afbs content; 3 deployed pages depend on afbs-02 preview staying alive. | **Tooling 1** (verified by iter-005) |
+| ~~**#8**~~ | ~~Pixel-diff campaign infrastructure~~ → **HTML structural diff** (`tools/html-diff.mjs`) shipped instead, per Tooling 1 methodology choice. Pixel-diff deferred (likely never needed; HTML diff measures the bridge contract directly). See LEARNINGS § HTML structural diff over pixel diff. | ~~Without measurement "1:1 fidelity" is unmeasurable.~~ | **SHIPPED** (Tooling 1) |
+| ~~**#25**~~ | ~~URL-rewriter handles cargo-culted iter-N→iter-M prefixes~~ — `tools/rewrite-content-urls.mjs` shipped on `main` with branch-prefix-agnostic regex (any `*--<repo>--<owner>.aem.{page,live}`), manifest-driven mapping, unmapped-URL logging (exit 1). Afbs-specific manifest still needs to land at iter-005 use site. | ~~Batch A reuses iter-02 afbs content.~~ | **SHIPPED** (Tooling 1; afbs manifest produced at iter-005) |
 | **#17** | **Per-page CSS scoping** — 8 page-CSS files load eagerly via `head.html` union. Move to per-page lazy-load via `<meta name="page-css">` + loader in `scripts.js`. | Cross-page CSS cascade collisions (e.g. `sites-page.css` rules leaking into afbs pages) would muddy pixel-diff signal. Need clean CSS isolation before measuring. | **Tooling 2** |
 | **#21** | **Pre-flight DA token expiry check** in `da-upload.mjs`: decode token, fail-fast with clear re-auth message. | iter-04's first canon upload failed 53/53 with bare 401s because the token had silently expired. | **Tooling 2** |
 | **#26** | `tools/da-upload.mjs` retry on 5xx/429. | Today any transient server error fails the file outright; iter-04 had to re-run uploads. | **Tooling 2** |
@@ -83,7 +83,7 @@ Each row is one session. Tooling sessions are unnumbered (per iter-NNN conventio
 
 | Session | Kind | Drains | Output |
 |---|---|---|---|
-| **Tooling 1** | bridge | **#8, #25** (Tier 1) | `scripts/pixel-diff.sh` + `scripts/pixel-diff-page.sh` + URL-rewriter prefix extension + baseline-delta report capturing iter-04's as-is pixel deltas across all 7 deployed pages |
+| ~~**Tooling 1**~~ ✅ | bridge | **#8, #25** (Tier 1) | **SHIPPED.** `tools/html-diff.mjs` (HTML structural diff replacing pixel-diff per LEARNINGS § HTML structural diff over pixel diff) + `tools/rewrite-content-urls.mjs` (branch-prefix-agnostic URL rewriter on `main`) + `tools/pages.config.mjs` + baseline-delta report at `docs/snowflake/iterations/baseline-iter-04-html-deltas.md`. Plus lint scope extended to `.mjs` with a `tools/**` override (`.eslintrc.js`). Playwright + diff added as root devDeps. |
 | **Tooling 2** | bridge | **#17, #21, #22, #26** (Tier 1) | Per-page CSS lazy-load + token pre-flight + da-upload retry + gitignore/node_modules cleanup. All on `main`. Optional: #23 (catalog JSON-comment cleanup) bundled here if time |
 | **iter-005** | conversion | (verifies #25 in production) + opportunistic **#56** | **Batch A — afbs regression pass.** 3 pages (index, llm-optimizer, brand-concierge). Pixel-diff each → fix per-module deltas → re-publish → re-diff until <3% per page. Image URLs rewritten from `afbs-02--` to `/media/afbs/`. Full quality gate per DEC-015. |
 | **iter-006** | conversion | — | **Batch B — AEM Sites quality pass.** 1 page. Same closing-pass shape. |
@@ -96,7 +96,7 @@ Each row is one session. Tooling sessions are unnumbered (per iter-NNN conventio
 
 Every actionable Tier-1/2/3 item maps to a session. Cross-reference:
 
-- Tier 1 (6 items): #8 → T1, #25 → T1, #17 → T2, #21 → T2, #26 → T2, #22 → T2 ✓
+- Tier 1 (6 items): #8 → T1 ✅, #25 → T1 ✅, #17 → T2, #21 → T2, #26 → T2, #22 → T2 ✓
 - Tier 2 (4 items): #53 → iter-008, #28/#34 → T3, #31/#32/#36 → T3, #54 → Deferred ✓
 - Tier 3 (6 items): #23 → opportunistic, #27/#30 → T3, #56 → iter-005, #29 → opportunistic, #35 → iter-008 close, #15-21 → T3 ✓
 - Tier 4 (process rules): applied at every relevant gate; not drained
@@ -251,15 +251,16 @@ Spike-001's reality-test pass confirmed that ~80% of modules in real Adobe.com E
 
 A productization follow-up (post iter-004): build a translator that consumes EDS-source `.plain.html` (or a live-fetched Adobe.com page), identifies modules via the vocabulary mapping, and emits equivalent canon entries. This unlocks bridging across the full Adobe.com surface area, not just stardust-generated pages. Low priority until iter-004's catalog mechanism is proven.
 
-### Pixel-diff campaign infrastructure *(elevated to P0: iter-004 → iter-005)*
+### HTML structural diff campaign infrastructure *(shipped: Tooling 1; supersedes Pixel-diff plan)*
 
-Per DEC-015 (batched-iteration model), pixel-diff is now a closing-pass quality gate per batch — not just an optional follow-up. Iter-005 needs to build:
+**Status:** SHIPPED. Tooling 1 built `tools/html-diff.mjs` instead of the originally-planned pixel-diff scripts. Rationale: the bridge's contract is *canon-equivalent DOM*, not *pixel-equivalent rendering* — HTML diff measures the contract directly and is faster, deterministic, and more diagnostic (you see *what* differs, not just *how much*). See LEARNINGS § HTML structural diff over pixel diff for the methodology rationale + the normalization gotchas.
 
-1. **`scripts/pixel-diff.sh <module-selector> <orig-url> <eds-url>`** per the existing BACKLOG § Pixel-diff helper script entry: opens both URLs at 1440×900 in headless Chrome, disables animations + scroll-behavior, waits for fonts ready, element-screenshots the selector on both, runs `compare -metric AE -fuzz 1%`, reports `diff_count / total_pixels` and produces a diff-highlight image.
-2. **`scripts/pixel-diff-page.sh <page-slug>`** that takes a full-page-vs-original screenshot pair AND per-module screenshots, reports per-module diff scores.
-3. **A "module catalog" for each migrated page** identifying which selector to use for each module (already implicit in the canon structure — each canon has a known outer `section` class).
+Pixel-diff is **deferred indefinitely**: HTML diff catches the upstream causes of visual divergence (slot fill, class drift, missing modules, cascade-injected attrs). If iter-005..008 surface visual deltas that HTML diff didn't predict (e.g. pure CSS cascade collisions), pixel-diff is a future addition — but the current judgement is that it's likely unneeded.
 
-Without this, "1:1 fidelity" is unmeasurable and the batch process can't gate.
+Shipped artifacts:
+- `tools/html-diff.mjs` (multi-mode: `--page <slug>` / `--module <n>` / `--all` / `--baseline`; with `--verbose` for unified diffs and `--json` for machine-readable output).
+- `tools/pages.config.mjs` — page slug → stardust source path + deployed URL map.
+- `docs/snowflake/iterations/baseline-iter-04-html-deltas.md` — as-is per-module drift across all 7 deployed iter-04 pages; iter-005 starts here.
 
 ### Video `<source src>` slot support *(added: spike-001 → iter-004)*
 
@@ -280,12 +281,16 @@ Iter-04 ended up with three different content-source patterns: programmatic Node
 
 Iter-04 has three migration manifest formats: top-level array (`migrate-images.semrush-home.json`), top-level object with `items` key (`migrate-images.bc-prototypes.json`), my own ad-hoc array (`migrate-images.sites.json`). And no content-hash dedup. Iter-03's `tools/migrate-images.js` had a richer pattern (hash dedup, collision-aware namespacing); iter-05 should adopt one format that supports both within-page and cross-page dedup.
 
-### URL-rewriter for cargo-culted iter-N→iter-M content *(added: iter-004)*
+### URL-rewriter for cargo-culted iter-N→iter-M content *(shipped: Tooling 1)*
 
-`tools/rewrite-content-urls.mjs` only handles `https://main--snowflake--aemcoder.aem.page/...` source prefixes. The 3 afbs content files (cargo-culted from `content/afbs-02/`) still reference `https://afbs-02--snowflake--aemcoder.aem.page/...` — those URLs depend on the afbs-02 branch's preview staying alive. The rewriter needs to:
-- Handle `afbs-02--` / `afbs-03--` / any branch-locked prefix.
-- Map source paths via `/media/<site>/` for already-migrated images (today: afbs images at `/media/afbs/`).
-- Log every URL it sees but doesn't have a mapping for (so silent skips don't hide breakage).
+**Status:** SHIPPED on `main`. `tools/rewrite-content-urls.mjs` was rewritten from the iter-04 single-branch version into a generalized utility:
+- **Branch-prefix-agnostic regex** (default `https://<word>--<word>--<word>.aem.{page,live}`) handles `main--`, `afbs-02--`, `afbs-03--`, `iter-04--`, and any future branch. Override via `--branch-pattern <re>`.
+- **Manifest-driven mapping** (`--manifest <path>`, repeatable). Auto-detects three formats: top-level array, `{ items }`, `{ images }`.
+- **Unmapped-URL logging** (default-on; `--no-report-unmapped` opt-out). Exits 1 if any branch-locked URL had no manifest hit, so silent skips can't hide breakage.
+- **Dry-run** support (`--dry-run`).
+- **Target prefix** read from `content/.da-config.json` if present, else required via `--target`.
+
+iter-005 use-site work (not Tooling 1's scope): produce the afbs manifest mapping source image paths to `/media/afbs/<filename>` targets, then point the rewriter at the cargo-culted afbs content files.
 
 ### `tools/node_modules/` cleanup *(added: iter-004)*
 

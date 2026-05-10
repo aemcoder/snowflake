@@ -261,6 +261,59 @@ Anything above ~3% deserves investigation: usually a structural offset (height d
 - Footer "all pixels different" diffs at element-screenshot can be misleading: transparent backgrounds composite against white in element-screenshots. Use viewport screenshots at known scroll positions for fair comparison of overlays and chrome with transparent backgrounds.
 - "Double rendering" effect on text in diff highlights = small vertical offset between corresponding elements (the same text shifted ~10–20px). Investigate margin/padding/line-height; usually a boilerplate cascade leak (see above).
 
+## HTML structural diff over pixel diff *(added: Tooling 1, post-iter-004)*
+
+The bridge's contract is **canon-equivalent DOM**, not **pixel-equivalent rendering**. Stardust source HTML is the ground truth; the bridge promises that DA-authored content + canon decoration produces equivalent DOM. HTML diff measures that contract directly — and almost every regression we'd want to catch (slot fill, BEM class drift, missing modules, wrong canon, cargo-culted URLs) shows up as DOM divergence first, visual divergence second.
+
+Tooling 1 chose `tools/html-diff.mjs` instead of the originally-planned pixel-diff scripts. Pixel diff is **deferred indefinitely**: HTML diff catches the upstream causes of visual divergence faster, deterministically, and with better diagnostic output (you see *what* differs, not just *how much*).
+
+### Implementation shape
+
+- One playwright browser, two contexts:
+  - **Source context** (`javaScriptEnabled: false`) loads stardust HTML via `setContent` with the deployed URL as the navigation base, so relative URLs resolve against the same origin as the deployed page.
+  - **Deployed context** navigates to the live preview, waits for `body.appear` + `networkidle` so client-side decoration completes.
+- For each side, extract module sections:
+  - **Source**: every `<section>` anywhere in `<body>` that isn't nested inside another `<section>`, `<header>`, or `<footer>`. Stardust pages vary — some have `<main>`, some don't; some nest sections inside layout `<div>`s; some put trailing sections outside `<main>` (`index.html` has all three patterns).
+  - **Deployed**: every `.stardust-module > section`.
+- Pair by index. Mismatched counts surface immediately as structural anomalies (`MISSING` / `EXTRA` in the output).
+- Serialize each section canonically (sorted attributes, normalized whitespace, indented per nesting depth), then unified-diff with the `diff` package. Drift score = (added + removed lines) / source line count.
+
+### Normalization gotchas (what counts as "noise" vs "signal")
+
+These categories of diff are deterministic artefacts of the deploy pipeline, not bridge bugs — strip them before diffing or every module shows 50%+ drift:
+
+- **`<picture>` wrapper.** EDS server-side rewrites `<img>` → `<picture>` with srcset variants. Collapse `<picture>` to its inner `<img>` on both sides.
+- **`<img src>` resolution.** Stardust uses local paths (`../runtime/assets/...`); deployed uses DA's `/media_<hash>.png` URLs. The image is the same image conceptually but the URL is opaque. Replace `src` with a literal `[img]` token on both sides — image identity is a pixel-diff concern, not an HTML-structure one. Keep `alt`, `width`, `height`, `class`.
+- **EDS image attrs.** Strip `loading`, `decoding`, `fetchpriority`, `srcset`, `sizes` from `<img>` (server-injected).
+- **Same-origin URL resolution on `href` / `src`.** The decorator (specifically `fillSlot` for `<a>`) uses `target.href = link.href` — the `.href` property *resolves* relative URLs against the page origin. Source `<a href="#">` stays as `#`; deployed becomes `https://.../iter-04/llm-optimizer#`. Solution: relativize *both* sides — resolve any URL attribute against the deployed page URL, then strip the origin if same. Source `#` and deployed `/iter-04/llm-optimizer#` both end up as `/iter-04/llm-optimizer#`.
+- **`data-slot*` attrs.** The decorator preserves canon-template markers (`data-slot`, `data-slot-list`, `data-slot-attr`) after filling. Source has none. Strip from both sides.
+- **`data-aue-*`, `data-richtext-*`** EDS Universal Editor / authoring annotations. Strip from both sides.
+- **`data-block-status`, `data-block-name`, `data-section-status`.** EDS runtime annotations on block/section wrappers. Strip.
+- **`anim-enter` initial-state style.** Stardust runtime JS injects `style="opacity: 0; transform: translateY(40px);"` on `.anim-enter` elements before the entry animation runs. Source has no style. Strip `style` on any `.anim-enter[style]` element on both sides.
+- **Accordion collapsed state.** Accordion JS adds `aria-expanded="false"` on items + `aria-hidden="true"` + `style="height: 0px;"` on panels. Source has none of these. Strip `aria-expanded` globally; strip `style` matching `height: 0(px)?`; strip `aria-hidden` only on `[class*="__panel"]` (don't clobber decorative icons elsewhere).
+- **Empty whitespace text nodes.** Indentation in source HTML produces whitespace-only text nodes that the deployed DOM (post-decoration) doesn't have. Walk both trees, drop empty text nodes before serializing.
+
+### What HTML diff *catches* (real signal)
+
+Once noise is stripped, diff output is mostly real:
+
+- **Canon-vs-source class divergence.** e.g. `*-final-cta` family canon authors links as `<a class="btn btn--solid-white *__cta">` but stardust source has `<a class="btn btn--solid-white">` — drift surfaces the extra `*__cta` class consistently across all 6 instances of the final-cta family.
+- **Slot-fill correctness.** If a DA cell text got mapped to the wrong slot, the diff shows the text under the wrong heading/element.
+- **Edited content drift.** iter-04's faq-accordion answers were shortened during DA authoring; HTML diff flags each `<p class="faq-accordion__answer">` as text-content-divergent.
+- **Structural template drift.** split-content's deployed bullets nest as `<ul><ul><li>...</li></ul></ul>` (extra wrap) while source has flat `<ul><li class="*__bullet">...</li></ul>`. Bullets also lack the BEM `__bullet` class.
+- **Promoted-from-styled-section deltas.** Stardust's "page-local 6-up grid" with `<section style="...">` got promoted to a `resource-grid` canon during extraction. HTML diff shows the structural reshape — useful for tracking which modules underwent canon-template promotion.
+
+These are exactly what each batch's closing-pass should address in iter-005..008.
+
+### Why pixel diff might still be needed (someday)
+
+HTML diff misses purely visual deltas that don't show up in DOM:
+- CSS cascade collisions across per-page CSS files (BACKLOG #17).
+- Computed-style divergence even when DOM matches (e.g. a missing `display: contents` on the stardust-module wrapper would shift everything visually but not change the section DOM).
+- Picture/srcset rendering differences at non-test viewports.
+
+If iter-005..008 surface deltas that HTML diff didn't predict, pixel diff is a future addition. The bet is that this won't happen — the visible drifts from iter-04 baseline all trace back to bridge-contract gaps, which HTML diff catches.
+
 ---
 
 ## External bugs / quirks
