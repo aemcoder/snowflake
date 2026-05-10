@@ -42,7 +42,7 @@ Each item attaches to a specific upcoming conversion iter-NNN. Not blocking any 
 |---|---|---|
 | **#23** | `_unmapped_modules` JSON-comment hack in `canon/catalog.json` — split into sibling `.md`. | Any tooling session — small fix |
 | **#27, #30** | Extract `applyBemPrefix` / `loadCatalog` / `resolveCanon` to `scripts/catalog.js` + add unit tests (`tools/test-prefix-rewrite.mjs`). Currently inlined; no permanent test. | **Tooling 3** |
-| **#56** | sticky-cta + similar runtime scripts: add per-page early-out guards. Today throws errors on pages without `.sticky-cta`. | **iter-005** (caught during pixel-diff cleanup) |
+| **#56** | sticky-cta + similar runtime scripts: add per-page early-out guards. Today throws errors on pages without `.sticky-cta`. | **iter-005** (caught during html-diff cleanup) |
 | ~~**#29**~~ | ~~`tools/package.json` sub-project divergent from iter-03's tools-use-root-deps pattern~~ → drained at bridge-promotion: tools use root devDeps pattern (cheerio, playwright, diff all in root `package.json`). | **SHIPPED** (bridge-promotion session) |
 | **#35** | Decide what of `stardust/` (full source tree, ~58 MB) belongs in git long-term. Currently tracked: `stardust/runtime/` (deploy-required) + 7 source page HTMLs (~444 KB; needed by `tools/html-diff.mjs`). Untracked: `stardust/assets/` (~58 MB raw images/SVGs; not needed by the bridge or html-diff). Final decision on `stardust/assets/` deferred to iter-008 close (after all 7 pages reference `/media/<site>/` paths). | Process decision — at iter-008 close (last page migrated) |
 | **#15-21** | `aem content clone --force` recovery automation — codify the revert+`trash content/.git`+`git rm --cached -f content` sequence as a wrapper script. | **Tooling 3** (low value; LEARNINGS already documents the manual recovery) |
@@ -106,9 +106,9 @@ Every actionable Tier-1/2/3 item maps to a session. Cross-reference:
 **Heuristics for adjusting:**
 
 - If a Tier-1 deliverable can't fit in its planned session (e.g., per-page CSS lazy-load needs more design), split into smaller tooling sessions before opening the dependent iter-NNN.
-- If batch A's pixel-diff surfaces issues that aren't fixable per-page (e.g., a shared canon needs structural changes), promote that fix to a between-batch tooling session.
+- If batch A's html-diff surfaces issues that aren't fixable per-page (e.g., a shared canon needs structural changes), promote that fix to a between-batch tooling session.
 - Tier 3 items can interleave opportunistically — never the bottleneck, but a 10-minute cleanup mid-batch is fine when the moment arises.
-- If a batch closing-pass fails (pixel-diff > target or perf regression), iterate within the same iter-NNN until it passes. Don't open the next batch until current closes.
+- If a batch closing-pass fails (html-diff > 3% per page or any module > 10%, or perf regression), iterate within the same iter-NNN until it passes. Don't open the next batch until current closes.
 
 **Conversion-iteration count tracks progress toward "all 7 pages at 1:1 fidelity":** iter-005 starts that count from the iter-04 baseline. Tooling sessions don't advance the count but unblock it.
 
@@ -170,17 +170,11 @@ After every iteration, verify on the deployed feature branch:
 
 Could be a simple `node scripts/smoke.js <branch>` that hits the URL and asserts.
 
-### Pixel-diff helper script
+### Pixel-diff helper script *(superseded: Tooling 1)*
 
-LEARNINGS § Pixel-fidelity-measurement describes the methodology in prose. Codify as `scripts/pixel-diff.sh <module-selector> <orig-url> <eds-url>`:
-- Open both URLs at 1440×900 in headless Chrome
-- Disable animations + scroll-behavior
-- Wait for fonts ready
-- Element-screenshot the selector on both
-- Run `compare -metric AE -fuzz 1%`
-- Report diff_count / total_pixels and produce a diff-highlight image
+**Status:** Superseded by `tools/html-diff.mjs`. The original premise (image-based per-module comparison) gave way to HTML structural diff after Tooling 1 surfaced that the bridge's contract is canon-equivalent DOM, not pixel-equivalent rendering — so DOM diff is faster, deterministic, and more diagnostic. See LEARNINGS § HTML structural diff over pixel diff. Pixel diff stays a "future-if-needed" tool: if iter-005..008 surface deltas that HTML diff didn't predict (pure CSS cascade collisions, computed-style divergence on matching DOM), the methodology described originally below is still the right starting point.
 
-Saves recreating the curl/script chain every time we add a module.
+Original methodology kept for reference: open both URLs at 1440×900 in headless Chrome, disable animations + scroll-behavior, wait for fonts ready, element-screenshot the selector on both, run `compare -metric AE -fuzz 1%`, report `diff_count / total_pixels` + diff-highlight image.
 
 ### DA-upload helper script
 
@@ -301,13 +295,6 @@ iter-005 use-site work (not Tooling 1's scope): produce the afbs manifest mappin
 
 Spike-001's 2nd-strongest cross-class cluster: `llm-hero` and `aem-hero` share skeleton `40713b38f45f` (the 2-CTA hero variant). Iter-04 kept them as separate per-prefix canons. Now that DEC-014's mechanism is shipped, this is a one-line catalog change + a `hero-2cta.html` family canon. Worth doing once a batch needs `aem-hero` or another `*-hero` prefix.
 
-### Per-module pixel-diff campaign *(added: iter-003)*
+### Per-module pixel-diff campaign *(added: iter-003; superseded: Tooling 1)*
 
-Iter-003's deployed pages have full-page pixel diffs of 25–42% vs the original stardust HTML (vs 0.5–1.5% noise floor). Most of the diff is small per-module spacing/alignment deltas that accumulate down the page. A focused campaign:
-
-1. For each migrated module on each page, take element-screenshots of original + EDS rendering at 1440×900.
-2. Compare with `compare -metric AE -fuzz 1%` → localise which modules contribute most.
-3. Fix the top contributors (probably margin/padding/box-sizing cascades from EDS section wrappers).
-4. Iterate until full-page diffs are <3%.
-
-Estimated 1–2 iterations of focused work. Cross-ref site-level BACKLOG (afbs).
+**Status:** Superseded by per-module HTML diff (`tools/html-diff.mjs`). The motivating concern (per-module deltas accumulating to 25–42% full-page drift) is now measured via HTML structural diff, which surfaces the underlying causes (slot fill, BEM class drift, EDS-injected attrs, cascade-effect attrs) directly rather than as pixel deltas. iter-005..008 batch closing-passes drive the per-module fixes. The original 1440×900 element-screenshot + ImageMagick approach stays a fallback for visual deltas not captured by DOM diff — see LEARNINGS § HTML structural diff over pixel diff for the methodology rationale.

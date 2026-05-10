@@ -302,7 +302,7 @@ Family-canon files (e.g. `canon/modules/final-cta.html`) author placeholder clas
 
 ## DEC-015: Migration runs in small batches with per-batch closing-pass
 
-**Status:** Accepted (iter-004 retrospective)
+**Status:** Accepted (iter-004 retrospective). **Amended (Tooling 1, 2026-05-10):** the per-batch quality measurement is **HTML structural diff** (`tools/html-diff.mjs`), not pixel diff. See LEARNINGS § HTML structural diff over pixel diff for the methodology rationale. Pixel diff is deferred indefinitely (HTML diff catches the upstream causes). The closing-pass shape (deploy ✓, measurement ✓, perf ✓, mobile ✓, LEARNINGS ✓) is otherwise unchanged — read the original decision text below as written, with "pixel-diff" replaced mentally by "HTML diff" wherever it appears as the gating measurement.
 
 **Context:** Iter-04 attempted to migrate all 7 stardust pages in one iteration. The mechanism work succeeded (Phase 1-2 validated end-to-end), but per-page content quality, deployed-preview verification, and the closing-pass discipline all got compressed past the point of doing each well. The first deploy had ~50 console 404s because runtime CSS/JS wasn't committed and chrome blocks weren't cargo-culted — both detectable issues that survived because the closing-pass and deploy-verification steps were skipped.
 
@@ -311,7 +311,7 @@ User feedback at close: "quality is the key result, getting all converted pages 
 **Decision:** Future migration iterations operate on **batches**, not "all pages at once". Each batch:
 
 - Covers 1–3 related pages (same product family, same design language, or one new page in isolation).
-- Has its own closing-pass: deploy verified ✓, pixel-diff measured ✓, perf checked (PageSpeed) ✓, mobile viewport checked ✓, LEARNINGS distilled ✓ — *before* the next batch starts.
+- Has its own closing-pass: deploy verified ✓, ~~pixel-diff~~ HTML-diff measured ✓ *(amended Tooling 1)*, perf checked (PageSpeed) ✓, mobile viewport checked ✓, LEARNINGS distilled ✓ — *before* the next batch starts.
 - Lands its docs commit on `main` (per DEC-010) at batch close, not at end-of-iteration.
 - Sub-batches an iteration if 2+ batches fit in one session; sequences across iterations otherwise.
 
@@ -322,12 +322,12 @@ Candidate batch boundaries for the existing 7-page set:
 - **Batch D:** Semrush (1 page, distinct design system + video slot extension)
 
 **Consequences:**
-- Each batch's closing-pass is the quality gate. No batch declared done until its deployed preview passes pixel-diff + perf + mobile + LEARNINGS distillation.
-- The pixel-diff campaign (BACKLOG, iter-003) is now a P0 prerequisite for batch-mode work — without it, "1:1 fidelity" is unmeasurable.
+- Each batch's closing-pass is the quality gate. No batch declared done until its deployed preview passes ~~pixel-diff~~ HTML-diff + perf + mobile + LEARNINGS distillation. *(amended Tooling 1)*
+- ~~The pixel-diff campaign (BACKLOG, iter-003) is now a P0 prerequisite for batch-mode work — without it, "1:1 fidelity" is unmeasurable.~~ Superseded: HTML-diff infrastructure (`tools/html-diff.mjs`) shipped Tooling 1.
 - Iteration log captures one or more batches; LEARNINGS distill per batch as findings emerge.
 - The all-7-pages "iter-04 mechanism shipped" claim stands, but the deployed pages need per-batch quality passes before being treated as production-ready.
 
-**Cross-refs:** DEC-010 (docs on main); BACKLOG § Pixel-diff campaign infrastructure; spike-001 § Recommended iter-004 scope (sub-batched).
+**Cross-refs:** DEC-010 (docs on main); BACKLOG § HTML structural diff campaign infrastructure (Tooling 1); spike-001 § Recommended iter-004 scope (sub-batched); LEARNINGS § HTML structural diff over pixel diff.
 
 ---
 

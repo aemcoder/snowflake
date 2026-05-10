@@ -6,11 +6,11 @@ Things to do specifically for this site. For generic bridge backlog, see `docs/s
 
 ## Up next
 
-### Pixel-fidelity parity to <3% per page *(added: iter-003)*
+### Per-module fidelity parity to <3% per page *(added: iter-003; methodology revised: Tooling 1)*
 
-Iter-003 deployed pages have full-page pixel diffs of 25–42% vs originals. The brand-concierge +298 px height delta is fully explained by canonical chrome substitution (SITE-DEC-001) and is *expected*, not a regression. The remaining diff is per-module spacing/alignment deltas accumulating down the page.
+Iter-003 deployed pages had full-page pixel diffs of 25–42% vs originals. The brand-concierge +298 px height delta is fully explained by canonical chrome substitution (SITE-DEC-001) and is *expected*, not a regression. The remaining diff is per-module spacing/alignment + DOM-divergence deltas accumulating down the page.
 
-Closing the gap requires a per-module element-screenshot diff campaign — see generic BACKLOG § Per-module pixel-diff campaign for the methodology. Estimated 1–2 iterations of focused CSS cascade fixes.
+Tooling 1's HTML diff (`tools/html-diff.mjs`) measures the bridge-contract source of these deltas directly (slot fill, BEM class drift, EDS-injected attrs); see generic LEARNINGS § HTML structural diff over pixel diff. **iter-005 (Batch A)** is the focused campaign that closes the gap on these 3 afbs pages: run `node tools/html-diff.mjs --page <slug>` per page, fix per-module deltas (canon or content), re-deploy, re-diff until each page <3% drift, no module >10%.
 
 ### Migrate body images to DA `/media` folder *(addressed: iter-003 — for new content; iter-002 content remains)*
 

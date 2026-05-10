@@ -557,7 +557,7 @@ Iter-04 declared "all 7 pages rendering end-to-end" based on `localhost:3000` de
 - 0 console 404s (or all 404s explicitly classified as known-noise — e.g. sticky-cta on pages without `.sticky-cta` element)
 - Chrome present (gnav + footer)
 - All slot fills correct (no empty headings, no broken links, no broken images)
-- Pixel-diff measured (per BACKLOG § Pixel-diff campaign infrastructure)
+- HTML structural diff measured: `node tools/html-diff.mjs --page <slug>` <3% per page, no module >10% (per § HTML structural diff over pixel diff above)
 - Mobile/tablet viewport check (per iter-002 BACKLOG)
 - PageSpeed Insights score logged
 

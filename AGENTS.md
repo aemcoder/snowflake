@@ -192,7 +192,7 @@ The full design of the learning system lives at `docs/snowflake/iterations/000-d
 When an iteration migrates multiple pages, work in **batches** of 1–3 related pages rather than all-at-once. Each batch closes with a quality gate before the next starts:
 
 - Deploy verified on `<branch>--<repo>--<org>.aem.page` (not just `localhost:3000`).
-- Pixel-diff measured (per BACKLOG § Pixel-diff campaign infrastructure).
+- HTML structural diff measured: `node tools/html-diff.mjs --page <slug>` per page; aim for <3% per-page drift, no module >10% (LEARNINGS § HTML structural diff over pixel diff). Pixel diff is deferred indefinitely (Tooling 1 methodology choice — HTML diff catches the upstream causes).
 - PageSpeed Insights check logged.
 - Mobile/tablet viewport check.
 - LEARNINGS distilled for findings specific to the batch.
@@ -203,7 +203,7 @@ This is the closing-pass discipline applied per-batch, not just per-iteration. A
 
 An `iter-NNN` is a working session that executes the **conversion flow** on actual page(s) — extract → upload → publish → per-batch quality gate. The numbered iteration log captures the conversion narrative.
 
-Sessions that improve the bridge/tooling **without converting pages** don't get an `iter-NNN` number. They appear as ordinary commits on `main` (or a feature branch) and as BACKLOG drains. Pixel-diff infrastructure work, manifest consolidation, URL-rewriter improvements, code-hygiene cleanup — all sit outside the iter-NNN sequence.
+Sessions that improve the bridge/tooling **without converting pages** don't get an `iter-NNN` number. They appear as ordinary commits on `main` (or a feature branch) and as BACKLOG drains. Diff infrastructure (`tools/html-diff.mjs`), manifest consolidation, URL-rewriter improvements, code-hygiene cleanup — all sit outside the iter-NNN sequence. iter-04's retrospective opened Tooling 1 + Tooling 2 + a bridge-promotion session in this slot; see BACKLOG § Suggested execution plan for the running ledger.
 
 The motivation: an `iter-NNN` should produce visible, gated, deployed page output. Tooling sessions produce no rendered output and shouldn't share the same numbering — otherwise the iteration count stops being a meaningful measure of conversion progress.
 
