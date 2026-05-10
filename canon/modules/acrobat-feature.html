@@ -1,0 +1,37 @@
+<!--
+  module:    acrobat-feature
+  extracted: stardust/products/llm-optimizer.html:543-586
+  slots:     title (text), body (text), items (list of {image, title, body, cta})
+  notes:     Variant class acrobat-feature--teal is frozen here per SITE-DEC (per-page recipe).
+             Inline grid styles on .acrobat-cards force a 2-up layout; preserved verbatim.
+             First <div class="acrobat-card"> is the per-item template; decorator clones it per item row.
+             The acrobat-cta link's chevron <svg> is preserved across slot-fill (link decorator copies SVG icons).
+-->
+<section class="acrobat-feature acrobat-feature--teal">
+  <div class="container">
+    <div class="acrobat-feature__header anim-enter">
+      <h2 class="title-2 acrobat-feature__title" data-slot="title">Unlock more with Adobe integrations.</h2>
+      <p class="body-md acrobat-feature__body" data-slot="body">Connect Adobe products to create and deliver timely, tailored experiences for every customer.</p>
+    </div>
+
+    <div class="acrobat-cards" style="grid-template-columns: repeat(2, 1fr); max-width: 1000px; margin-inline: auto;" data-slot-list="items">
+
+      <div class="acrobat-card anim-enter">
+        <div class="acrobat-card__asset">
+          <img src="/stardust/products/llm-optimizer/assets/scraped/img-asset-grid.png" alt="" width="1000" height="750" data-slot="image">
+        </div>
+        <div class="acrobat-card__copy">
+          <div class="acrobat-card__text">
+            <p class="acrobat-card__title" data-slot="title">Accelerate commerce growth with LLM Optimization.</p>
+            <p class="acrobat-card__body" data-slot="body">Ensure your products, content, and commerce experiences are preferred by large language models and AI-powered discovery tools. Adapt your brand to the AI era and increase your traffic and conversions.</p>
+          </div>
+          <a href="#" class="acrobat-cta" data-slot="cta">
+            Learn more about Adobe Commerce
+            <svg viewBox="0 0 6 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 1L5 6L1 11"/></svg>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

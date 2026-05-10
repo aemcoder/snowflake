@@ -1,0 +1,31 @@
+<!--
+  module:    testimonial
+  extracted: stardust/index.html:1440-1459
+  slots:     logo (text), quote (text), attrib (text), cta (link)
+  notes:     FROZEN INNER STRUCTURE per SITE-DEC-002. The right-side decorative
+             frame + tag/pill/react/note/strip elements are part of the visual
+             choreography (CSS animation hooks). Only the left-column copy
+             (logo wordmark, quote, attribution, CTA link) is exposed as slots.
+             The four decorative <span>s inside testimonial__strip are the
+             frame's inner segments; preserved verbatim.
+-->
+<section class="testimonial">
+  <div class="container">
+    <div class="testimonial__grid">
+      <div class="anim-enter">
+        <span class="testimonial__logo" data-slot="logo">Ford</span>
+        <p class="testimonial__quote" data-slot="quote">"Our Adobe solutions haven't just made us faster. They've given us the time to be more creative, more strategic, and better at connecting with diverse audiences through the stories we tell."</p>
+        <p class="testimonial__attrib" data-slot="attrib">Jordan Mammo, Managing Editor, Ford From the Road</p>
+        <a href="#" class="btn btn--outline" data-slot="cta">Read story</a>
+      </div>
+      <div class="testimonial__media anim-enter">
+        <div class="testimonial__frame"></div>
+        <span class="testimonial__tag">Approved assets</span>
+        <span class="testimonial__pill">From the Road</span>
+        <span class="testimonial__react">127</span>
+        <span class="testimonial__note">Use this hero for Q3 launch</span>
+        <span class="testimonial__strip"><span></span><span></span><span></span><span></span></span>
+      </div>
+    </div>
+  </div>
+</section>

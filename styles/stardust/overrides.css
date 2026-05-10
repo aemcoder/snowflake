@@ -1,0 +1,26 @@
+/*
+ * stardust overrides — applied only when body.stardust is set.
+ *
+ * Per DEC-001 (pixel-identical, not byte-identical) the EDS-added wrappers
+ * around blocks and sections stay in the DOM but are made layout-transparent
+ * via display: contents.
+ *
+ * Plus visibility forces for the chrome (the boilerplate hides
+ * `header .header` / `footer .footer` until block status is loaded; the
+ * inner stardust elements share those classes and inherit the hide).
+ */
+
+body.stardust main > .section,
+body.stardust main > .section > div,
+body.stardust .stardust-module-wrapper,
+body.stardust .default-content-wrapper {
+  display: contents;
+}
+
+/* Boilerplate's `header .header, footer .footer { visibility: hidden }`
+   matches the inner stardust <header class="header"> / <footer class="footer">
+   elements (loaded inside the EDS block wrappers). Force them visible. */
+body.stardust header .header,
+body.stardust footer .footer {
+  visibility: visible;
+}

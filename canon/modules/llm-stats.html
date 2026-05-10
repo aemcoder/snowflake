@@ -1,0 +1,19 @@
+<!--
+  module:    llm-stats
+  extracted: stardust/products/llm-optimizer.html:518-539
+  slots:     title (text), items (list of {num, body, source})
+  notes:     First <div class="llm-stat"> is the per-item template; decorator clones it per item row.
+             source slot is a link.
+-->
+<section class="llm-stats">
+  <div class="llm-stats__header anim-enter">
+    <h2 class="llm-stats__title" data-slot="title">Why an AI search and discovery strategy is critical.</h2>
+  </div>
+  <div class="llm-stats__grid" data-slot-list="items">
+    <div class="llm-stat anim-enter">
+      <p class="llm-stat__num" data-slot="num">50%+</p>
+      <p class="llm-stat__body" data-slot="body">decrease in brands' organic search traffic by 2028 as consumers embrace generative AI-powered search.</p>
+      <a href="https://www.gartner.com/en/newsroom/press-releases" class="llm-stat__source" data-slot="source">According to Gartner</a>
+    </div>
+  </div>
+</section>

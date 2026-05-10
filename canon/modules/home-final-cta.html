@@ -1,0 +1,29 @@
+<!--
+  module:    home-final-cta
+  extracted: stardust/index.html:1662-1680
+  slots:     title (text), cta (link), action (link)
+  notes:     The right-column visual is a "garage door" decorative composition
+             (stat block with brand-score + frame + action link). The numeric
+             stat (eyebrow / num / label) is frozen as decoration; the action
+             link is slotted because authors may want to retitle the
+             secondary call-to-action.
+-->
+<section class="home-final-cta">
+  <div class="home-final-cta__grid">
+    <div class="anim-enter">
+      <h2 class="home-final-cta__title" data-slot="title">Let's talk about what Adobe for Business can do for you.</h2>
+      <a href="#" class="btn btn--solid-white" data-slot="cta">Get started</a>
+    </div>
+    <div class="home-final-cta__media anim-enter">
+      <div class="home-final-cta__stat">
+        <div>
+          <span class="home-final-cta__stat-eyebrow">Brand score</span>
+          <span class="home-final-cta__stat-num">2,480</span>
+          <span class="home-final-cta__stat-label">Engagement</span>
+        </div>
+      </div>
+      <div class="home-final-cta__frame"></div>
+      <a href="#" class="home-final-cta__action" data-slot="action">Create customer journey</a>
+    </div>
+  </div>
+</section>

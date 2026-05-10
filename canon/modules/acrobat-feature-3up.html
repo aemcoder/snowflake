@@ -1,0 +1,49 @@
+<!--
+  module:    acrobat-feature-3up
+  extracted: stardust/index.html:1309-1372
+  slots:     title (text), body (text), items (list of {image, title, body, cta})
+  notes:     Source <section class="acrobat-feature"> uses the same module CSS
+             (stardust/runtime/styles/acrobat-feature-3up.css) as the llm-optimizer
+             page's acrobat-feature, but with NO --teal modifier and three cards
+             instead of two (no inline grid-template-columns override).
+
+             Module-id "acrobat-feature-3up" disambiguates it from the llm-optimizer
+             "acrobat-feature" canon (different content shape, different variant).
+             Section class kept as "acrobat-feature" because the runtime CSS
+             selectors target that class.
+
+             Each <div class="acrobat-card"> has a data-tone="brand|content|engagement"
+             that drives the card's tinted background; the first card is the
+             per-item template (data-tone is preserved verbatim on the template
+             card and copied per clone — authors can't change tone in this iteration).
+-->
+<section class="acrobat-feature">
+  <div class="container">
+
+    <div class="acrobat-feature__header anim-enter">
+      <h2 class="title-2 acrobat-feature__title" data-slot="title">Business solutions from Adobe &mdash; the customer experience orchestration leader.</h2>
+      <p class="body-md acrobat-feature__body" data-slot="body">Adobe solutions bring together best-in-class products to help drive business growth.</p>
+    </div>
+
+    <div class="acrobat-cards" data-slot-list="items">
+
+      <div class="acrobat-card anim-enter" data-tone="brand">
+        <div class="acrobat-card__asset">
+          <img class="acrobat-card__photo" src="/stardust/assets/gen/solution-brand-visibility.jpeg" alt="" width="1200" height="900" data-slot="image">
+          <div class="ac-fallback">Brand<br>visibility</div>
+        </div>
+        <div class="acrobat-card__copy">
+          <div class="acrobat-card__text">
+            <p class="acrobat-card__title" data-slot="title">Brand visibility</p>
+            <p class="acrobat-card__body" data-slot="body">Optimize visibility and engagement to ensure your brand is discoverable to both humans and AI agents.</p>
+          </div>
+          <a href="#" class="acrobat-cta" data-slot="cta">
+            Learn more
+            <svg viewBox="0 0 6 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 1L5 6L1 11"/></svg>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
