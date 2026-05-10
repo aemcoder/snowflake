@@ -1,8 +1,12 @@
 // Page-level config: maps each migrated page to its stardust source file
 // and its deployed preview URL. Used by tools/html-diff.mjs and any future
 // per-page tooling.
+//
+// DEPLOY_BRANCH defaults to the latest closed conversion iteration; override
+// for measurement against a different deploy via env var:
+//   DEPLOY_BRANCH=iter-06 node tools/html-diff.mjs --page index
 
-export const DEPLOY_BRANCH = 'iter-04';
+export const DEPLOY_BRANCH = process.env.DEPLOY_BRANCH || 'iter-05';
 export const DEPLOY_ORIGIN = `https://${DEPLOY_BRANCH}--snowflake--aemcoder.aem.page`;
 export const DEPLOY_BASE = `${DEPLOY_ORIGIN}/${DEPLOY_BRANCH}`;
 

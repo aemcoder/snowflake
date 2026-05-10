@@ -1,29 +1,47 @@
 /**
- * Upload iter-04 deliverables to Document Authoring (DA):
+ * Upload bridge deliverables for the current iteration to Document Authoring (DA):
  *   - canon/catalog.json + canon/modules/*.html → DA /canon/...
- *   - content/iter-04/*.html → DA /iter-04/<file>
+ *   - content/<branch>/*.html → DA /<branch>/<file>
  *   - images per *.json manifests → DA /media/<site>/<file>
  *
  * Then preview + publish each content page via Admin API.
  *
  * Usage:
  *   node tools/da-upload.mjs [--dry-run] [--what canons|content|images|publish|all]
+ *                            [--branch <name>] [--manifest <file>]
+ *
+ * --branch <name>     iteration name; controls the content/<branch>/ source dir
+ *                     AND the DA path prefix. Defaults to the current git branch.
+ * --manifest <file>   restrict --what images to a single manifest (repeatable).
+ *                     Defaults to all tools/migrate-images*.json.
  *
  * Per DEC-011 (image targets), DEC-013 (canon authoring conventions),
  * LEARNINGS § DA conventions / Preview + publish.
  */
 import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { execSync } from 'node:child_process';
 import { join, basename, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const REPO = dirname(dirname(fileURLToPath(import.meta.url)));
 const ORG_REPO = 'aemcoder/snowflake';
-const BRANCH = 'iter-04';
 
 const args = process.argv.slice(2);
 const DRY_RUN = args.includes('--dry-run');
 const whatIdx = args.indexOf('--what');
 const WHAT = whatIdx >= 0 ? args[whatIdx + 1] : 'all';
+const branchIdx = args.indexOf('--branch');
+const manifestArgs = args.flatMap((a, i) => (a === '--manifest' ? [args[i + 1]] : []));
+
+function currentGitBranch() {
+  try {
+    return execSync('git rev-parse --abbrev-ref HEAD', { cwd: REPO }).toString().trim();
+  } catch {
+    return null;
+  }
+}
+
+const BRANCH = branchIdx >= 0 ? args[branchIdx + 1] : (currentGitBranch() || 'main');
 
 const TOKEN_JSON = JSON.parse(readFileSync(join(REPO, '.hlx/.da-token.json'), 'utf8'));
 const TOKEN = TOKEN_JSON.access_token;
@@ -203,13 +221,13 @@ async function uploadCanons() {
 }
 
 async function uploadContent() {
-  const dir = join(REPO, 'content/iter-04');
+  const dir = join(REPO, 'content', BRANCH);
   const tasks = readdirSync(dir)
     .filter((f) => f.endsWith('.html'))
     .filter((f) => statSync(join(dir, f)).size > 0)
     .map((f) => ({
       src: join(dir, f),
-      dst: `iter-04/${f}`,
+      dst: `${BRANCH}/${f}`,
     }));
   console.log(`Uploading ${tasks.length} content pages...`);
   let ok = 0; let
@@ -229,7 +247,9 @@ async function uploadContent() {
 }
 
 async function uploadImages() {
-  const manifestFiles = readdirSync(join(REPO, 'tools')).filter((f) => /^migrate-images.*\.json$/.test(f));
+  const manifestFiles = manifestArgs.length > 0
+    ? manifestArgs.map((p) => (p.includes('/') ? basename(p) : p))
+    : readdirSync(join(REPO, 'tools')).filter((f) => /^migrate-images.*\.json$/.test(f));
   console.log(`Found ${manifestFiles.length} image manifests`);
   let ok = 0; let fail = 0; let
     skipped = 0;
@@ -265,10 +285,10 @@ async function uploadImages() {
 }
 
 async function publishPages() {
-  const dir = join(REPO, 'content/iter-04');
+  const dir = join(REPO, 'content', BRANCH);
   const pages = readdirSync(dir)
     .filter((f) => f.endsWith('.html'))
-    .map((f) => `iter-04/${f.replace(/\.html$/, '')}`);
+    .map((f) => `${BRANCH}/${f.replace(/\.html$/, '')}`);
   console.log(`Preview + publish for ${pages.length} pages...`);
   let ok = 0; let
     fail = 0;
@@ -290,6 +310,7 @@ async function publishPages() {
 async function main() {
   if (!TOKEN) throw new Error('No DA token (.hlx/.da-token.json)');
   checkTokenExpiry();
+  console.log(`Branch: ${BRANCH}  What: ${WHAT}  Dry: ${DRY_RUN}`);
   const all = WHAT === 'all';
   const results = {};
   if (all || WHAT === 'canons') results.canons = await uploadCanons();
