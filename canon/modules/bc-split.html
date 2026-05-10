@@ -25,7 +25,7 @@
               fillSlot for non-anchor/non-image targets sets innerHTML; we
               read the value from the cell's text and set it as an attribute
               indirectly: by binding `data-slot="side"` to a tiny inline
-              `<span class="bc-split__side-marker">` whose text becomes the
+              `[span class="bc-split__side-marker"]` whose text becomes the
               attribute. Per the iter-04 decorator's contract this is
               currently a manual pattern; a follow-up could add a richer
               attribute-binding slot. For this iter we accept that the side

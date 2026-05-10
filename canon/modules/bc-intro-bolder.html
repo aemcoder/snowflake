@@ -4,14 +4,14 @@
   extracted:  stardust/prototypes/products/brand-concierge-bolder.html:1031-1036
   slots:      title-line1 (text), title-line2 (text)
   notes:      The bolder variant splits the title into two visually-mask-wiped
-              lines (`<span class="mask-wipe">` per line, separated by `<br>`).
+              lines (`[span class="mask-wipe"]` per line, separated by `[br]`).
               We expose two named slots (`title-line1`, `title-line2`) so
               authors can edit each half independently and the mask-wipe
               animation continues to apply per-line. The 100ms stagger on the
               second line is hard-coded in the source as inline style; we keep
               it on the canon (visual choreography frozen).
               Decision: explicit per-line slots so authors don't have to
-              maintain inline `<span class="mask-wipe">` markup — the visual
+              maintain inline `[span class="mask-wipe"]` markup — the visual
               animation contract stays intact while authoring stays text-only.
 -->
 <section class="bc-intro">

@@ -1,0 +1,66 @@
+[
+  {
+    "source": "stardust/products/experience-manager/assets/scraped/agents-strip.png",
+    "target": "/media/sites/agents-strip.png"
+  },
+  {
+    "source": "stardust/products/experience-manager/assets/scraped/features-poster.png",
+    "target": "/media/sites/features-poster.png"
+  },
+  {
+    "source": "stardust/products/experience-manager/assets/scraped/features-tab-content-creation.png",
+    "target": "/media/sites/features-tab-content-creation.png"
+  },
+  {
+    "source": "stardust/products/experience-manager/assets/scraped/features-tab-headless.png",
+    "target": "/media/sites/features-tab-headless.png"
+  },
+  {
+    "source": "stardust/products/experience-manager/assets/scraped/features-tab-omnichannel.png",
+    "target": "/media/sites/features-tab-omnichannel.png"
+  },
+  {
+    "source": "stardust/products/experience-manager/assets/scraped/features-tab-performance.png",
+    "target": "/media/sites/features-tab-performance.png"
+  },
+  {
+    "source": "stardust/products/experience-manager/assets/scraped/features-tab-rapid-development.png",
+    "target": "/media/sites/features-tab-rapid-development.png"
+  },
+  {
+    "source": "stardust/products/experience-manager/assets/scraped/final-cta-portrait.png",
+    "target": "/media/sites/final-cta-portrait.png"
+  },
+  {
+    "source": "stardust/products/experience-manager/assets/scraped/forrester.png",
+    "target": "/media/sites/forrester.png"
+  },
+  {
+    "source": "stardust/products/experience-manager/assets/scraped/hero.png",
+    "target": "/media/sites/hero.png"
+  },
+  {
+    "source": "stardust/products/experience-manager/assets/scraped/integration-analytics.png",
+    "target": "/media/sites/integration-analytics.png"
+  },
+  {
+    "source": "stardust/products/experience-manager/assets/scraped/integration-assets.png",
+    "target": "/media/sites/integration-assets.png"
+  },
+  {
+    "source": "stardust/products/experience-manager/assets/scraped/integration-commerce.png",
+    "target": "/media/sites/integration-commerce.png"
+  },
+  {
+    "source": "stardust/products/experience-manager/assets/scraped/use-case-1-website-production.png",
+    "target": "/media/sites/use-case-1-website-production.png"
+  },
+  {
+    "source": "stardust/products/experience-manager/assets/scraped/use-case-2-scale-experiences.png",
+    "target": "/media/sites/use-case-2-scale-experiences.png"
+  },
+  {
+    "source": "stardust/products/experience-manager/assets/scraped/use-case-3-high-performance.png",
+    "target": "/media/sites/use-case-3-high-performance.png"
+  }
+]

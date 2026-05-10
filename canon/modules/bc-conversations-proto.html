@@ -8,13 +8,13 @@
   notes:      FROZEN INNER DIAGRAM. The diagram has a top floating prompt, a
               center "Thinking" pill, and three leaf nodes connected by SVG
               dashed lines (3 straight lines). The leaf labels in the source
-              use a visual <br> mid-line (e.g. "Audience<br>insights"); to
-              keep the authoring contract simple we expose them as flat text
-              labels and rely on the CSS narrow column to break naturally.
-              If preserving the explicit <br> is important later, switch the
+              use a visual line break mid-line (e.g. "Audience [br] insights");
+              to keep the authoring contract simple we expose them as flat
+              text labels and rely on the CSS narrow column to break naturally.
+              If preserving the explicit [br] is important later, switch the
               data-slot value-fill from textContent to innerHTML at the
               decorator (already the default — the cell innerHTML is dropped
-              in, so authoring "Audience<br>insights" inside the cell would
+              in, so authoring "Audience [br] insights" inside the cell would
               render the break).
               Decision: separate module-id (`bc-conversations-proto`) so the
               prototype pages get the SVG-line + prompt-pill skeleton without
