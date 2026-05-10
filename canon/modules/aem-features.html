@@ -1,0 +1,37 @@
+<!--
+  [section: aem-features]
+  source:    stardust/products/experience-manager/sites.html:1009-1041
+  slots:     title, sub, tabs (list of label-only, runtime-driven), pane-image, pane-title, pane-body, pane-bullets (list), pane-cta
+  notes:     Tabs are buttons; the runtime JS swaps pane content. iter-04
+             ships with default tab content (content-creation); other tabs
+             require runtime data attached separately or accordion-style. For
+             iter-04 the canon preserves the default-tab snapshot only.
+             [section-metadata: tab interactivity is a deferred BACKLOG item;
+             current canon renders the default visible tab only.]
+-->
+<section class="aem-features">
+  <div class="aem-features__header anim-enter">
+    <h2 class="title-2 aem-features__title" data-slot="title">Explore the features and capabilities of Adobe Experience Manager Sites.</h2>
+    <p class="body-md aem-features__sub" data-slot="sub">Digital experience has evolved &mdash; your CMS should too.</p>
+  </div>
+
+  <div class="aem-features__tabs-wrap anim-enter">
+    <div class="aem-features__tabs" data-slot-list="tabs">
+      <button type="button" class="aem-features__tab is-active" data-slot="label">Content creation</button>
+    </div>
+  </div>
+
+  <div class="aem-features__pane">
+    <div class="aem-features__media anim-enter" aria-hidden="true">
+      <img src="" alt="" width="1000" height="751" class="aem-features__bg" data-tab="content-creation" data-slot="pane-image">
+    </div>
+    <div class="aem-features__copy anim-enter">
+      <h3 class="aem-features__pane-title" data-slot="pane-title">Pane title</h3>
+      <p class="aem-features__pane-body" data-slot="pane-body">Pane body</p>
+      <ul class="aem-features__bullets" data-slot-list="pane-bullets">
+        <li class="aem-features__bullet" data-slot="text">Bullet</li>
+      </ul>
+      <a href="#" class="btn btn--outline aem-features__cta" data-slot="pane-cta">Learn more</a>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,57 @@
+<!--
+  module:    sr-promos
+  extracted: stardust/prototypes/semrush-home.html:769-803
+  slots:     items (list of {video-src, poster, eyebrow, title, body, cta})
+  notes:     Page singleton — structurally distinct from the existing
+             [canon/modules/split-content.html] which uses [img] media + a
+             [ul] bullets slot. This variant uses an autoplay [video] in the
+             media slot (no bullets, no image), and the second row swaps the
+             CTA color via the [btn--outline-dark] class on the link.
+
+             FROZEN: the [.split-content] / [.split-content__inner] /
+             [.split-content__row] / [.split-content__media] / [.split-content__copy]
+             classes come from the shared split-content runtime CSS — they
+             govern the alternating-side grid. Only the per-row inner content
+             is authored.
+
+             Per-row [data-image-side] alternates left/right (CSS-driven).
+             First row template ships [data-image-side="right"]; cloned rows
+             keep that attribute, so visual alternation across rows is the
+             author's responsibility today (revisit in a later iteration to
+             auto-alternate via the decorator).
+
+             AMBIGUITY / DEFERRED: video [src] and [poster] cannot be set by
+             the current generic decorator (it only specialises A / IMG /
+             PICTURE / default-innerHTML). The slot targets video-src and
+             poster are placed on inert [span] markers inside the [video]
+             element so the default-innerHTML branch lands the URL text. A
+             follow-up iteration will need a small decorator extension that,
+             on a [data-slot] target whose ancestor is a [video] (or that
+             carries [data-slot-attr="src"|"poster"]), writes the cell's plain
+             text into the right attribute. Until that lands, authors who
+             need to change the video should also edit this canon.
+
+             CTA classes ([btn--primary], [btn--outline-dark]) are preserved
+             verbatim on the template; authors must encode the desired class
+             on the link they paste into the cta cell. The [sr-promos__cta]
+             helper class is kept on the template so the page CSS rule applies.
+-->
+<section class="split-content sr-promos">
+  <div class="split-content__inner" data-slot-list="items">
+
+    <div class="split-content__row" data-image-side="right">
+      <div class="split-content__media">
+        <video autoplay muted loop playsinline poster="">
+          <source src="" type="video/mp4">
+        </video>
+      </div>
+      <div class="split-content__copy">
+        <span class="eyebrow" data-slot="eyebrow">SEMRUSH ONE</span>
+        <h2 class="split-content__title" data-slot="title">Your edge to win every search.</h2>
+        <p class="split-content__body" data-slot="body">Semrush One unites SEO and AI visibility in one place — built on 17 years of search intelligence.</p>
+        <a class="btn btn--primary sr-promos__cta" href="#" data-slot="cta">Explore Semrush One</a>
+      </div>
+    </div>
+
+  </div>
+</section>

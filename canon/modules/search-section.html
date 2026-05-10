@@ -1,0 +1,45 @@
+<!--
+  module:    search-section
+  extracted: stardust/index.html:1488-1521
+  slots:     title (text), body (text)
+  notes:     FROZEN INNER STRUCTURE per SITE-DEC-002. Same shape as bc-try
+             (chip prompts + search bar + disclaimer) but on a dark surface
+             targeted by the search-section CSS. The form does not submit;
+             the four chip buttons, the search bar input, and the disclaimer
+             links are all decoration. Only the top-level title/body are
+             slotted. Future iteration may parameterize chips and disclaimer.
+-->
+<section class="search-section">
+  <div class="search-section__inner">
+    <div class="search-section__copy anim-enter">
+      <h2 class="title-2 search-section__title" data-slot="title">How can Adobe help your business today?</h2>
+      <p class="search-section__body" data-slot="body">Ask Adobe Brand Concierge to learn about products, features, and business solutions.</p>
+    </div>
+
+    <form class="search-bar anim-enter" onsubmit="event.preventDefault();">
+      <div class="search-bar__icon-left">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <circle cx="7" cy="7" r="5"/><path d="M14 14L10.5 10.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <input class="search-bar__input" type="text" placeholder="Explore what's possible">
+      <button type="submit" class="search-bar__btn" aria-label="Send">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M2 8L14 8M9 3L14 8L9 13"/>
+        </svg>
+      </button>
+    </form>
+
+    <div class="search-section__chips anim-enter">
+      <button type="button" class="search-section__chip">How do I modernize my content workflow?</button>
+      <button type="button" class="search-section__chip">What are the benefits of using CXO agents?</button>
+      <button type="button" class="search-section__chip">What is Adobe CX Enterprise?</button>
+      <button type="button" class="search-section__chip">Talk to an expert about CXO products.</button>
+    </div>
+
+    <p class="search-section__disclaimer anim-enter">
+      Use of this beta AI chatbot is subject to Adobe's <a href="#">Privacy Policy</a>. Don't share sensitive data.
+      AI responses are not your Content, may be inaccurate, and any offers provided are non-binding. <a href="#">Generative AI Terms</a>.
+    </p>
+  </div>
+</section>

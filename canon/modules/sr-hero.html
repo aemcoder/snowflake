@@ -1,0 +1,54 @@
+<!--
+  module:    sr-hero
+  extracted: stardust/prototypes/semrush-home.html:709-749
+  slots:     eyebrow (text), title (HTML — supports inline [em] for the gradient
+             word), body (text), cta1 (link), cta2 (link)
+  notes:     FROZEN INNER VISUAL: the [.sr-hero__visual] block (SVG line chart,
+             gradients, marker dots, frosted metric pill) is part of the page
+             choreography and is preserved verbatim. The chart-label and
+             chart-metric strings are presentational chrome, not content slots.
+             Authoring covers only the copy column (eyebrow, title, body, two
+             CTAs). The title slot accepts HTML so authors can wrap a word in
+             [em] to get the orange-to-white gradient treatment defined in
+             page CSS ([.sr-hero__title em]).
+             Two CTAs are stable singletons because they carry distinct utility
+             classes ([btn--primary] vs [btn--ghost-white]).
+-->
+<section class="sr-hero">
+  <div class="sr-hero__bg-meridian"></div>
+  <div class="sr-hero__inner">
+    <div class="sr-hero__copy anim-enter">
+      <span class="sr-hero__eyebrow" data-slot="eyebrow">SEMRUSH ONE — UNIFIED BRAND VISIBILITY</span>
+      <h1 class="title-1 sr-hero__title" data-slot="title">Be found <em>everywhere</em><br>search happens</h1>
+      <p class="sr-hero__body" data-slot="body">The leading platform to grow and measure brand visibility across virtually every digital channel.</p>
+      <div class="sr-hero__ctas">
+        <a class="btn btn--primary" href="#" data-slot="cta1">Start your free trial</a>
+        <a class="btn btn--ghost-white" href="#" data-slot="cta2">See pricing</a>
+      </div>
+    </div>
+    <div class="sr-hero__visual anim-enter" style="transition-delay: 120ms;">
+      <div class="sr-hero__chart">
+        <span class="sr-hero__chart-label">AI Visibility · last 30 days</span>
+        <svg viewBox="0 0 480 320" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="srgrad" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="#FF642D" stop-opacity="0.6"/>
+              <stop offset="100%" stop-color="#FF642D" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M0,260 C60,250 120,245 180,240 C240,235 300,230 360,228 C420,226 460,224 480,222"
+                fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-dasharray="4 4"/>
+          <path d="M0,250 C60,240 120,210 180,180 C240,150 300,110 360,80 C420,55 460,40 480,30"
+                fill="none" stroke="#FF642D" stroke-width="3"/>
+          <path d="M0,250 C60,240 120,210 180,180 C240,150 300,110 360,80 C420,55 460,40 480,30
+                   L480,320 L0,320 Z" fill="url(#srgrad)"/>
+          <circle cx="180" cy="180" r="4" fill="#fff"/>
+          <circle cx="360" cy="80" r="5" fill="#FF642D" stroke="#fff" stroke-width="2"/>
+        </svg>
+      </div>
+      <div class="sr-hero__chart-metric">
+        <strong>+373%</strong><br>share of voice
+      </div>
+    </div>
+  </div>
+</section>

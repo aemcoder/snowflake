@@ -1,0 +1,27 @@
+<!--
+  module:    resource-grid
+  extracted: stardust/products/llm-optimizer.html:590-626
+  slots:     title (text), items (list of [kind, title, link])
+  notes:     The source [section] has no class — identified only by an inline
+             [module: resource-grid] hint comment in the source. Synthesized
+             class "resource-grid" added so the bridge can match this canon.
+             Original uses inline styles + per-card SVG icons; structure preserved.
+             First card is the per-item template; the file-icon SVG is frozen
+             (webinar-variant icon swap deferred — ref: site BACKLOG).
+             Cells:
+               kind  - text inside the kind paragraph
+               title - text inside the resource-card title paragraph
+               link  - href on the surrounding anchor; inline SVG/decoration preserved.
+-->
+<section class="resource-grid" style="background: #fff; padding-block: var(--s2a-spacing-6xl);">
+  <div class="resource-grid__header" style="text-align: center; margin-bottom: 48px;">
+    <h2 class="title-2" style="color: #1a1a1a;" data-slot="title">Learn more about Adobe LLM Optimizer and AI-driven search.</h2>
+  </div>
+  <div class="resource-grid__cards" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-width: 1200px; margin: 0 auto; padding-inline: var(--grid-margin-md, 8.333vw);" data-slot-list="items">
+    <a href="#" class="resource-card" style="display: flex; flex-direction: column; gap: 10px; padding: 24px; background: #f8f8f8; border-radius: 16px; min-height: 160px; text-decoration: none;" data-slot="link">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.6" aria-hidden="true"><path d="M5 4h11l3 3v13H5z"/><path d="M16 4v3h3"/></svg>
+      <p style="font-family: var(--font-body); font-weight: 700; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(0,0,0,0.55);" data-slot="kind">Blog</p>
+      <p style="font-family: var(--font-body); font-weight: 700; font-size: 15px; line-height: 1.35; color: #1a1a1a; flex: 1;" data-slot="title">Control your brand narrative in the agentic web.</p>
+    </a>
+  </div>
+</section>

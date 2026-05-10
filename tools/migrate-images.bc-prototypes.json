@@ -1,0 +1,41 @@
+{
+  "_comment": "Image migration manifest for the BC prototype pages (iter-04). Per DEC-011, migrated images go to /media/<site-slug>/<filename>. Both prototype pages share the same scraped image set; we use site-slug 'bc-prototypes' so URLs are namespaced under /media/bc-prototypes/. The DA content currently references the source paths under https://main--snowflake--aemcoder.aem.page/stardust/...; the migration step rewrites those to https://content.da.live/aemcoder/snowflake/media/bc-prototypes/<filename> after upload.",
+  "site_slug": "bc-prototypes",
+  "source_root": "stardust/prototypes/products/brand-concierge/assets/scraped/",
+  "target_root": "/media/bc-prototypes/",
+  "pages": {
+    "bc-prototype": [
+      "hero-portrait.png",
+      "split-1-guide.png",
+      "split-2-orchestrate.png",
+      "split-2-extra.png",
+      "why-1-firstparty-data.png",
+      "why-2-buyer-journeys.png",
+      "why-3-ai-innovation.png",
+      "why-4-enterprise-scale.png",
+      "final-cta-portrait.png"
+    ],
+    "bc-bolder": [
+      "hero-portrait.png",
+      "split-1-guide.png",
+      "split-2-orchestrate.png",
+      "split-2-extra.png",
+      "why-1-firstparty-data.png",
+      "why-2-buyer-journeys.png",
+      "why-3-ai-innovation.png",
+      "why-4-enterprise-scale.png",
+      "final-cta-portrait.png"
+    ]
+  },
+  "items": [
+    { "source": "stardust/prototypes/products/brand-concierge/assets/scraped/hero-portrait.png",        "target": "/media/bc-prototypes/hero-portrait.png" },
+    { "source": "stardust/prototypes/products/brand-concierge/assets/scraped/split-1-guide.png",      "target": "/media/bc-prototypes/split-1-guide.png" },
+    { "source": "stardust/prototypes/products/brand-concierge/assets/scraped/split-2-orchestrate.png", "target": "/media/bc-prototypes/split-2-orchestrate.png" },
+    { "source": "stardust/prototypes/products/brand-concierge/assets/scraped/split-2-extra.png",      "target": "/media/bc-prototypes/split-2-extra.png" },
+    { "source": "stardust/prototypes/products/brand-concierge/assets/scraped/why-1-firstparty-data.png", "target": "/media/bc-prototypes/why-1-firstparty-data.png" },
+    { "source": "stardust/prototypes/products/brand-concierge/assets/scraped/why-2-buyer-journeys.png",  "target": "/media/bc-prototypes/why-2-buyer-journeys.png" },
+    { "source": "stardust/prototypes/products/brand-concierge/assets/scraped/why-3-ai-innovation.png",  "target": "/media/bc-prototypes/why-3-ai-innovation.png" },
+    { "source": "stardust/prototypes/products/brand-concierge/assets/scraped/why-4-enterprise-scale.png","target": "/media/bc-prototypes/why-4-enterprise-scale.png" },
+    { "source": "stardust/prototypes/products/brand-concierge/assets/scraped/final-cta-portrait.png",  "target": "/media/bc-prototypes/final-cta-portrait.png" }
+  ]
+}

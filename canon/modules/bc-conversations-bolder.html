@@ -1,0 +1,38 @@
+<!--
+  [module: bc-conversations-bolder]
+  [section: bc-conversations] bolder-prototype variant
+  extracted:  stardust/prototypes/products/brand-concierge-bolder.html:1143-1165
+  slots:      title (text), body (text), cta (link),
+              prompt (text), center (text),
+              leaves (list of {label})
+  notes:      Identical content shape to bc-conversations-proto, differs only
+              in the SVG line geometry (curved [path d=...] instead of straight
+              [line]). Title/body/cta carry slide-in-left animation classes
+              from the page CSS — these are content-decoration, not exposed.
+              Decision: kept as a sibling canon (separate module-id
+              `bc-conversations-bolder`) rather than a `data-side`-style
+              parameterization because the SVG content is a structural
+              difference (different child elements). A future iteration could
+              parameterize via a "diagram-style" slot if more variants emerge.
+-->
+<section class="bc-conversations">
+  <div class="bc-conversations__grid">
+    <div>
+      <h2 class="bc-conversations__title slide-in-left" data-slot="title">Conversations powered by Adobe.</h2>
+      <p class="bc-conversations__body slide-in-left" data-slot="body">Connect your brand content, customer data, journey insights, and commerce catalogs to deliver personalized conversational experiences at scale.</p>
+      <a href="#" class="btn btn--outline slide-in-left" data-slot="cta">Explore integrations</a>
+    </div>
+    <div class="bc-conversations__diagram" aria-hidden="true">
+      <svg class="bc-conv-lines" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <path d="M 50 35 Q 35 60 20 90"></path>
+        <path d="M 50 35 L 50 90"></path>
+        <path d="M 50 35 Q 65 60 80 90"></path>
+      </svg>
+      <div class="bc-conv-prompt" data-slot="prompt">"What would be a good fit for me?"</div>
+      <div class="bc-conv-center" data-slot="center">Thinking</div>
+      <div class="bc-conv-leaves" data-slot-list="leaves">
+        <div class="bc-conv-leaf" data-slot="label">Audience<br>insights</div>
+      </div>
+    </div>
+  </div>
+</section>

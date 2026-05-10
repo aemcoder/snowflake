@@ -1,0 +1,29 @@
+<!--
+  module:    sr-toolkits
+  extracted: stardust/prototypes/semrush-home.html:806-840
+  slots:     eyebrow (text), title (text), items (list of {image, label, title,
+             body}), footnote (HTML)
+  notes:     Section header carries an eyebrow (with a literal "( N )" count
+             that is currently hard-authored, not derived) plus an h2.
+             First [article.sr-toolkit] is the per-item template; decorator
+             clones per item row.
+             The footnote slot accepts inline HTML so authors can keep the
+             [strong] highlights on category names ("Plus [strong]Content[/strong] · …").
+-->
+<section class="sr-toolkits">
+  <div class="sr-toolkits__head">
+    <span class="eyebrow" data-slot="eyebrow">Solutions ( 9 )</span>
+    <h2 class="title-2" data-slot="title">Get seen. Get cited. Be the answer.</h2>
+  </div>
+  <div class="sr-toolkits__grid" data-slot-list="items">
+    <article class="sr-toolkit anim-enter">
+      <div class="sr-toolkit__media"><img src="" alt="" data-slot="image"></div>
+      <span class="sr-toolkit__label" data-slot="label">Semrush One</span>
+      <h3 class="sr-toolkit__title" data-slot="title">Grow your digital brand visibility</h3>
+      <p class="sr-toolkit__body" data-slot="body">Built for the new era of discovery, Semrush One helps you win everywhere — from traditional SEO to AI search.</p>
+    </article>
+  </div>
+  <p class="sr-toolkit__more" data-slot="footnote">
+    Plus <strong>Content</strong> · <strong>Local</strong> · <strong>Advertising</strong> · <strong>AI&nbsp;PR</strong> · <strong>Social</strong> — 5 more solutions to explore.
+  </p>
+</section>

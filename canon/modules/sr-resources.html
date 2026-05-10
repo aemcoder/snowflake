@@ -1,0 +1,54 @@
+<!--
+  module:    sr-resources
+  extracted: stardust/prototypes/semrush-home.html:922-978
+  slots:     eyebrow (text), title (text), head-cta (link),
+             feature-image (img), feature-cat (text), feature-title (text),
+             feature-body (text), feature-link (link),
+             items (list of {image, cat, title, body, link})
+  notes:     7-card grid with a distinct first card variant ([.sr-resource--feature],
+             spans 2 columns, larger type, contains an extra wrapping [div] inside
+             the anchor). Because the canon's list-template model assumes a single
+             repeating shape, the feature card is modelled as a STABLE SINGLETON
+             at the top of the grid, while the remaining 6 cards are list-templated
+             from the standard [.sr-resource] shape.
+
+             The anchor's [href] is part of the feature/regular link slot so each
+             card can route to a different URL.
+
+             AMBIGUITY: the head-cta SVG arrow icon is part of frozen chrome.
+             [fillSlot] on an [a] target preserves child non-text nodes (only
+             text-content is replaced), so the inline SVG survives slot-fill.
+
+             Source had 7 cards: 1 feature + 6 standard. Canon is N-agnostic
+             on the standard list (authors can add or remove cards), but the
+             feature singleton is required.
+-->
+<section class="sr-resources">
+  <div class="sr-resources__head">
+    <div>
+      <span class="eyebrow" data-slot="eyebrow">Resources ( 7 )</span>
+      <h2 class="title-2" style="margin-top: 8px;" data-slot="title">Stay ahead of what's next</h2>
+    </div>
+    <a class="sr-resources__head-cta" href="#" data-slot="head-cta">All resources <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+  </div>
+  <div class="sr-resources__grid">
+    <a class="sr-resource sr-resource--feature" href="#" data-slot="feature-link">
+      <div class="sr-resource__media">
+        <img src="" alt="" data-slot="feature-image">
+      </div>
+      <div>
+        <span class="sr-resource__cat" data-slot="feature-cat">News</span>
+        <h3 class="sr-resource__title" data-slot="feature-title">Adobe Completes Semrush Acquisition</h3>
+        <p class="sr-resource__body" data-slot="feature-body">Adobe acquires Semrush to unify brand visibility, SEO, and AI-driven customer experience — helping businesses stay discoverable and drive engagement in an agent-led digital landscape.</p>
+      </div>
+    </a>
+    <div class="sr-resources__list" data-slot-list="items" style="display: contents;">
+      <a class="sr-resource" href="#" data-slot="link">
+        <div class="sr-resource__media"><img src="" alt="" data-slot="image"></div>
+        <span class="sr-resource__cat" data-slot="cat">News</span>
+        <h3 class="sr-resource__title" data-slot="title">FAQ for Customers: Adobe Acquires Semrush</h3>
+        <p class="sr-resource__body" data-slot="body">Answers to the most important customer questions — covering what changes, what stays the same, and what to expect next from Adobe and Semrush.</p>
+      </a>
+    </div>
+  </div>
+</section>

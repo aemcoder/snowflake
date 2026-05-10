@@ -1,0 +1,21 @@
+<!--
+  module:    brands-strip
+  extracted: stardust/index.html:1465-1478
+  slots:     title (text), items (list of {logo}), cta (link)
+  notes:     The <span class="brands-strip__logo"> children carry inline font
+             styles (Georgia italic, Helvetica italic, letter-spacing for CISCO,
+             etc.) to mimic actual brand wordmarks. The first <span> is the
+             per-item template; clones inherit only the structural class and
+             are populated from the "logo" slot text. Inline style overrides
+             are part of the per-row "logo" cell (handled by the slot-fill).
+             Bottom CTA renders inside the foot wrapper.
+-->
+<section class="brands-strip">
+  <div class="container">
+    <h2 class="brands-strip__title anim-enter" data-slot="title">Adobe is transforming the world's biggest brands.</h2>
+    <div class="brands-strip__row anim-enter" data-slot-list="items">
+      <span class="brands-strip__logo" style="font-family:Georgia,serif; font-style:italic;" data-slot="logo">Coca-Cola</span>
+    </div>
+    <div class="brands-strip__foot anim-enter"><a href="#" class="btn btn--outline" data-slot="cta">Read more stories</a></div>
+  </div>
+</section>

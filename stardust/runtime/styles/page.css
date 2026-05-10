@@ -1,0 +1,20 @@
+/* ============================================
+   Offer — Page
+   Acrobat Studio offer prototype
+   ============================================ */
+
+body {
+  background: #fff;
+  color: #2c2c2c;
+}
+
+/* ── Global Text Animator ── */
+[data-ta] .ta-line {
+  display: block;
+}
+[data-ta] .ta-line-inner {
+  display: block;
+}
+[data-ta].t-eyebrow {
+  white-space: nowrap;
+}

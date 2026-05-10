@@ -1,0 +1,26 @@
+<!--
+  module:    bc-hero
+  extracted: stardust/products/brand-concierge.html:571-588
+  slots:     eyebrow (text), title (text), body (text), image (image)
+  notes:     Single-CTA hero. The "Watch overview" CTA contains an inline play <svg>.
+             CTA frozen here as part of the hero's visual choreography (only top-level
+             text + media slots exposed to authors); future iteration could add cta slot.
+-->
+<section class="bc-hero">
+  <div class="bc-hero__grid">
+    <div class="bc-hero__copy">
+      <p class="bc-hero__eyebrow" data-slot="eyebrow">ADOBE BRAND CONCIERGE</p>
+      <h1 class="bc-hero__title" data-slot="title">Turn conversations into conversions.</h1>
+      <p class="bc-hero__body" data-slot="body">Transform your digital properties into immersive, conversational experiences that anticipate customer needs, guide discovery, and build trust with Brand Concierge &mdash; powered by AI.</p>
+      <div>
+        <a href="#" class="btn btn--solid-white">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M3 1.5l9 5.5-9 5.5z"/></svg>
+          Watch overview
+        </a>
+      </div>
+    </div>
+    <div class="bc-hero__media" aria-hidden="true">
+      <img src="/stardust/products/brand-concierge/assets/scraped/hero-portrait.png" alt="" class="bc-hero__bg" data-slot="image">
+    </div>
+  </div>
+</section>

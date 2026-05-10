@@ -1,0 +1,63 @@
+<!--
+  [module: bc-split]
+  [section: bc-split] alternating-side image+copy rows (BC prototype variant)
+  extracted:  stardust/prototypes/products/brand-concierge.html:978-1026
+              stardust/prototypes/products/brand-concierge-bolder.html:1039-1087
+  slots:      items (list of {image, side, title, body, bullets, cta})
+  notes:      Differs from canon `split-content` in three small ways:
+                1. attribute name on the row is `data-side` (not `data-image-side`);
+                2. CTA is genuinely OPTIONAL per row (the source shows row 1 + 3
+                   with no CTA, row 2 with one);
+                3. classes use the bc-split BEM prefix throughout.
+              The decorator's slot-fill is graceful when a list cell is empty
+              or absent: an empty [cta] cell yields an anchor with no href and
+              no text, which we hide via CSS — the per-page CSS for bc-split
+              hides `.bc-split__cta:empty` (or rather: the CTA element is left
+              in DOM with empty text, looking visually invisible in the
+              prototype design where CTAs are pill-shaped 1a1a1a buttons).
+              Authors omit the [cta] cell on rows that shouldn't show one;
+              the page CSS file `brand-concierge-prototype-page.css` /
+              `brand-concierge-bolder-page.css` ensures a CTA without text
+              renders as nothing.
+
+              The `side` slot is a small string ("left" or "right") that
+              writes the data-side attribute on the article. The decorator's
+              fillSlot for non-anchor/non-image targets sets innerHTML; we
+              read the value from the cell's text and set it as an attribute
+              indirectly: by binding `data-slot="side"` to a tiny inline
+              `[span class="bc-split__side-marker"]` whose text becomes the
+              attribute. Per the iter-04 decorator's contract this is
+              currently a manual pattern; a follow-up could add a richer
+              attribute-binding slot. For this iter we accept that the side
+              order in the canon (left/right/left) is hard-coded by the
+              article template and authors who want a different cadence
+              re-order the items in the DA table.
+              Decision: instead of a `side` slot, we hard-code three article
+              positions in the data-slot-list with pre-set sides
+              (left/right/left) — the ITEM TEMPLATE inside the slot-list is
+              the FIRST article and gets cloned per item-row. To get the
+              alternating cadence, we rely on CSS:
+                .bc-split__row:nth-child(2) { /* row 2 = right */ }
+              See per-page CSS — the data-side attribute is REMOVED in this
+              canon and the alternating pattern is achieved via :nth-child
+              styling. Authors no longer need a side slot.
+-->
+<section class="bc-split">
+  <div class="bc-split__inner" data-slot-list="items">
+    <article class="bc-split__row">
+      <div class="bc-split__media">
+        <img src="/stardust/prototypes/products/brand-concierge/assets/scraped/split-1-guide.png" alt="" width="2000" height="1500" data-slot="image">
+      </div>
+      <div class="bc-split__copy">
+        <h3 class="bc-split__title" data-slot="title">AI-powered conversations that match customer intent with brand content.</h3>
+        <p class="bc-split__body" data-slot="body">Enhance discovery and increase engagement with AI-powered conversations that match customer intent with the content to drive trust and action.</p>
+        <ul class="bc-split__bullets" data-slot="bullets">
+          <li class="bc-split__bullet">Ensure every response is accurate with conversations based on brand-aligned content.</li>
+          <li class="bc-split__bullet">Surface existing site content and assets to create natural, on-brand responses by integrating with Adobe Experience Manager.</li>
+          <li class="bc-split__bullet">Adapt journeys in real time using Adobe Experience Platform Agents that can understand and anticipate customer needs.</li>
+        </ul>
+        <a href="#" class="bc-split__cta" data-slot="cta">Learn more</a>
+      </div>
+    </article>
+  </div>
+</section>

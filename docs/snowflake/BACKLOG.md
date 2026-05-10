@@ -20,10 +20,10 @@ Code/tooling work, each landing in a specific upcoming session. Every Tier-1 ite
 |---|---|---|---|
 | ~~**#8**~~ | ~~Pixel-diff campaign infrastructure~~ → **HTML structural diff** (`tools/html-diff.mjs`) shipped instead, per Tooling 1 methodology choice. Pixel-diff deferred (likely never needed; HTML diff measures the bridge contract directly). See LEARNINGS § HTML structural diff over pixel diff. | ~~Without measurement "1:1 fidelity" is unmeasurable.~~ | **SHIPPED** (Tooling 1) |
 | ~~**#25**~~ | ~~URL-rewriter handles cargo-culted iter-N→iter-M prefixes~~ — `tools/rewrite-content-urls.mjs` shipped on `main` with branch-prefix-agnostic regex (any `*--<repo>--<owner>.aem.{page,live}`), manifest-driven mapping, unmapped-URL logging (exit 1). Afbs-specific manifest still needs to land at iter-005 use site. | ~~Batch A reuses iter-02 afbs content.~~ | **SHIPPED** (Tooling 1; afbs manifest produced at iter-005) |
-| **#17** | **Per-page CSS scoping** — 8 page-CSS files load eagerly via `head.html` union. Move to per-page lazy-load via `<meta name="page-css">` + loader in `scripts.js`. | Cross-page CSS cascade collisions (e.g. `sites-page.css` rules leaking into afbs pages) would muddy pixel-diff signal. Need clean CSS isolation before measuring. | **Tooling 2** |
 | **#21** | **Pre-flight DA token expiry check** in `da-upload.mjs`: decode token, fail-fast with clear re-auth message. | iter-04's first canon upload failed 53/53 with bare 401s because the token had silently expired. | **Tooling 2** |
 | **#26** | `tools/da-upload.mjs` retry on 5xx/429. | Today any transient server error fails the file outright; iter-04 had to re-run uploads. | **Tooling 2** |
-| **#22** | `tools/node_modules/` in git history; fix `.gitignore` `node_modules/*` → `node_modules/`; `git rm -r --cached tools/node_modules`. | Repo bloat. Not a runtime blocker but should be done before more commits accrete. | **Tooling 2** |
+| ~~**#22**~~ | ~~`tools/node_modules/` in git history; fix `.gitignore` `node_modules/*` → `node_modules/`~~ | Repo bloat. | **SHIPPED** (bridge-promotion session: `.gitignore` fixed; iter-04's `tools/node_modules/` not brought to main) |
+| ~~**#17**~~ | ~~Per-page CSS scoping (lazy-load via `<meta name="page-css">`)~~ → **demoted to Tier 3**. The original blocker rationale ("would muddy pixel-diff signal") no longer applies under HTML-diff measurement (HTML structural diff doesn't read computed styles). Still worth doing eventually for perf/cleanliness, but not Tier 1. | ~~Cross-page CSS cascade collisions would muddy pixel-diff.~~ Demoted: HTML diff is style-blind. | **Tier 3** (any tooling session, opportunistic) |
 
 ### Tier 2 — Per-batch deliverables (lazy — bundle with the batch that needs them)
 
@@ -43,7 +43,7 @@ Each item attaches to a specific upcoming conversion iter-NNN. Not blocking any 
 | **#23** | `_unmapped_modules` JSON-comment hack in `canon/catalog.json` — split into sibling `.md`. | Any tooling session — small fix |
 | **#27, #30** | Extract `applyBemPrefix` / `loadCatalog` / `resolveCanon` to `scripts/catalog.js` + add unit tests (`tools/test-prefix-rewrite.mjs`). Currently inlined; no permanent test. | **Tooling 3** |
 | **#56** | sticky-cta + similar runtime scripts: add per-page early-out guards. Today throws errors on pages without `.sticky-cta`. | **iter-005** (caught during pixel-diff cleanup) |
-| **#29** | `tools/package.json` sub-project divergent from iter-03's tools-use-root-deps pattern. Decide and align intentionally. | Any tooling session |
+| ~~**#29**~~ | ~~`tools/package.json` sub-project divergent from iter-03's tools-use-root-deps pattern~~ → drained at bridge-promotion: tools use root devDeps pattern (cheerio, playwright, diff all in root `package.json`). | **SHIPPED** (bridge-promotion session) |
 | **#35** | Decide what of `stardust/` (full source tree, ~58 MB) belongs in git long-term. Today: `stardust/runtime/` committed; rest untracked. | Process decision — at iter-008 close (last page migrated) |
 | **#15-21** | `aem content clone --force` recovery automation — codify the revert+`trash content/.git`+`git rm --cached -f content` sequence as a wrapper script. | **Tooling 3** (low value; LEARNINGS already documents the manual recovery) |
 
@@ -84,7 +84,8 @@ Each row is one session. Tooling sessions are unnumbered (per iter-NNN conventio
 | Session | Kind | Drains | Output |
 |---|---|---|---|
 | ~~**Tooling 1**~~ ✅ | bridge | **#8, #25** (Tier 1) | **SHIPPED.** `tools/html-diff.mjs` (HTML structural diff replacing pixel-diff per LEARNINGS § HTML structural diff over pixel diff) + `tools/rewrite-content-urls.mjs` (branch-prefix-agnostic URL rewriter on `main`) + `tools/pages.config.mjs` + baseline-delta report at `docs/snowflake/iterations/baseline-iter-04-html-deltas.md`. Plus lint scope extended to `.mjs` with a `tools/**` override (`.eslintrc.js`). Playwright + diff added as root devDeps. |
-| **Tooling 2** | bridge | **#17, #21, #22, #26** (Tier 1) | Per-page CSS lazy-load + token pre-flight + da-upload retry + gitignore/node_modules cleanup. All on `main`. Optional: #23 (catalog JSON-comment cleanup) bundled here if time |
+| ~~**Bridge promotion**~~ ✅ | bridge | **#22** + DEC-016 + drains #29 implicitly | **SHIPPED.** Validated bridge artifacts promoted from `iter-04` to `main` (per DEC-016 amending DEC-012): `stardust/runtime/`, `head.html`, `scripts/scripts.js`, `blocks/{stardust-module,header,footer}/`, `fragments/`, `styles/{fragments,stardust}/`, `canon/`, `tools/{da-upload,extract-sites-content}.mjs` + image manifests. `.gitignore` fixed (`node_modules/*` → `node_modules/`). Cheerio added to root devDeps (drains #29 by aligning tools to root-deps pattern). |
+| **Tooling 2** | bridge | **#21, #26** (Tier 1) | Token pre-flight in `tools/da-upload.mjs` (decode token, fail-fast with clear re-auth message) + retry on 5xx/429. Smaller scope post-bridge-promotion: #22 already shipped, #17 demoted to Tier 3. Optional: #23 (catalog JSON-comment cleanup) bundled here if time |
 | **iter-005** | conversion | (verifies #25 in production) + opportunistic **#56** | **Batch A — afbs regression pass.** 3 pages (index, llm-optimizer, brand-concierge). Pixel-diff each → fix per-module deltas → re-publish → re-diff until <3% per page. Image URLs rewritten from `afbs-02--` to `/media/afbs/`. Full quality gate per DEC-015. |
 | **iter-006** | conversion | — | **Batch B — AEM Sites quality pass.** 1 page. Same closing-pass shape. |
 | **iter-007** | conversion | — | **Batch C — BC prototypes pair.** 2 pages (proto + bolder; share canons; bolder has bc-marquee). Same closing-pass. |
@@ -96,7 +97,7 @@ Each row is one session. Tooling sessions are unnumbered (per iter-NNN conventio
 
 Every actionable Tier-1/2/3 item maps to a session. Cross-reference:
 
-- Tier 1 (6 items): #8 → T1 ✅, #25 → T1 ✅, #17 → T2, #21 → T2, #26 → T2, #22 → T2 ✓
+- Tier 1 (was 6): #8 → T1 ✅, #25 → T1 ✅, #22 → bridge-promotion ✅, #17 → demoted to Tier 3, #21 → T2, #26 → T2 ✓
 - Tier 2 (4 items): #53 → iter-008, #28/#34 → T3, #31/#32/#36 → T3, #54 → Deferred ✓
 - Tier 3 (6 items): #23 → opportunistic, #27/#30 → T3, #56 → iter-005, #29 → opportunistic, #35 → iter-008 close, #15-21 → T3 ✓
 - Tier 4 (process rules): applied at every relevant gate; not drained
@@ -292,9 +293,9 @@ Iter-04 has three migration manifest formats: top-level array (`migrate-images.s
 
 iter-005 use-site work (not Tooling 1's scope): produce the afbs manifest mapping source image paths to `/media/afbs/<filename>` targets, then point the rewriter at the cargo-culted afbs content files.
 
-### `tools/node_modules/` cleanup *(added: iter-004)*
+### `tools/node_modules/` cleanup *(shipped: bridge-promotion session)*
 
-`tools/node_modules/` got committed to the iter-04 branch because `.gitignore`'s `node_modules/*` rule only matches root-level. Fix: change to `node_modules/` (matches at any depth), then `git rm -r --cached tools/node_modules` + commit. Repo history is permanently bloated but new commits clean up.
+**Status:** SHIPPED. `.gitignore`'s `node_modules/*` was changed to `node_modules/` (matches at any depth) during bridge promotion. iter-04's accidentally-committed `tools/node_modules/` was simply not brought to `main`. iter-04 branch history is unaltered (permanently bloated there) but `main` is clean.
 
 ### Hero family canon (`llm-hero` ≅ `aem-hero`) *(added: spike-001 — deferred from iter-004)*
 

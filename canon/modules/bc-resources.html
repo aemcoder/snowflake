@@ -1,0 +1,19 @@
+<!--
+  module:    bc-resources
+  extracted: stardust/products/brand-concierge.html:745-759
+  slots:     title (text), items (list of [kind, title, link])
+  notes:     First [a class="bc-resource-card"] is the per-item template.
+             Each card has a "kind" badge [span] and a title paragraph; the link
+             slot wraps the whole card.
+-->
+<section class="bc-resources">
+  <div class="bc-resources__header anim-enter">
+    <h2 class="bc-resources__title" data-slot="title">Learn more about Adobe Brand Concierge.</h2>
+  </div>
+  <div class="bc-resources__grid" data-slot-list="items">
+    <a href="#" class="bc-resource-card anim-enter" data-slot="link">
+      <span data-slot="kind">Blog</span>
+      <p data-slot="title">brigittetransforms…</p>
+    </a>
+  </div>
+</section>

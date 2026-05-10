@@ -1,0 +1,26 @@
+<!--
+  [section: aem-use-cases]
+  source:    stardust/products/experience-manager/sites.html:1050-1084
+  slots:     title (single), items (list of icon+title+body)
+  notes:     Different from bc-use-cases (which has no icon image; just an
+             empty div). aem-use-cases items have an authored 48x48 icon image.
+             [section-metadata: spike-001 verdict — different structure from
+             bc-use-cases at the article-grid level; keep as separate canon.]
+-->
+<section class="aem-use-cases">
+  <div class="container">
+    <div class="aem-use-cases__header anim-enter">
+      <h2 class="title-2 aem-use-cases__title" data-slot="title">Adobe Experience Manager Sites use cases.</h2>
+    </div>
+
+    <div class="aem-use-cases__grid" data-slot-list="items">
+      <article class="aem-use-case anim-enter">
+        <div class="aem-use-case__icon">
+          <img src="" alt="" width="48" height="48" data-slot="icon">
+        </div>
+        <h3 class="aem-use-case__title" data-slot="title">Use case title</h3>
+        <p class="aem-use-case__body" data-slot="body">Use case body</p>
+      </article>
+    </div>
+  </div>
+</section>

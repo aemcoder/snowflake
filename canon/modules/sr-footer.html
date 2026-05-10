@@ -1,0 +1,50 @@
+<!--
+  module:    sr-footer
+  extracted: stardust/prototypes/semrush-home.html:988-1028
+  slots:     brand (text), tagline (text), legal-copyright (text), legal-meta (text),
+             items (list of {col-title, link1, link2, link3, link4})
+  notes:     The footer ships 4 cells: a brand+tagline cell on the left, then
+             3 link columns. The brand cell is treated as a stable singleton
+             (single brand + tagline pair). The 3 right-hand columns are
+             list-templated — first [.sr-footer__col] is the per-item template;
+             decorator clones per "item" row.
+
+             Each column has a 4-link [ul]. We expose 4 link slots per row
+             (link1..link4) so authors don't need a nested list. The link
+             count is fixed at 4; if a column needs more or fewer, edit the
+             canon (a more flexible nested-list mechanism is deferred).
+
+             AMBIGUITY: source has a tagline [p] with inline styles
+             ([margin-top: 16px; font-size: 14px; max-width: 32ch;]) — preserved
+             verbatim. The legal row is two stable [span] singletons, not a
+             list, because their semantic separation (copyright vs. links) is
+             stable across pages.
+
+             The orange-square brand affordance is a CSS [::before] on
+             [.sr-footer__brand] (page CSS), not an authored image.
+-->
+<footer class="sr-footer">
+  <div class="sr-footer__inner">
+    <div>
+      <a class="sr-footer__brand" href="#" data-slot="brand">Semrush</a>
+      <p style="margin-top: 16px; font-size: 14px; max-width: 32ch;" data-slot="tagline">
+        The leading platform to grow and measure brand visibility across virtually every digital channel.
+      </p>
+    </div>
+    <div data-slot-list="items" style="display: contents;">
+      <div class="sr-footer__col">
+        <h4 data-slot="col-title">Semrush</h4>
+        <ul>
+          <li><a href="#" data-slot="link1">Semrush One</a></li>
+          <li><a href="#" data-slot="link2">Features</a></li>
+          <li><a href="#" data-slot="link3">Pricing</a></li>
+          <li><a href="#" data-slot="link4">Free trial</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="sr-footer__legal">
+    <span data-slot="legal-copyright">© 2026 Semrush, an Adobe company. All rights reserved.</span>
+    <span data-slot="legal-meta">Privacy · Terms · Cookies</span>
+  </div>
+</footer>

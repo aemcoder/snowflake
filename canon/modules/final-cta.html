@@ -1,0 +1,27 @@
+<!--
+  [section: final-cta] family canon
+  Spike-001 (final pass) confirmed: 6 instances across 4 BEM prefixes share
+  this exact structure (llm-final-cta, bc-final-cta x3, aem-final-cta, aem-forrester).
+  data-bem-prefix on the canon root is set per-instance via /canon/catalog.json;
+  the decorator rewrites __root/__suffix/--suffix placeholders to
+  ${prefix}/${prefix}__suffix/${prefix}--suffix before slot-fill.
+
+  Author rows in the DA block:
+    [ title ]   [ heading text ]
+    [ cta ]     [ link with text ]
+    [ bg ]      [ image ]
+
+  CTA color (solid-white default; aem-forrester uses ghost-white) is
+  carried by the per-page CSS via the rewritten BEM class — no extra slot.
+-->
+<section class="__root">
+  <div class="__grid">
+    <div class="anim-enter">
+      <h2 class="title-2 __title" data-slot="title">Final CTA title</h2>
+      <a href="#" class="btn btn--solid-white __cta" data-slot="cta">Get started</a>
+    </div>
+    <div class="__media anim-enter" aria-hidden="true">
+      <img class="__bg" data-slot="image" src="" alt="" width="756" height="426">
+    </div>
+  </div>
+</section>

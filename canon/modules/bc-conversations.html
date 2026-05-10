@@ -1,0 +1,27 @@
+<!--
+  module:    bc-conversations
+  extracted: stardust/products/brand-concierge.html:726-742
+  slots:     title (text), body (text), cta (link)
+  notes:     FROZEN INNER STRUCTURE per SITE-DEC-002. The right-side "diagram"
+             (center "Thinking" node + 3 leaf nodes) is decorative-only; the
+             three leaf labels are part of the visual choreography and not
+             exposed as slots in this iteration. Future iteration may
+             parameterize the leaf labels via a items slot list.
+-->
+<section class="bc-conversations">
+  <div class="bc-conversations__grid">
+    <div class="anim-enter">
+      <h2 class="bc-conversations__title" data-slot="title">Conversations powered by Adobe.</h2>
+      <p class="bc-conversations__body" data-slot="body">Connect your brand content, customer data, journey insights, and commerce catalogs to deliver personalized conversational experiences at scale.</p>
+      <a href="#" class="btn btn--outline" data-slot="cta">Explore integrations</a>
+    </div>
+    <div class="bc-conversations__diagram anim-enter" aria-hidden="true">
+      <div class="bc-conversations__nodes">
+        <div class="center">Thinking</div>
+        <div class="leaf">Audience insights</div>
+        <div class="leaf">Content performance</div>
+        <div class="leaf">Brand assets</div>
+      </div>
+    </div>
+  </div>
+</section>

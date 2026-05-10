@@ -1,0 +1,34 @@
+<!--
+  [module: bc-marquee]
+  [section: bc-marquee] kinetic strip with auto-scrolling text
+  extracted:  stardust/prototypes/products/brand-concierge-bolder.html:982-1002
+  slots:      items (list of {text}) — phrases shown on the marquee strip.
+              Each row's only column is the phrase text. To express the
+              accent treatment, prefix the text with "ACCENT: " (literal); the
+              decorator does NOT post-process content here, so accent vs muted
+              is currently a static authoring marker baked into the canon
+              cycle. See notes on the inline animation contract.
+
+  notes:      The CSS marquee track scrolls by translateX(-50%); for a fully
+              seamless loop the rendered track must repeat its content twice.
+              The current single-data-slot-list decorator clones one template
+              per item row, so the canon ships ONE item template per pair
+              (text span + decorative star separator). Items 1..N render once;
+              the seamless duplication is left as a future enhancement
+              (would need a "repeat rendered list" decorator hook). With long
+              duration (40s) the visible seam is brief and acceptable for the
+              prototype.
+
+              Accent visual treatment: hard-coded onto every other item via
+              :nth-child(even) in CSS. Authors who want a specific phrase
+              styled accent can re-order their rows so the desired phrase
+              lands on an even index.
+-->
+<section class="bc-marquee" aria-hidden="true">
+  <div class="bc-marquee__track" data-slot-list="items">
+    <span class="bc-marquee__pair">
+      <span class="bc-marquee__item" data-slot="text">Brand Concierge</span>
+      <span class="bc-marquee__sep">&#10022;</span>
+    </span>
+  </div>
+</section>

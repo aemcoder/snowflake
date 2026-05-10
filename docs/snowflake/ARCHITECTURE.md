@@ -47,6 +47,8 @@ The bridge sits between **stardust output** (committed under `stardust/products/
 
 ## File map
 
+Per **DEC-016**, the validated bridge lives on `main`. Iterations branch from `main` carrying everything below in place; they add DA-authored content (managed in DA, not committed) and per-batch tweaks (new canons, manifest entries, decorator extensions).
+
 ```
 fragments/                          # site chrome — code-deployed static (DEC-008, iter-002)
   header.html                       # gnav; loaded by /blocks/header/header.js at runtime
@@ -64,12 +66,16 @@ blocks/
                                     # boilerplate scoped to body:not(.stardust)
   footer/footer.{js,css}            # thin fetch+innerHTML loader for /fragments/footer.html;
                                     # boilerplate scoped to body:not(.stardust)
+  cards|columns|fragment|hero/      # AEM boilerplate blocks; inactive on body.stardust pages
 
-scripts/scripts.js                  # adds promoteMetadataBlock + convertTablesToBlocks polyfills,
+scripts/
+  scripts.js                        # promoteMetadataBlock + convertTablesToBlocks polyfills,
                                     # body.stardust early-out on buildHeroBlock + decorateButtons,
                                     # loadStardustRuntime() after loadSections(),
                                     # initStardustPage() for Lenis init + gnav scroll +
                                     # announce-carousel + footer wordmark wipe (iter-003)
+  aem.js                            # boilerplate; never modified
+  delayed.js                        # boilerplate; martech / delayed work
 
 styles/
   styles.css                        # boilerplate body typography scoped to body:not(.stardust)
@@ -85,7 +91,18 @@ styles/
 head.html                           # links: boilerplate styles, stardust runtime CSS (globals +
                                     # chrome + per-module union), chrome.css, per-page CSS files
 
-stardust/runtime/                   # vendored CSS, JS, fonts, images served at /stardust/runtime/...
+stardust/runtime/                   # vendored CSS, JS, fonts, images served at /stardust/runtime/
+                                    # (deploy-required; LEARNINGS § Deploy gotchas)
+
+tools/                              # Node-side tooling (root devDeps, no sub-project package.json)
+  da-upload.mjs                     # unified DA upload (--what canons|content|images|publish|all)
+  rewrite-content-urls.mjs          # branch-prefix-agnostic URL rewriter (Tooling 1)
+  html-diff.mjs                     # per-module + per-page HTML structural diff (Tooling 1)
+  pages.config.mjs                  # page slug → stardust source + deployed URL map
+  extract-sites-content.mjs         # programmatic AEM Sites content extractor (cheerio)
+  migrate-images.<site>.json        # image manifests (afbs implicit; sites/semrush-home/bc-prototypes)
+
+docs/snowflake/                     # iterative-learning documentation (see README.md)
 ```
 
 ## Component responsibilities

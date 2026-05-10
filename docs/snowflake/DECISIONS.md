@@ -331,4 +331,38 @@ Candidate batch boundaries for the existing 7-page set:
 
 ---
 
+## DEC-016: `main` carries the validated bridge code; iterations add per-batch content + tweaks
+
+**Status:** Accepted (post-iter-004; promoted in the bridge-promotion session post Tooling 1)
+
+**Context:** DEC-012 (taken pre-iter-04) said *iterations start from `main` with docs only; code is rebuilt or re-derived per iteration*. The rationale at the time: the bridge was unproven, so each iteration should re-validate it from scratch. Iter-04 (a) operationally validated the bridge mechanism (DEC-014: catalog + class-prefix parameterization) on 6 module instances across 5 deployed pages, and (b) revealed that the rebuild-from-scratch discipline produces a class of avoidable failures — `stardust/runtime/` not committed, chrome blocks not cargo-culted alongside fragments, etc. — because the foundational deploy artifacts get re-discovered each iteration instead of inherited.
+
+The methodology shift in Tooling 1 (HTML diff over pixel diff per LEARNINGS § HTML structural diff over pixel diff) further reduced the case for re-deriving the bridge — most of what each iteration tunes is per-page content, not bridge mechanics.
+
+**Decision:** Promote the validated bridge artifacts from `iter-04` to `main`. Going forward, `main` carries:
+
+- `stardust/runtime/` — the deploy-required asset tree (CSS, JS, fonts, images).
+- `head.html`, `scripts/scripts.js` — wired to load runtime + chrome + per-page CSS, with stardust auto-block guards + `convertTablesToBlocks` polyfill (DEC-005).
+- `blocks/stardust-module/` — the decorator (catalog resolution + `applyBemPrefix` per DEC-014 + `fillSlot` per DEC-013).
+- `blocks/header/`, `blocks/footer/` — chrome blocks that fetch `/fragments/{header,footer}.html` (per DEC-008).
+- `fragments/header.html`, `fragments/footer.html` — chrome markup.
+- `styles/fragments/chrome.css` — chrome styling.
+- `styles/stardust/{*-page.css, overrides.css}` — per-page CSS extracted in iter-002 + iter-004.
+- `canon/catalog.json` + `canon/modules/*.html` — module canon library (52 entries as of iter-04 close).
+- `tools/{da-upload,extract-sites-content}.mjs` + `tools/migrate-images.*.json` — DA upload + content extraction + image manifests.
+
+Iterations now start from `main` with the bridge in place. They add:
+- DA-authored content (managed in DA, not committed — per DEC-008's content/code split).
+- Per-batch tweaks: new canons, content-extraction tooling refinements, manifest entries for new image batches, decorator extensions (e.g. `data-slot-attr` per BACKLOG #53).
+
+**Consequences:**
+- DEC-012 is **superseded in part**: iterations no longer rebuild the bridge from scratch. They inherit it. The "no code on main" intent of DEC-012 applied to *unproven* bridge code; that condition no longer holds.
+- The bridge-on-main commit is large (~12 MB primarily from `stardust/runtime/`), but every subsequent session benefits from the inheritance.
+- Schema/format changes to bridge artifacts (e.g. catalog JSON shape, decorator API) become breaking changes that need explicit migration discipline. The `version` field in `canon/catalog.json` is the existing seam (DEC-014).
+- Tooling 2's scope shrinks: `#22` (gitignore + node_modules) folds into bridge promotion (we just don't bring `tools/node_modules/`); `#17` (per-page CSS lazy-load) demotes from Tier 1 since the original justification — pixel-diff cascade muddying — no longer applies under HTML-diff measurement.
+
+**Cross-refs:** DEC-012 (superseded in part); DEC-014 (catalog mechanism, validated); DEC-008 (chrome layer); LEARNINGS § Deploy gotchas (the failure modes the rebuild-each-iteration discipline produced).
+
+---
+
 *New decisions go here. Append; don't rewrite.*

@@ -1,0 +1,18 @@
+<!--
+  module:    sr-brands
+  extracted: stardust/prototypes/semrush-home.html:752-766
+  slots:     items (list of {logo})
+  notes:     Each row in the strip is an [a > img] pair. The first [a] is the
+             per-item template; the decorator clones it per "item" row.
+             The single slot per item is the logo image — slot-fill on a
+             [data-slot="logo"] [img] target replaces it with the cell's image
+             while preserving the host classes. The wrapping anchor href is
+             not authored (all logos link to "#" in source); when authors need
+             distinct hrefs, promote the anchor to [data-slot="link"] in a
+             later iteration.
+-->
+<section class="sr-brands">
+  <div class="sr-brands__strip" data-slot-list="items">
+    <a href="#"><img src="" alt="" data-slot="logo"></a>
+  </div>
+</section>
