@@ -1,0 +1,647 @@
+    /* ────────────────────────────────────────────────────────────
+       SEMRUSH × stardust — page tokens
+       Cross-brand migration: Adobe modules driven by Semrush palette.
+       Orange #FF642D and dark navy #0E1735 replace Adobe's red/purple.
+       Per Module Content Rule 1: only NEW selectors in this layer;
+       module classes are never overridden, only re-themed via tokens.
+       ──────────────────────────────────────────────────────────── */
+    :root {
+      --s2a-color-gray-50: #f8f8f8;
+      --s2a-color-gray-75: #f3f3f3;
+      --s2a-color-gray-700: #505050;
+      --s2a-color-blue-900: #FF642D;        /* Semrush primary */
+      --s2a-color-blue-1000: #E8501B;
+      --s2a-color-background-default: #ffffff;
+      --s2a-color-background-subtle: #f8f8f8;
+      --s2a-color-content-default: #0E1735;
+      --s2a-color-content-subtle: rgba(14,23,53,0.64);
+      --s2a-color-content-background-subtle: #505050;
+      --s2a-color-button-background-primary-solid-default: #FF642D;
+      --s2a-color-transparent-black-08: rgba(0,0,0,0.08);
+      --s2a-color-transparent-black-16: rgba(0,0,0,0.16);
+      --s2a-color-transparent-white-64: rgba(255,255,255,0.64);
+
+      --s2a-typography-font-size-eyebrow: 14px;
+      --s2a-typography-line-height-eyebrow: 18px;
+      --s2a-typography-letter-spacing-eyebrow: 0.6px;
+      --s2a-typography-font-size-body-md: 18px;
+      --s2a-typography-line-height-body-md: 28px;
+      --s2a-typography-letter-spacing-body-md: 0;
+      --s2a-typography-font-size-body-sm: 14px;
+      --s2a-typography-line-height-body-sm: 20px;
+      --s2a-typography-font-size-label: 14px;
+      --s2a-typography-line-height-label: 18px;
+      --s2a-typography-font-size-title-4: 24px;
+      --s2a-typography-line-height-title-4: 28px;
+      --s2a-font-letter-spacing-4xl: -0.48px;
+
+      --s2a-spacing-xs: 8px;
+      --s2a-spacing-sm: 12px;
+      --s2a-spacing-md: 16px;
+      --s2a-spacing-lg: 24px;
+      --s2a-spacing-xl: 32px;
+      --s2a-spacing-2xl: 40px;
+      --s2a-spacing-3xl: 48px;
+      --s2a-spacing-4xl: 64px;
+      --s2a-spacing-5xl: 80px;
+      --s2a-spacing-6xl: 96px;
+      --s2a-layout-lg: 124px;
+
+      --s2a-border-radius-sm: 8px;
+      --s2a-border-radius-md: 16px;
+      --s2a-border-radius-lg: 32px;
+      --s2a-border-radius-999: 999px;
+
+      --grid-margin-sm: 24px;
+      --grid-margin-md: 8.333vw;
+
+      /* Hero theming via documented tokens (no module overrides). */
+      --hero-bg:      #0E1735;
+      --hero-text:    #ffffff;
+      --hero-eyebrow: rgba(255,255,255,0.65);
+      --hero-body:    rgba(255,255,255,0.82);
+      --hero-pad-top: 92px;
+    }
+
+    body { background: #fff; color: #0E1735; }
+
+    /* Container + buttons + type utilities ─── consistent with Adobe pages */
+    .container { width: 100%; padding-inline: var(--grid-margin-sm); }
+    @media (min-width: 768px) { .container { padding-inline: var(--grid-margin-md); } }
+    @media (min-width: 1441px) { .container { max-width: 1920px; margin-inline: auto; } }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      height: 48px; width: fit-content; padding: 0 24px;
+      border-radius: 75px;
+      font-family: var(--font-body);
+      font-size: 14px; font-weight: 700; line-height: 18px; letter-spacing: 0.2px;
+      border: 1.5px solid transparent;
+      text-decoration: none;
+      transition: background 200ms cubic-bezier(0.42,0,0,1), border-color 200ms, color 200ms, transform 200ms;
+      white-space: nowrap; cursor: pointer;
+    }
+    .btn--primary { background: #FF642D; color: #fff; border-color: #FF642D; }
+    .btn--primary:hover { background: #E8501B; border-color: #E8501B; transform: translateY(-1px); }
+    .btn--solid-white { background: #fff; color: #0E1735; border-color: #fff; }
+    .btn--solid-white:hover { background: #ECECEC; }
+    .btn--outline-dark { background: transparent; color: #0E1735; border-color: #0E1735; }
+    .btn--outline-dark:hover { background: rgba(14,23,53,0.04); }
+    .btn--ghost-white { background: transparent; color: #fff; border-color: rgba(255,255,255,0.6); backdrop-filter: blur(16px); }
+    .btn--ghost-white:hover { background: rgba(255,255,255,0.10); border-color: #fff; }
+
+    .eyebrow {
+      font-family: var(--font-body); font-weight: 700;
+      font-size: 13px; line-height: 18px; letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: #FF642D;
+    }
+    .title-1 {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(40px, 6vw, 88px); line-height: 0.96;
+      letter-spacing: clamp(-1px, -0.18vw, -2.4px);
+    }
+    .title-2 {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(32px, 4vw, 56px); line-height: 1.04;
+      letter-spacing: clamp(-0.5px, -0.1vw, -1.4px);
+    }
+    .title-3 {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(24px, 2.4vw, 36px); line-height: 1.12;
+      letter-spacing: -0.6px;
+    }
+    .body-lg {
+      font-family: var(--font-body); font-weight: 400;
+      font-size: 18px; line-height: 28px;
+      max-width: 60ch;
+    }
+    .body-md {
+      font-family: var(--font-body); font-weight: 400;
+      font-size: 16px; line-height: 24px;
+      max-width: 60ch;
+    }
+
+    /* ────────────────────────────────────────────────────────────
+       ADOBE STRIP — uses .rainbow-strip module unchanged.
+       Page-level overlay class adds Adobe-purple→Semrush-orange
+       gradient bg. (Rule 4: page CSS adds, never edits module.)
+       ──────────────────────────────────────────────────────────── */
+    .adobe-strip {
+      background: linear-gradient(90deg, #6E3FF3 0%, #C535B7 50%, #FF642D 100%);
+      color: #fff;
+      padding: 12px var(--grid-margin-md);
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+      font-size: 14px; font-weight: 600; letter-spacing: 0.2px;
+      position: relative; z-index: 5;
+    }
+    .adobe-strip a { color: #fff; text-decoration: underline; text-underline-offset: 3px; font-weight: 700; }
+    .adobe-strip a:hover { text-decoration-thickness: 2px; }
+    .adobe-strip__chevron { transition: transform 200ms; }
+    .adobe-strip a:hover .adobe-strip__chevron { transform: translateX(3px); }
+
+    /* ────────────────────────────────────────────────────────────
+       NAV — Semrush wordmark + standard nav pill.
+       Consistent with hub-router pattern: pill becomes frosted on
+       scroll. Static here for prototype.
+       ──────────────────────────────────────────────────────────── */
+    .sr-nav {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(14,23,53,0.85);
+      backdrop-filter: blur(24px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .sr-nav__inner {
+      display: grid; grid-template-columns: auto 1fr auto; align-items: center;
+      gap: 32px; padding: 14px var(--grid-margin-md);
+    }
+    .sr-nav__brand {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: 22px; letter-spacing: -0.4px; color: #fff;
+      display: inline-flex; align-items: center; gap: 8px;
+      text-decoration: none;
+    }
+    .sr-nav__brand::before {
+      content: ""; width: 26px; height: 26px; border-radius: 6px;
+      background: #FF642D;
+      box-shadow: 0 0 0 3px rgba(255,100,45,0.18);
+    }
+    .sr-nav__menu { display: flex; gap: 28px; align-items: center; justify-content: center; }
+    .sr-nav__menu a {
+      color: rgba(255,255,255,0.85); text-decoration: none;
+      font-size: 14px; font-weight: 500; letter-spacing: 0.1px;
+      padding: 6px 2px; transition: color 200ms;
+    }
+    .sr-nav__menu a:hover { color: #fff; }
+    .sr-nav__cta { display: flex; align-items: center; gap: 12px; }
+    .sr-nav__cta a { color: rgba(255,255,255,0.85); text-decoration: none; font-size: 14px; font-weight: 600; }
+    .sr-nav__cta a:hover { color: #fff; }
+    .sr-nav__cta .btn { height: 36px; padding: 0 18px; font-size: 13px; }
+
+    @media (max-width: 1023px) {
+      .sr-nav__menu { display: none; }
+    }
+
+    /* ────────────────────────────────────────────────────────────
+       HERO — composed from hero-bg/hero-text tokens (dark navy).
+       Adds Semrush orange bloom + a meridian glow gradient.
+       Per Rule 4 page wraps add NEW selectors only.
+       ──────────────────────────────────────────────────────────── */
+    .sr-hero {
+      position: relative; overflow: hidden;
+      background:
+        radial-gradient(ellipse 80% 60% at 75% 110%, rgba(255,100,45,0.55), transparent 60%),
+        radial-gradient(ellipse 70% 50% at 15% -10%, rgba(110,63,243,0.40), transparent 55%),
+        var(--hero-bg);
+      color: var(--hero-text);
+      padding: 120px var(--grid-margin-md) 96px;
+      min-height: 78vh;
+      display: grid; align-items: center;
+    }
+    .sr-hero__bg-meridian {
+      position: absolute; inset: 0; pointer-events: none; opacity: 0.55;
+      background:
+        radial-gradient(ellipse 30% 30% at 50% 60%, rgba(255,100,45,0.22), transparent 55%),
+        radial-gradient(ellipse 45% 25% at 50% 70%, rgba(255,255,255,0.06), transparent 60%);
+    }
+    .sr-hero__inner {
+      position: relative; z-index: 1;
+      display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 64px;
+      align-items: center; max-width: 1440px; margin-inline: auto; width: 100%;
+    }
+    .sr-hero__copy { display: grid; gap: 28px; }
+    .sr-hero__eyebrow {
+      color: rgba(255,255,255,0.7);
+      font-size: 13px; letter-spacing: 1.2px; text-transform: uppercase; font-weight: 700;
+      display: inline-flex; align-items: center; gap: 10px;
+    }
+    .sr-hero__eyebrow::before {
+      content: ""; width: 24px; height: 1px; background: rgba(255,255,255,0.4);
+    }
+    .sr-hero__title { color: #fff; }
+    .sr-hero__title em {
+      font-style: normal;
+      background: linear-gradient(120deg, #FF642D 0%, #FFB07A 50%, #fff 100%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .sr-hero__body { color: rgba(255,255,255,0.82); font-size: 20px; line-height: 30px; max-width: 28em; }
+    .sr-hero__ctas { display: flex; gap: 16px; flex-wrap: wrap; padding-top: 8px; }
+    .sr-hero__ctas .btn { height: 56px; padding: 0 32px; font-size: 15px; }
+
+    .sr-hero__visual {
+      position: relative; aspect-ratio: 4/3;
+      border-radius: 24px;
+      background: linear-gradient(155deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(8px);
+      padding: 24px;
+      display: grid; place-items: center;
+      box-shadow: 0 40px 80px -30px rgba(0,0,0,0.6);
+    }
+    .sr-hero__chart {
+      position: relative; width: 100%; height: 100%;
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), transparent);
+      border-radius: 16px;
+      display: grid; place-items: center;
+      overflow: hidden;
+    }
+    .sr-hero__chart::before {
+      content: ""; position: absolute; inset: 0;
+      background:
+        repeating-linear-gradient(0deg, rgba(255,255,255,0.04) 0 1px, transparent 1px 60px),
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.04) 0 1px, transparent 1px 60px);
+    }
+    .sr-hero__chart svg { width: 100%; height: 100%; position: relative; z-index: 1; }
+    .sr-hero__chart-label {
+      position: absolute; top: 16px; left: 16px;
+      font-size: 12px; font-weight: 600; letter-spacing: 0.4px;
+      color: rgba(255,255,255,0.65);
+      display: inline-flex; gap: 8px; align-items: center;
+    }
+    .sr-hero__chart-label::before {
+      content: ""; width: 6px; height: 6px; border-radius: 999px; background: #FF642D;
+      box-shadow: 0 0 0 3px rgba(255,100,45,0.25);
+    }
+    .sr-hero__chart-metric {
+      position: absolute; right: 24px; top: 22%;
+      background: rgba(14,23,53,0.7); backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 12px; line-height: 16px; color: rgba(255,255,255,0.85);
+    }
+    .sr-hero__chart-metric strong { color: #FF642D; font-size: 16px; }
+
+    @media (max-width: 1023px) {
+      .sr-hero { padding: 96px var(--grid-margin-sm) 72px; min-height: auto; }
+      .sr-hero__inner { grid-template-columns: 1fr; gap: 48px; }
+    }
+
+    /* ────────────────────────────────────────────────────────────
+       BRANDS STRIP (uses brands-strip module class — no overrides).
+       Page-level wrapper for spacing only.
+       ──────────────────────────────────────────────────────────── */
+    .sr-brands { padding: 56px var(--grid-margin-md); background: #f8f8f8; }
+    .sr-brands__strip {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 24px 48px; align-items: center; justify-items: center;
+      max-width: 1280px; margin-inline: auto;
+    }
+    .sr-brands__strip img {
+      max-height: 32px; max-width: 140px;
+      filter: grayscale(100%) opacity(0.6);
+      transition: filter 200ms;
+    }
+    .sr-brands__strip a:hover img { filter: grayscale(0%) opacity(1); }
+
+    /* ────────────────────────────────────────────────────────────
+       SPLIT-CONTENT page styling — additive only. The module handles
+       grid + alternation; page CSS just tightens the type for these
+       hero promo rows and wraps videos in the media slot.
+       (Per Module Content Rule 4 — page adds, never overrides.)
+       ──────────────────────────────────────────────────────────── */
+    .sr-promos { background: #fff; }
+    .sr-promos .split-content__row + .split-content__row { /* extra row gap not needed — module ships --sc-row-gap */ }
+
+    .sr-promos .split-content__title {
+      font-size: clamp(36px, 4vw, 56px);
+      letter-spacing: -1.2px;
+      max-width: 16ch;
+    }
+    .sr-promos .split-content__body { font-size: 18px; line-height: 28px; max-width: 50ch; }
+
+    /* Video lives inside the standard media slot; the slot already
+       has aspect-ratio + overflow:hidden + radius, so we only need
+       to make the <video> fill it. */
+    .sr-promos .split-content__media video {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+    }
+    .sr-promos .split-content__media {
+      box-shadow: 0 30px 60px -20px rgba(14,23,53,0.18);
+    }
+    .sr-promos__cta { margin-top: 12px; align-self: flex-start; }
+
+    /* ────────────────────────────────────────────────────────────
+       TOOLKITS SPOTLIGHT — extends acrobat-feature-3up to 4-up.
+       Section wrapper sets surface; per Rule 1 we do not edit
+       acrobat-feature classes. We use page-local .sr-toolkits.
+       ──────────────────────────────────────────────────────────── */
+    .sr-toolkits {
+      padding: 120px var(--grid-margin-md);
+      background: linear-gradient(180deg, #f8f8f8 0%, #fff 100%);
+    }
+    .sr-toolkits__head {
+      max-width: 880px; margin: 0 auto 72px; text-align: center;
+    }
+    .sr-toolkits__head .eyebrow { display: block; margin-bottom: 16px; color: #505050; letter-spacing: 1.2px; }
+    .sr-toolkits__head h2 { color: #0E1735; }
+    .sr-toolkits__grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 24px; max-width: 1440px; margin-inline: auto;
+    }
+    @media (max-width: 1199px) { .sr-toolkits__grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 599px) { .sr-toolkits__grid { grid-template-columns: 1fr; } }
+    .sr-toolkit {
+      background: #fff; border-radius: 24px; padding: 32px;
+      border: 1px solid #ECECEC;
+      display: grid; gap: 20px;
+      transition: transform 280ms cubic-bezier(0.42,0,0,1), box-shadow 280ms, border-color 280ms;
+      will-change: transform;
+    }
+    .sr-toolkit:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 24px 48px -16px rgba(14,23,53,0.12);
+      border-color: rgba(255,100,45,0.4);
+    }
+    .sr-toolkit__media {
+      aspect-ratio: 4/3; border-radius: 16px; overflow: hidden;
+      background: #f3f3f3;
+    }
+    .sr-toolkit__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .sr-toolkit__label {
+      font-size: 12px; font-weight: 700; letter-spacing: 1.2px;
+      color: #FF642D; text-transform: uppercase;
+    }
+    .sr-toolkit__title { color: #0E1735; font-weight: 900; font-size: 20px; line-height: 1.18; letter-spacing: -0.4px; }
+    .sr-toolkit__body { color: rgba(14,23,53,0.72); font-size: 14px; line-height: 22px; }
+    .sr-toolkit__more {
+      max-width: 1440px; margin: 48px auto 0; text-align: center;
+      color: rgba(14,23,53,0.55); font-size: 14px;
+    }
+    .sr-toolkit__more strong { color: #0E1735; }
+
+    /* ────────────────────────────────────────────────────────────
+       STATS GRID — 5-up. Big number + label + body.
+       Page-local pattern (used by LLM Optimizer too — promotion candidate).
+       ──────────────────────────────────────────────────────────── */
+    .sr-stats {
+      padding: 120px var(--grid-margin-md);
+      background: #0E1735; color: #fff;
+      position: relative; overflow: hidden;
+    }
+    .sr-stats::before {
+      content: ""; position: absolute; inset: 0; opacity: 0.5;
+      background:
+        radial-gradient(ellipse 60% 40% at 20% 0%, rgba(255,100,45,0.30), transparent 60%),
+        radial-gradient(ellipse 50% 35% at 90% 100%, rgba(110,63,243,0.30), transparent 60%);
+    }
+    .sr-stats__head {
+      position: relative; max-width: 880px; margin: 0 auto 72px; text-align: center;
+    }
+    .sr-stats__head .eyebrow { color: rgba(255,255,255,0.7); margin-bottom: 14px; display: block; }
+    .sr-stats__head h2 { color: #fff; }
+    .sr-stats__grid {
+      position: relative; display: grid; grid-template-columns: repeat(5, 1fr);
+      gap: 24px; max-width: 1440px; margin-inline: auto;
+    }
+    @media (max-width: 1199px) { .sr-stats__grid { grid-template-columns: repeat(2, 1fr); } }
+    .sr-stat {
+      padding: 32px 24px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 20px;
+      display: grid; gap: 12px;
+      transition: background 280ms, border-color 280ms;
+    }
+    .sr-stat:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,100,45,0.4); }
+    .sr-stat__value {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(40px, 4.4vw, 64px); line-height: 0.92;
+      letter-spacing: -1.6px;
+      background: linear-gradient(120deg, #FF642D 0%, #FFB07A 50%, #fff 110%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .sr-stat__label {
+      font-size: 14px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase;
+      color: #fff;
+    }
+    .sr-stat__body {
+      font-size: 14px; line-height: 20px; color: rgba(255,255,255,0.7);
+    }
+
+    /* ────────────────────────────────────────────────────────────
+       AI VISIBILITY INDEX — reuses split-content module.
+       Page wrapper paints a soft tinted media slot for the SVG chart.
+       ──────────────────────────────────────────────────────────── */
+    .sr-aivi { background: #fff; }
+    .sr-aivi .split-content__title {
+      font-size: clamp(36px, 4vw, 56px); letter-spacing: -1.2px; max-width: 14ch;
+    }
+    .sr-aivi__media {
+      background: linear-gradient(135deg, #f3f0ff 0%, #fff 50%, #fff5ee 100%);
+      box-shadow: 0 30px 60px -20px rgba(14,23,53,0.18);
+    }
+    .sr-aivi__media img {
+      position: absolute; inset: 0;
+      width: 88%; height: 88%; margin: 6%;
+      object-fit: contain;
+    }
+
+    /* ────────────────────────────────────────────────────────────
+       TESTIMONIAL — portrait-cta variant (page-local).
+       Quote left, portrait + metric right.
+       ──────────────────────────────────────────────────────────── */
+    .sr-testimonial {
+      padding: 120px var(--grid-margin-md);
+      background: linear-gradient(180deg, #fff 0%, #f8f8f8 100%);
+    }
+    .sr-testimonial__inner {
+      max-width: 1280px; margin-inline: auto;
+      display: grid; grid-template-columns: 1.4fr 1fr;
+      gap: 80px; align-items: center;
+    }
+    .sr-testimonial__copy { display: grid; gap: 24px; }
+    .sr-testimonial__copy .eyebrow { color: #505050; letter-spacing: 1.2px; }
+    .sr-testimonial__quote {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: clamp(24px, 2.8vw, 36px); line-height: 1.32;
+      letter-spacing: -0.6px; color: #0E1735;
+      max-width: 32ch;
+    }
+    .sr-testimonial__quote::before {
+      content: "\201C"; display: block;
+      font-size: 96px; line-height: 0.6; color: #FF642D;
+      margin-bottom: 16px;
+    }
+    .sr-testimonial__byline { display: flex; align-items: center; gap: 16px; padding-top: 8px; }
+    .sr-testimonial__byline-img {
+      width: 56px; height: 56px; border-radius: 999px; overflow: hidden;
+      background: #ECECEC; flex-shrink: 0;
+    }
+    .sr-testimonial__byline-img img { width: 100%; height: 100%; object-fit: cover; }
+    .sr-testimonial__byline-name { font-weight: 700; font-size: 16px; color: #0E1735; }
+    .sr-testimonial__byline-role { font-size: 14px; color: #505050; }
+    .sr-testimonial__byline-logo { margin-left: auto; opacity: 0.7; }
+    .sr-testimonial__byline-logo img { max-height: 28px; max-width: 140px; }
+
+    .sr-testimonial__metric {
+      background: #FF642D; color: #fff;
+      border-radius: 24px;
+      padding: 56px 48px;
+      display: grid; gap: 8px;
+      box-shadow: 0 30px 60px -20px rgba(255,100,45,0.4);
+      position: relative; overflow: hidden;
+    }
+    .sr-testimonial__metric::before {
+      content: ""; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 100% 100%, rgba(255,255,255,0.18), transparent 60%);
+    }
+    .sr-testimonial__metric-value {
+      position: relative;
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(72px, 8vw, 112px); line-height: 0.92;
+      letter-spacing: -3.2px;
+    }
+    .sr-testimonial__metric-label {
+      position: relative;
+      font-size: 16px; font-weight: 600; letter-spacing: 0.2px;
+      color: rgba(255,255,255,0.95);
+    }
+
+    @media (max-width: 1023px) {
+      .sr-testimonial__inner { grid-template-columns: 1fr; gap: 48px; }
+    }
+
+    /* ────────────────────────────────────────────────────────────
+       RESOURCE GRID — page-local. First card feature-sized
+       (spans 2 cols), remaining 6 in a 3-col sub-grid.
+       ──────────────────────────────────────────────────────────── */
+    .sr-resources {
+      padding: 120px var(--grid-margin-md);
+      background: #fff;
+    }
+    .sr-resources__head {
+      max-width: 1440px; margin: 0 auto 56px;
+      display: flex; justify-content: space-between; align-items: end; gap: 32px;
+    }
+    .sr-resources__head .eyebrow { color: #505050; letter-spacing: 1.2px; }
+    .sr-resources__head h2 { color: #0E1735; max-width: 14ch; }
+    .sr-resources__head-cta {
+      color: #FF642D; font-weight: 700; font-size: 14px; text-decoration: none;
+      letter-spacing: 0.2px; display: inline-flex; align-items: center; gap: 6px;
+    }
+    .sr-resources__head-cta:hover { gap: 10px; }
+
+    .sr-resources__grid {
+      max-width: 1440px; margin-inline: auto;
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .sr-resource {
+      display: grid; gap: 20px; text-decoration: none; color: #0E1735;
+      background: #fff; border: 1px solid #ECECEC; border-radius: 20px;
+      padding: 24px; overflow: hidden;
+      transition: transform 280ms, box-shadow 280ms, border-color 280ms;
+    }
+    .sr-resource:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 24px 48px -16px rgba(14,23,53,0.12);
+      border-color: rgba(255,100,45,0.4);
+    }
+    .sr-resource__media {
+      aspect-ratio: 16/10; border-radius: 12px; overflow: hidden;
+      background: linear-gradient(135deg, #FFEEE3 0%, #fff 100%);
+    }
+    .sr-resource__media img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+    .sr-resource__cat {
+      font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+      color: #FF642D;
+    }
+    .sr-resource__title {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: 18px; line-height: 1.28; letter-spacing: -0.3px;
+      color: #0E1735;
+    }
+    .sr-resource__body {
+      font-size: 14px; line-height: 22px; color: rgba(14,23,53,0.72);
+    }
+    /* Feature card — spans 2 columns on 1st row */
+    .sr-resource--feature {
+      grid-column: span 2; grid-row: span 1;
+      grid-template-columns: 1.05fr 1fr;
+      align-items: center; gap: 32px;
+      padding: 32px;
+      background: linear-gradient(135deg, #FFEEE3 0%, #fff 100%);
+      border-color: rgba(255,100,45,0.25);
+    }
+    .sr-resource--feature .sr-resource__media { aspect-ratio: 4/3; }
+    .sr-resource--feature .sr-resource__title { font-size: 28px; line-height: 1.12; letter-spacing: -0.6px; }
+    .sr-resource--feature .sr-resource__body { font-size: 16px; line-height: 24px; }
+    @media (max-width: 1023px) {
+      .sr-resources__grid { grid-template-columns: repeat(2, 1fr); }
+      .sr-resource--feature { grid-column: span 2; grid-template-columns: 1fr; }
+    }
+    @media (max-width: 599px) {
+      .sr-resources__grid { grid-template-columns: 1fr; }
+      .sr-resource--feature { grid-column: span 1; }
+    }
+
+    /* ────────────────────────────────────────────────────────────
+       FINAL CTA — center hero, dark, big.
+       Same surface as hero for symmetry; smaller height.
+       ──────────────────────────────────────────────────────────── */
+    .sr-final {
+      padding: 120px var(--grid-margin-md);
+      background:
+        radial-gradient(ellipse 50% 60% at 50% 100%, rgba(255,100,45,0.50), transparent 60%),
+        radial-gradient(ellipse 50% 40% at 50% 0%, rgba(110,63,243,0.30), transparent 60%),
+        #0E1735;
+      color: #fff; text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .sr-final h2 {
+      max-width: 18ch; margin: 0 auto 16px;
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(40px, 5vw, 80px); line-height: 0.96;
+      letter-spacing: -1.6px; color: #fff;
+    }
+    .sr-final p { color: rgba(255,255,255,0.78); font-size: 18px; margin-bottom: 32px; }
+    .sr-final .btn { height: 56px; padding: 0 36px; font-size: 16px; }
+
+    /* ────────────────────────────────────────────────────────────
+       FOOTER — minimal. Real Semrush footer is JS-loaded.
+       ──────────────────────────────────────────────────────────── */
+    .sr-footer {
+      background: #0A0F26; color: rgba(255,255,255,0.65);
+      padding: 64px var(--grid-margin-md) 32px;
+    }
+    .sr-footer__inner {
+      max-width: 1440px; margin-inline: auto;
+      display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 48px;
+    }
+    .sr-footer__brand {
+      font-family: var(--font-display); font-weight: 900; color: #fff; font-size: 22px;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .sr-footer__brand::before {
+      content: ""; width: 24px; height: 24px; border-radius: 6px; background: #FF642D;
+    }
+    .sr-footer__col h4 {
+      color: #fff; font-size: 13px; font-weight: 700;
+      letter-spacing: 0.6px; text-transform: uppercase; margin-bottom: 16px;
+    }
+    .sr-footer__col ul { list-style: none; padding: 0; margin: 0; }
+    .sr-footer__col li { margin-bottom: 10px; }
+    .sr-footer__col a {
+      color: rgba(255,255,255,0.65); text-decoration: none;
+      font-size: 14px; transition: color 200ms;
+    }
+    .sr-footer__col a:hover { color: #fff; }
+    .sr-footer__legal {
+      max-width: 1440px; margin: 48px auto 0; padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap;
+      font-size: 12px; color: rgba(255,255,255,0.5);
+    }
+    @media (max-width: 1023px) {
+      .sr-footer__inner { grid-template-columns: 1fr 1fr; gap: 32px; }
+    }
+
+    /* anim-enter init state */
+    .anim-enter { opacity: 0; transform: translateY(40px); transition: opacity 700ms cubic-bezier(0.42,0,0,1), transform 700ms cubic-bezier(0.42,0,0,1); }
+    .anim-enter.visible { opacity: 1; transform: none; }
