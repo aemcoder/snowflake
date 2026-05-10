@@ -6,6 +6,44 @@ Site-specific backlogs live under `sites/<site>/BACKLOG.md`.
 
 ---
 
+## Post-iter-04 priority view
+
+These items emerged from the iter-04 retrospective (see `iterations/004-allsites-catalog.md` § Struggles + lessons). Organized by what blocks the **conversion batch process** (per DEC-015) from yielding 1:1-fidelity output.
+
+**Informal convention adopted at iter-04 close:** an `iter-NNN` is a working session that executes the **conversion flow** on actual page(s) (extract → upload → publish → quality gate). Sessions that improve bridge/tooling without converting pages don't get an iter-NNN number — they appear as commits + BACKLOG drains. Future iter-NNN sessions are expected to be small (1–3 pages per batch per DEC-015).
+
+### Batch-blocking — must land before the next conversion iteration
+
+These items prevent any conversion batch from passing its quality gate. Every later batch depends on them.
+
+- **Pixel-diff campaign infrastructure** *(elevated to P0)* — see § Pixel-diff campaign infrastructure below. Without per-module + full-page pixel-diff tooling, "1:1 fidelity" is unmeasurable and the batch closing-pass can't gate. **Universal blocker.**
+- **URL-rewriter handles cargo-culted iter-N→iter-M prefixes** — see § URL-rewriter for cargo-culted iter-N→iter-M content below. Batch A (afbs regression) cargo-culted iter-02 content; its image URLs reference `afbs-02--snowflake--aemcoder.aem.page` and resolve only as long as that preview branch stays alive. **Blocks batch A specifically.**
+
+### Lazy — defer until the specific batch that needs them
+
+- **Video `<source src>` slot support** *(5-line `fillSlot` extension)* — only the Semrush batch needs this (sr-promos ships with frozen video URLs). Bundle with that batch.
+- **Consolidate content-extractor patterns** — three divergent patterns (programmatic / agent-direct / cargo-cult) in iter-04. Only blocks **new page extraction**. The 52 already-extracted canons are unaffected by this debt. Address when a batch onboards a wholly-new page.
+- **Hero family canon (`llm-hero` ≅ `aem-hero`)** — spike-001's 2nd-strongest finding. Only needed if a future batch adds `*-hero` variants beyond llm/aem-hero. One-line catalog change once the family canon is authored.
+
+### Code hygiene — do whenever; no functional blocker
+
+- **`tools/node_modules/` in git history** — `.gitignore` rule `node_modules/*` (root-only) should be `node_modules/` (anywhere). Then `git rm -r --cached tools/node_modules`. Repo history bloat is permanent; new commits clean up.
+- **Consolidate image manifests** — three different schemas in `tools/migrate-images.*.json`. No content-hash dedup (iter-03's `migrate-images.js` had it). Cosmetic + storage win, not a functional blocker.
+- **`canon/catalog.json` `_unmapped_modules` JSON-comment hack** — split docs into a sibling `.md` instead of stuffing prose into a JSON value.
+
+### Process discipline (no code; rules to follow)
+
+These aren't action items — they're rules surfaced by the iter-04 retrospective. They live in LEARNINGS § Deploy gotchas and AGENTS.md § Batched migration; listed here for visibility.
+
+- `aem content clone --force` is destructive (wipes local `content/`, rewrites `.gitignore`, creates `content/.git` submodule). Scope path narrowly (`--path /<sub-path>`), never `--path /`.
+- Pre-flight DA token expiry check in upload tools — `da-upload.mjs` should fail-fast with a clear re-auth message.
+- Sub-agent outputs go to a quarantine dir for review before integration — not direct writes to `content/iter-N/` or `canon/modules/` where recovery is expensive if wiped.
+- A page is "done" only when its deployed-preview rendering passes pixel-diff + perf + mobile + LEARNINGS distillation (per DEC-015). `localhost:3000` rendering is a smoke test, not a done-signal.
+- **`stardust/runtime/` is deploy-required** — commit it (~80 files, 11 MB). Iter-04's first deploy had 38 of 50 404s because it was untracked.
+- **Chrome layer is atomic** — cargo-culting `fragments/{header,footer}.html` requires also cargo-culting `blocks/{header,footer}/{header,footer}.js` (custom loaders) and `styles/fragments/chrome.css`. Missing any of these breaks chrome rendering.
+
+---
+
 ## Up next
 
 ### Generalize template extraction

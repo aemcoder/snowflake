@@ -199,6 +199,14 @@ When an iteration migrates multiple pages, work in **batches** of 1–3 related 
 
 This is the closing-pass discipline applied per-batch, not just per-iteration. A page is not "done" until its batch passes the gate. iter-004's retrospective concluded that attempting all-7-pages in one iteration compressed the quality gate past the point of doing it well; iter-005+ work in batches.
 
+### What counts as an "iteration" (informal convention, iter-004 close)
+
+An `iter-NNN` is a working session that executes the **conversion flow** on actual page(s) — extract → upload → publish → per-batch quality gate. The numbered iteration log captures the conversion narrative.
+
+Sessions that improve the bridge/tooling **without converting pages** don't get an `iter-NNN` number. They appear as ordinary commits on `main` (or a feature branch) and as BACKLOG drains. Pixel-diff infrastructure work, manifest consolidation, URL-rewriter improvements, code-hygiene cleanup — all sit outside the iter-NNN sequence.
+
+The motivation: an `iter-NNN` should produce visible, gated, deployed page output. Tooling sessions produce no rendered output and shouldn't share the same numbering — otherwise the iteration count stops being a meaningful measure of conversion progress.
+
 ### Reading order when starting a new iteration
 
 1. `docs/snowflake/ARCHITECTURE.md` — current state of the bridge.
