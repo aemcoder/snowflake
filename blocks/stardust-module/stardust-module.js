@@ -117,28 +117,27 @@ function fillSlot(target, cell) {
     const newText = cellLink ? cellLink.textContent.trim() : cell.textContent.trim();
     // Empty cell + empty link text → the source has no CTA in this slot
     // position (split-content rows can omit their CTA). Remove the canon's
-    // default target rather than leaving an empty <a> behind. The decorator
-    // signals "no value" by an empty cell (no <a>, no text).
+    // default target rather than leaving an empty <a> behind.
     if (!cellLink && !newText) {
       target.remove();
       return;
     }
     if (cellLink && newHref) target.href = newHref;
-    // Replace only text nodes, preserving inline icons (svg).
-    // The new text node is inserted where the original primary text was
-    // (typically before trailing icons); only matters when the canon's link
-    // has text-icon order — most canons have text first.
-    const textNodes = [...target.childNodes].filter((n) => n.nodeType === Node.TEXT_NODE);
-    const firstTextNode = textNodes[0];
-    textNodes.forEach((n) => n.remove());
-    if (newText) {
-      const tn = document.createTextNode(newText);
-      if (firstTextNode && firstTextNode.previousSibling === null) {
-        target.prepend(tn);
+    // Replace the first MEANINGFUL text node in place; drop other text nodes.
+    // Preserves SVG icons and the canon's text-vs-icon ordering — whether
+    // the canon has text before the icon (acrobat-cta) or after it
+    // (llm-hero "Watch overview").
+    let replaced = false;
+    [...target.childNodes].forEach((n) => {
+      if (n.nodeType !== Node.TEXT_NODE) return;
+      if (!replaced && n.nodeValue.trim().length > 0) {
+        n.nodeValue = newText;
+        replaced = true;
       } else {
-        target.append(tn);
+        n.remove();
       }
-    }
+    });
+    if (!replaced && newText) target.append(document.createTextNode(newText));
     return;
   }
 
@@ -146,7 +145,17 @@ function fillSlot(target, cell) {
     const cellImg = cell.querySelector('picture, img');
     if (!cellImg) return;
     const newImg = cellImg.cloneNode(true);
-    target.classList.forEach((c) => newImg.classList.add(c));
+    // Copy target classes to the new image. When the cell rendered as a
+    // <picture> (EDS server-side optimization), also propagate the classes
+    // to the inner <img> — per-page CSS hooks key off `.<module>__bg` style
+    // selectors on the <img>, not on the <picture> wrapper.
+    target.classList.forEach((c) => {
+      newImg.classList.add(c);
+      if (newImg.tagName === 'PICTURE') {
+        const innerImg = newImg.querySelector('img');
+        if (innerImg) innerImg.classList.add(c);
+      }
+    });
     if (target.dataset.slot) newImg.dataset.slot = target.dataset.slot;
     target.replaceWith(newImg);
     return;
