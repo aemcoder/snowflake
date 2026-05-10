@@ -25,7 +25,83 @@ const DRY_RUN = args.includes('--dry-run');
 const whatIdx = args.indexOf('--what');
 const WHAT = whatIdx >= 0 ? args[whatIdx + 1] : 'all';
 
-const TOKEN = JSON.parse(readFileSync(join(REPO, '.hlx/.da-token.json'), 'utf8')).access_token;
+const TOKEN_JSON = JSON.parse(readFileSync(join(REPO, '.hlx/.da-token.json'), 'utf8'));
+const TOKEN = TOKEN_JSON.access_token;
+
+// Pre-flight token expiry check (BACKLOG #21). Adobe IMS stores `expires_at`
+// (unix millis) in the JSON file alongside the access_token; prefer that
+// signal. Fall back to decoding the JWT payload's `exp` claim if the JSON
+// field is missing. Warn-and-proceed if neither is parseable — defensive:
+// don't block on unfamiliar token shapes.
+function decodeJwtPayload(jwt) {
+  const parts = jwt.split('.');
+  if (parts.length < 2) return null;
+  try {
+    const b64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+    return JSON.parse(Buffer.from(b64, 'base64').toString('utf8'));
+  } catch {
+    return null;
+  }
+}
+
+function checkTokenExpiry() {
+  let expMs = null;
+  if (typeof TOKEN_JSON.expires_at === 'number') {
+    expMs = TOKEN_JSON.expires_at;
+  } else {
+    const payload = decodeJwtPayload(TOKEN);
+    if (payload && typeof payload.exp === 'number') expMs = payload.exp * 1000;
+  }
+  if (expMs === null) {
+    console.warn('WARN: could not determine token expiry; proceeding (may 401 if expired)');
+    return;
+  }
+  const now = Date.now();
+  if (expMs <= now) {
+    const iso = new Date(expMs).toISOString();
+    throw new Error(
+      `DA token expired at ${iso}. Re-auth: npx -y @adobe/aem-cli content clone --path /<scoped-path>`,
+    );
+  }
+  const minsLeft = Math.floor((expMs - now) / 60000);
+  if (minsLeft < 5) {
+    console.warn(`WARN: DA token expires in ${minsLeft}m; consider re-auth before long uploads`);
+  }
+}
+
+// Retry helper (BACKLOG #26). Up to 3 attempts on 429 + 5xx, exponential
+// backoff (1s/2s/4s), honors Retry-After header when present. Network
+// errors are also retried. Non-retryable HTTP errors (4xx other than 429)
+// short-circuit so the caller sees the original status.
+const RETRY_STATUSES = new Set([429, 500, 502, 503, 504]);
+const RETRY_BACKOFF_MS = [1000, 2000, 4000];
+
+async function fetchWithRetry(url, opts, label) {
+  for (let attempt = 0; attempt <= RETRY_BACKOFF_MS.length; attempt += 1) {
+    let res;
+    try {
+      // eslint-disable-next-line no-await-in-loop
+      res = await fetch(url, opts);
+    } catch (err) {
+      if (attempt >= RETRY_BACKOFF_MS.length) throw err;
+      const delay = RETRY_BACKOFF_MS[attempt];
+      console.warn(`  retry ${attempt + 1}/${RETRY_BACKOFF_MS.length} ${label}: network ${err.message}; waiting ${delay}ms`);
+      // eslint-disable-next-line no-await-in-loop
+      await new Promise((r) => { setTimeout(r, delay); });
+      continue;
+    }
+    if (res.ok || !RETRY_STATUSES.has(res.status) || attempt >= RETRY_BACKOFF_MS.length) return res;
+    const retryAfter = res.headers.get('Retry-After');
+    const ra = retryAfter ? Number(retryAfter) : NaN;
+    const baseDelay = RETRY_BACKOFF_MS[attempt];
+    const delay = Number.isFinite(ra) ? Math.max(baseDelay, ra * 1000) : baseDelay;
+    console.warn(`  retry ${attempt + 1}/${RETRY_BACKOFF_MS.length} ${label}: HTTP ${res.status}; waiting ${delay}ms`);
+    // eslint-disable-next-line no-await-in-loop
+    await new Promise((r) => { setTimeout(r, delay); });
+  }
+  // Unreachable — the loop returns or throws on the last attempt.
+  throw new Error(`fetchWithRetry exhausted retries for ${label}`);
+}
 
 const MIME = {
   '.html': 'text/html',
@@ -55,11 +131,11 @@ async function uploadFile(absPath, daPath) {
     console.log(`[DRY] PUT ${url}  (${buf.length} bytes, ${mime})`);
     return { dryRun: true };
   }
-  const res = await fetch(url, {
+  const res = await fetchWithRetry(url, {
     method: 'PUT',
     headers: { Authorization: `Bearer ${TOKEN}` },
     body: form,
-  });
+  }, `PUT ${daPath}`);
   if (!res.ok) {
     const text = await res.text();
     throw new Error(`PUT ${url} → ${res.status}: ${text.slice(0, 200)}`);
@@ -73,10 +149,10 @@ async function adminApi(path, action) {
     console.log(`[DRY] POST ${url}`);
     return { dryRun: true };
   }
-  const res = await fetch(url, {
+  const res = await fetchWithRetry(url, {
     method: 'POST',
     headers: { Authorization: `Bearer ${TOKEN}` },
-  });
+  }, `${action} ${path}`);
   if (!res.ok) {
     const text = await res.text();
     throw new Error(`POST ${url} → ${res.status}: ${text.slice(0, 200)}`);
@@ -213,6 +289,7 @@ async function publishPages() {
 
 async function main() {
   if (!TOKEN) throw new Error('No DA token (.hlx/.da-token.json)');
+  checkTokenExpiry();
   const all = WHAT === 'all';
   const results = {};
   if (all || WHAT === 'canons') results.canons = await uploadCanons();
