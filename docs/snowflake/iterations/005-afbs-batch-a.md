@@ -202,6 +202,17 @@ manual run in the PSI web UI.
 
 - **per-item `data-slot-attr`** — BACKLOG #53 — biggest remaining
   drift source. Without it, index can't reach <3%. Promote to Tier 1.
+- **bc-final-cta canon variant divergence** — BACKLOG #57 (added at
+  self-review). iter-005's `final-cta.html` canon edit (dropping
+  `__cta` from the `<a>`) matches bc/llm/aem/aem-forrester sources
+  but breaks the bc-prototype + bc-bolder pages whose sources use
+  `<a class="bc-final-cta__cta">` (no `btn btn--solid-white` classes)
+  AND whose per-page CSS styles `.bc-final-cta__cta` for the gradient
+  CTA. iter-05 doesn't deploy those pages, so the iter-05 measurement
+  is unaffected, but iter-07 (bc-prototypes pair) will need to author
+  a `final-cta-bold` canon and route the bc-prototype + bc-bolder
+  bc-final-cta instances there. Same canon-variant-split pattern as
+  iter-04's `acrobat-feature-3up`.
 - **brands-strip per-item inline style** — depends on data-slot-attr
   for `style`.
 - **acrobat-feature per-card `data-tone` + `ac-fallback` text** —
