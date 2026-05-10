@@ -1,0 +1,757 @@
+/* ============================================
+   MOBILE NAV  (<768px)
+
+   Architecture:
+   - #gnav (z:100) is always the nav bar.
+     It handles its own open state via .gnav--nav-open.
+   - #mobileNav (z:99) sits behind the gnav.
+     Its clip-path expands from the nav pill shape.
+     Content starts below the gnav (padding-top: 80px).
+   - No duplicate topbar in the overlay.
+   ============================================ */
+
+/* ─────────────────────────────────────────────
+   GNAV — SM LOGO  (mobile only)
+   Hide full wordmark; show A lettermark instead.
+───────────────────────────────────────────── */
+
+/* Hidden on desktop */
+.gnav-logo-sm-wrap { display: none; }
+
+@media (max-width: 767px) {
+
+  /* Hide desktop full wordmark logos */
+  .gnav-logo, .gnav-logo-black { display: none !important; }
+
+  /* Show sm logo wrap */
+  .gnav-logo-sm-wrap {
+    display: flex;
+    align-items: center;
+    position: relative;
+    flex-shrink: 0;
+    /* Slide-out + fade when nav is open */
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity   0.22s ease;
+  }
+
+  /* White sm logo: visible in default (transparent) state */
+  .gnav-logo-sm       { display: block; width: auto; height: 20px; }
+  .gnav-logo-sm-black { display: none;  width: auto; height: 20px; }
+
+  /* Dark sm logo: scrolled state */
+  #gnav.gnav--scrolled .gnav-logo-sm       { display: none;  }
+  #gnav.gnav--scrolled .gnav-logo-sm-black { display: block; }
+
+  /* Nav open: logo slides left and fades out */
+  #gnav.gnav--nav-open .gnav-logo-sm-wrap {
+    transform: translateX(-16px);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* Tighten gap on mobile (desktop gap:24px is for many links) */
+  /* Remove desktop left padding so logo aligns at 24px from edge */
+  .gnav-left { gap: 10px; padding-left: 0; }
+
+  /* Hide desktop nav links */
+  .gnav-links { display: none !important; }
+}
+
+/* ─────────────────────────────────────────────
+   GNAV — HAMBURGER  (mobile only, 2 bars)
+───────────────────────────────────────────── */
+
+.gnav-hamburger { display: none; }
+
+@media (max-width: 767px) {
+  .gnav-hamburger {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: #fff;        /* white over transparent/hero */
+    flex-shrink: 0;
+    /* Slides left when open */
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                color     0.2s ease;
+  }
+
+  .gnav-hamburger span {
+    display: block;
+    width: 20px;
+    height: 1.5px;
+    background: currentColor;
+    border-radius: 2px;
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity   0.2s ease;
+    transform-origin: center;
+  }
+
+  /* Scrolled: dark hamburger (gnav--scrolled rule adds to this) */
+  #gnav.gnav--scrolled .gnav-hamburger { color: #1a1a1a; }
+
+  /* Open: hamburger slides left into logo's vacated space */
+  /* logo-sm is ~22px wide + 10px gap = ~32px shift */
+  #gnav.gnav--nav-open .gnav-hamburger {
+    transform: translateX(-32px);
+    color: #1a1a1a;
+  }
+
+  /* 2 bars morph to X — parent translateX already handles position,
+     spans only need the Y + rotate to form the X shape */
+  #gnav.gnav--nav-open .gnav-hamburger span:nth-child(1) {
+    transform: translateY(3.75px) rotate(45deg);
+  }
+  #gnav.gnav--nav-open .gnav-hamburger span:nth-child(2) {
+    transform: translateY(-3.75px) rotate(-45deg);
+  }
+}
+
+/* ─────────────────────────────────────────────
+   GNAV — OPEN STATE BG + RIGHT ITEMS
+   When nav is open, gnav-inner gets solid overlay bg.
+───────────────────────────────────────────── */
+
+@media (max-width: 767px) {
+
+  /* Allow background + backdrop-filter to transition on mobile */
+  .gnav-inner::before {
+    transition: opacity 0.35s ease, background 0.3s ease !important;
+  }
+
+  /* Nav open: fill gnav with same gray as the overlay behind it */
+  #gnav.gnav--nav-open .gnav-inner::before {
+    opacity: 1 !important;
+    background: rgb(242, 242, 242) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  /* Dark right-side items when nav is open */
+  #gnav.gnav--nav-open .gnav-apps img  { filter: brightness(0); }
+  #gnav.gnav--nav-open .gnav-signin    { color: #1a1a1a !important; border-color: rgba(0,0,0,0.4) !important; }
+}
+
+/* ─────────────────────────────────────────────
+   MOBILE NAV OVERLAY
+   z:99 — sits behind the gnav (z:100).
+───────────────────────────────────────────── */
+
+#mobileNav {
+  /* ── Animation timing knobs ───────────────
+     --mnav-open-dur   : main items animate in on open
+     --mnav-trans-dur  : main → sub exit duration / sub enter duration
+     --mnav-sub-delay  : how long to wait before sub items start entering
+                         (controls the "match cut" handoff — push higher
+                          for more separation between exit and enter)
+  ─────────────────────────────────────────── */
+  --mnav-open-dur:  0.35s;
+  --mnav-trans-dur: 0.50s;
+  --mnav-sub-delay: 0.30s;
+
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 99;   /* below gnav */
+  background: rgb(242, 242, 242);
+
+  /* Closed: pill matches exact gnav pill shape
+     #gnav padding:8px, .gnav-inner height:64px → bottom = 72px */
+  clip-path: inset(8px 8px calc(100% - 72px) 8px round 16px);
+  pointer-events: none;
+
+  /* opacity:0 is the resting state. On close: stays opaque while
+     clip-path collapses, then short fade at the very end. */
+  opacity: 0;
+  transition:
+    clip-path 0.44s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity   0.18s ease 0.16s;  /* fades out by ~0.34s; clip-path finishes invisibly */
+}
+
+@media (max-width: 767px) {
+  #mobileNav { display: block; }
+}
+
+#mobileNav.is-open {
+  clip-path: inset(0 0 0 0 round 0px);
+  pointer-events: all;
+  opacity: 1;
+  transition:
+    clip-path 0.44s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity   0.12s ease;  /* quick fade in on open */
+}
+
+/* ─────────────────────────────────────────────
+   SCREENS WRAP
+   Starts below the gnav (80px = 8px padding + 64px inner)
+───────────────────────────────────────────── */
+
+.mnav-m-screens-wrap {
+  position: absolute;
+  top: 80px;
+  left: 0; right: 0; bottom: 0;
+  overflow: hidden;
+}
+
+/* ─────────────────────────────────────────────
+   INDIVIDUAL SCREENS
+───────────────────────────────────────────── */
+
+.mnav-m-screen {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  background: #f2f2f2;
+  transform: translateX(100%);
+  /* No screen-level transition — item animations carry the motion */
+  will-change: transform;
+}
+
+.mnav-m-screen[data-screen="main"] { transform: translateX(0); }
+
+/* is-exited: main stays in place but items animate out and block interaction */
+.mnav-m-screen[data-screen="main"].is-exited {
+  transform: translateX(0);
+  pointer-events: none;
+}
+
+/* Sub-screen snaps into position; items animate in */
+.mnav-m-screen.is-active { transform: translateX(0); }
+
+/* ─────────────────────────────────────────────
+   MAIN MENU — large bold list on gray
+───────────────────────────────────────────── */
+
+.mnav-m-list {
+  padding: 16px 24px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.mnav-m-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 900;
+  color: #1a1a1a;
+  text-decoration: none;
+  text-align: left;
+  letter-spacing: -0.96px;
+  line-height: 32px;
+  gap: 8px;
+  /* opacity:1 is resting state — animations handle hide/show */
+}
+.mnav-m-item:active { opacity: 0.6; }
+
+/* ── Menu item fade-in (triggered when overlay opens) ──
+   fill:backwards keeps items invisible during delay without needing opacity:0 default.
+   After animation completes, items return to natural opacity:1 (CSS rule above). ── */
+@keyframes mnav-m-item-in {
+  from { opacity: 0; transform: translateX(18px); }
+  to   { opacity: 1; transform: translateX(0);    }
+}
+
+#mobileNav.is-open .mnav-m-screen[data-screen="main"] .mnav-m-item:nth-child(1) {
+  animation: mnav-m-item-in var(--mnav-open-dur) cubic-bezier(0.42, 0, 0, 1) backwards 0.18s;
+}
+#mobileNav.is-open .mnav-m-screen[data-screen="main"] .mnav-m-item:nth-child(2) {
+  animation: mnav-m-item-in var(--mnav-open-dur) cubic-bezier(0.42, 0, 0, 1) backwards 0.24s;
+}
+#mobileNav.is-open .mnav-m-screen[data-screen="main"] .mnav-m-item:nth-child(3) {
+  animation: mnav-m-item-in var(--mnav-open-dur) cubic-bezier(0.42, 0, 0, 1) backwards 0.30s;
+}
+#mobileNav.is-open .mnav-m-screen[data-screen="main"] .mnav-m-item:nth-child(4) {
+  animation: mnav-m-item-in var(--mnav-open-dur) cubic-bezier(0.42, 0, 0, 1) backwards 0.36s;
+}
+#mobileNav.is-open .mnav-m-screen[data-screen="main"] .mnav-m-item:nth-child(5) {
+  animation: mnav-m-item-in var(--mnav-open-dur) cubic-bezier(0.42, 0, 0, 1) backwards 0.42s;
+}
+
+/* ── Main menu items — stagger exit left+fade when navigating to sub-screen ── */
+@keyframes mnav-item-exit {
+  from { opacity: 1; transform: translateX(0);     }
+  to   { opacity: 0; transform: translateX(-40px); }
+}
+
+/* #mobileNav prefix matches the specificity of the is-open rules (1,5,0) above.
+   Same specificity + later source order = exit wins when is-exited is present. */
+#mobileNav .mnav-m-screen[data-screen="main"].is-exited .mnav-m-item:nth-child(1) {
+  animation: mnav-item-exit var(--mnav-trans-dur) cubic-bezier(0.42, 0, 0, 1) forwards 0s;
+}
+#mobileNav .mnav-m-screen[data-screen="main"].is-exited .mnav-m-item:nth-child(2) {
+  animation: mnav-item-exit var(--mnav-trans-dur) cubic-bezier(0.42, 0, 0, 1) forwards 0.025s;
+}
+#mobileNav .mnav-m-screen[data-screen="main"].is-exited .mnav-m-item:nth-child(3) {
+  animation: mnav-item-exit var(--mnav-trans-dur) cubic-bezier(0.42, 0, 0, 1) forwards 0.05s;
+}
+#mobileNav .mnav-m-screen[data-screen="main"].is-exited .mnav-m-item:nth-child(4) {
+  animation: mnav-item-exit var(--mnav-trans-dur) cubic-bezier(0.42, 0, 0, 1) forwards 0.075s;
+}
+#mobileNav .mnav-m-screen[data-screen="main"].is-exited .mnav-m-item:nth-child(5) {
+  animation: mnav-item-exit var(--mnav-trans-dur) cubic-bezier(0.42, 0, 0, 1) forwards 0.1s;
+}
+
+/* ── Sub-screen items — stagger enter from right+fade when screen becomes active ──
+   fill:backwards keeps items invisible before animation starts (during delay).
+   Starts at 0.06s, overlapping the main exit so there's no dead zone. ── */
+@keyframes mnav-subitem-enter {
+  from { opacity: 0; transform: translateX(18px); }
+  to   { opacity: 1; transform: translateX(0);    }
+}
+
+/* First direct child of each sub-screen:
+   - products:       .mnav-m-products-sticky (subheader + filters as one unit)
+   - other screens:  .mnav-m-subheader */
+.mnav-m-screen.is-active > *:nth-child(1) {
+  animation: mnav-subitem-enter var(--mnav-trans-dur) cubic-bezier(0.42, 0, 0, 1) backwards 0s;
+}
+
+/* Direct children of sub-screen after the subheader (filters row, content blocks) */
+.mnav-m-screen.is-active > *:nth-child(2) {
+  animation: mnav-subitem-enter var(--mnav-trans-dur) cubic-bezier(0.42, 0, 0, 1) backwards 0.06s;
+}
+.mnav-m-screen.is-active > *:nth-child(3) {
+  animation: mnav-subitem-enter var(--mnav-trans-dur) cubic-bezier(0.42, 0, 0, 1) backwards 0.12s;
+}
+
+/* Product lists are nth-child(2) and (3) on the products screen — cancel the
+   sub-screen enter animation so only the JS card animation runs on filter change. */
+#mobileNav .mnav-m-screen.is-active > .mnav-m-product-list {
+  animation: none;
+}
+
+/* ── Back transition: sub-screen items exit right, main items re-enter from left ──
+   is-back-entering rules placed AFTER is-exited rules so they win the cascade
+   when both classes are briefly present on the main screen simultaneously. ── */
+
+@keyframes mnav-subitem-exit {
+  from { opacity: 1; transform: translateX(0);     }
+  to   { opacity: 0; transform: translateX(18px);  }
+}
+
+.mnav-m-screen.is-back-exiting > *:nth-child(1) {
+  animation: mnav-subitem-exit 0.20s ease forwards 0s;
+}
+.mnav-m-screen.is-back-exiting > *:nth-child(2) {
+  animation: mnav-subitem-exit 0.20s ease forwards 0.04s;
+}
+.mnav-m-screen.is-back-exiting > *:nth-child(3) {
+  animation: mnav-subitem-exit 0.20s ease forwards 0.08s;
+}
+
+@keyframes mnav-item-enter-back {
+  from { opacity: 0; transform: translateX(-18px); }
+  to   { opacity: 1; transform: translateX(0);     }
+}
+
+/* #mobileNav prefix gives (1,5,0) specificity — ties with the is-open rule above,
+   and wins by source order since these are declared later in the stylesheet. */
+/* Prevent the open animation replaying after back navigation.
+   Same specificity (1,5,0) as the nth-child open rules above — wins by source order. */
+#mobileNav.is-open .mnav-m-screen[data-screen="main"].is-menu-settled .mnav-m-item {
+  animation: none;
+}
+
+#mobileNav .mnav-m-screen[data-screen="main"].is-back-entering .mnav-m-item:nth-child(1) {
+  animation: mnav-item-enter-back 0.26s ease backwards 0s;
+}
+#mobileNav .mnav-m-screen[data-screen="main"].is-back-entering .mnav-m-item:nth-child(2) {
+  animation: mnav-item-enter-back 0.26s ease backwards 0.03s;
+}
+#mobileNav .mnav-m-screen[data-screen="main"].is-back-entering .mnav-m-item:nth-child(3) {
+  animation: mnav-item-enter-back 0.26s ease backwards 0.06s;
+}
+#mobileNav .mnav-m-screen[data-screen="main"].is-back-entering .mnav-m-item:nth-child(4) {
+  animation: mnav-item-enter-back 0.26s ease backwards 0.09s;
+}
+#mobileNav .mnav-m-screen[data-screen="main"].is-back-entering .mnav-m-item:nth-child(5) {
+  animation: mnav-item-enter-back 0.26s ease backwards 0.12s;
+}
+
+.mnav-m-item-chevron { color: #1a1a1a; opacity: 0.5; flex-shrink: 0; }
+
+/* ─────────────────────────────────────────────
+   SUB-SCREEN HEADER
+───────────────────────────────────────────── */
+
+.mnav-m-subheader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 16px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: rgba(242, 242, 242, 0.92);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+}
+
+
+.mnav-m-subheader-left {
+  display: flex;
+  align-items: center;
+}
+
+.mnav-m-back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #1a1a1a;
+  flex-shrink: 0;
+  margin-left: -6px;
+}
+
+.mnav-m-subheader-title {
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 900;
+  color: #1a1a1a;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.mnav-m-subheader-link {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a1a1a;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  align-self: flex-end;
+  padding-bottom: 6px; /* align with baseline of large title */
+}
+
+/* ─────────────────────────────────────────────
+   PRODUCTS — sticky header
+───────────────────────────────────────────── */
+
+.mnav-m-products-sticky {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: rgba(242, 242, 242, 0.92);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+}
+/* ─────────────────────────────────────────────
+   PRODUCTS — filter pills
+───────────────────────────────────────────── */
+
+.mnav-m-filters-row {
+  display: flex;
+  gap: 4px;
+  padding: 0 24px 16px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.mnav-m-filters-row::-webkit-scrollbar { display: none; }
+
+.mnav-m-pill {
+  flex-shrink: 0;
+  height: 40px;
+  padding: 0 24px;
+  border: none;
+  border-radius: 75px;
+  background: rgba(0, 0, 0, 0.08);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 18px;
+  color: #000;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.mnav-m-pill--active {
+  background: #000;
+  color: #fff;
+}
+
+/* ─────────────────────────────────────────────
+   PRODUCTS — individual cards
+───────────────────────────────────────────── */
+
+@keyframes mnav-card-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+
+.mnav-m-product-list {
+  padding: 0 16px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.mnav-m-product-list--hidden { display: none; }
+
+.mnav-m-product-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 16px;
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+.mnav-m-product-card:active { background: #f8f8f8; }
+
+.mnav-m-product-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.mnav-m-product-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.mnav-m-product-badges {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.mnav-m-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 7px;
+  border-radius: 4px;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.mnav-m-badge--new  { background: #1a1a1a; color: #fff; }
+.mnav-m-badge--save { border: 1.5px solid #1a1a1a; color: #1a1a1a; background: transparent; }
+
+.mnav-m-product-name {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 4px;
+}
+
+.mnav-m-product-desc {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: #777;
+  line-height: 1.45;
+}
+
+/* All products card */
+.mnav-m-all-products {
+  background: #fff;
+  border-radius: 14px;
+  padding: 20px 16px;
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+.mnav-m-all-products-arrow { font-size: 20px; line-height: 1; margin-bottom: 8px; }
+.mnav-m-all-products-name  { font-family: var(--font-body); font-size: 15px; font-weight: 700; color: #1a1a1a; margin-bottom: 3px; }
+.mnav-m-all-products-desc  { font-family: var(--font-body); font-size: 13px; color: #777; }
+
+/* ─────────────────────────────────────────────
+   USE CASES — cards
+───────────────────────────────────────────── */
+
+.mnav-m-uc-list {
+  padding: 0 16px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mnav-m-uc-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 20px;
+}
+
+.mnav-m-uc-label {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 400;
+  color: #999;
+  margin-bottom: 6px;
+}
+
+.mnav-m-uc-title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 900;
+  color: #1a1a1a;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin-bottom: 10px;
+}
+
+.mnav-m-uc-desc {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: #666;
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+
+.mnav-m-uc-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1a1a;
+  text-decoration: none;
+  margin-bottom: 20px;
+}
+
+.mnav-m-uc-explore {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 48px;
+  background: #1a1a1a;
+  color: #fff;
+  border: none;
+  border-radius: 28px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+.mnav-m-uc-explore:active { background: #333; }
+
+/* ─────────────────────────────────────────────
+   SOLUTIONS / LEARN & SUPPORT
+───────────────────────────────────────────── */
+
+.mnav-m-section {
+  padding: 0 16px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mnav-m-group {
+  background: #fff;
+  border-radius: 14px;
+  padding: 20px;
+}
+
+.mnav-m-group-heading {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin-bottom: 12px;
+}
+
+.mnav-m-group-link {
+  display: block;
+  padding: 9px 0;
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: #1a1a1a;
+  text-decoration: none;
+}
+
+.mnav-m-group-contact {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 48px;
+  margin-top: 16px;
+  border: 1.5px solid #1a1a1a;
+  border-radius: 28px;
+  background: none;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a1a1a;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+/* ─────────────────────────────────────────────
+   FEATURE IMAGE CARD  (Solutions)
+───────────────────────────────────────────── */
+
+.mnav-m-feature-card {
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+  background: #111;
+}
+.mnav-m-feature-img { width: 100%; display: block; opacity: 0.75; }
+
+.mnav-m-feature-icon {
+  position: absolute;
+  top: 16px; left: 16px;
+  width: 36px; height: 36px;
+  border-radius: 8px;
+}
+
+.mnav-m-feature-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 16px 20px 20px;
+  background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 65%);
+}
+
+.mnav-m-feature-price { font-family: var(--font-body); font-size: 13px; color: rgba(255,255,255,0.85); margin-bottom: 2px; }
+.mnav-m-feature-name  { font-family: var(--font-display); font-size: 17px; font-weight: 800; color: #fff; margin-bottom: 14px; }
+
+.mnav-m-feature-btn {
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 18px;
+  background: #fff;
+  color: #1a1a1a;
+  border-radius: 20px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  width: fit-content;
+}

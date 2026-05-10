@@ -1,0 +1,92 @@
+/* ============================================
+   Hub — Hero
+   ============================================ */
+
+/* ── Tunable parameters ── */
+:root {
+  --hero-scroll-distance: 240vh;
+
+  /* Theme tokens — defaults match the original light hero. Pages
+     can set these to switch the hero into a dark (or any other)
+     theme without overriding module selectors. */
+  --hero-bg:      #ffffff;
+  --hero-text:    inherit;       /* h1 + general copy in .hero-text */
+  --hero-eyebrow: #2c2c2c;       /* .hero-app-id .t-eyebrow */
+  --hero-body:    #4a4a4a;       /* .hero-text p */
+
+  /* Layout token — distance from #hero top to the start of .hero-text.
+     Default (189px) assumes the hero is the topmost content; set
+     smaller when an announce/strip section sits above the hero so
+     the content stays vertically balanced above the fold. */
+  --hero-pad-top: 189px;
+}
+
+/* ── Pin-spacer: provides scroll distance for the pinned hero interaction.
+     Progress 0→1 scrubs over this full height; phases complete inside that
+     range and the pin releases at progress 1.0. ── */
+.hero-pin-spacer {
+  height: var(--hero-scroll-distance, 240vh);
+  position: relative;
+}
+
+/* ── Hero viewport: sticky for the full 400vh range ──
+   Rounded bottom corners (32px) reveal the editorial layer sitting
+   just behind. z-index keeps the hero on top during overlap. */
+#hero {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: visible;            /* off-screen grid columns must be reachable */
+  background: var(--hero-bg, #ffffff);
+  border-radius: 0 0 32px 32px;
+  display: flex;
+  align-items: flex-start;     /* top-align so copy sits at its Figma position */
+  justify-content: center;
+  padding-top: var(--hero-pad-top, 189px);
+  z-index: 1;
+}
+
+/* ── Text zone (z-index: 1 — grid images scroll over this) ── */
+.hero-text {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  text-align: center;
+  color: var(--hero-text, inherit);
+  transform-origin: center center; /* GSAP scales from center */
+}
+
+.hero-app-id {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hero-app-id img {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+
+.hero-app-id .t-eyebrow {
+  color: var(--hero-eyebrow, #2c2c2c);
+}
+
+.hero-text h1 {
+  max-width: 16ch;
+}
+
+.hero-text p {
+  max-width: 48ch;
+  color: var(--hero-body, #4a4a4a);
+}
+
+/* CTA buttons */
+.hero-ctas {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}

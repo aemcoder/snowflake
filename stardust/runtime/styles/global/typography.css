@@ -1,0 +1,258 @@
+/* ============================================
+   ACOM Typography System
+   Token values sourced directly from Figma:
+   Consonant 2.0 — A.com, node 2001:154
+   ============================================ */
+
+/* ============================================
+   FONT FACE
+   Fonts live in /assets/fonts/.
+   ============================================ */
+@font-face {
+  font-family: 'Adobe Clean Display';
+  src: url('../../assets/fonts/AdobeCleanDisplay-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Adobe Clean Display';
+  src: url('../../assets/fonts/AdobeCleanDisplay-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Adobe Clean Display';
+  src: url('../../assets/fonts/AdobeCleanDisplay-Black.otf') format('opentype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ============================================
+   TYPE SCALE TOKENS — Desktop (≥1024px)
+   ============================================ */
+:root {
+  --font-display: 'Adobe Clean Display', system-ui, sans-serif;
+  /* Adobe Clean (non-Display) for body/UI — using Display as fallback
+     until body weight fonts are available */
+  --font-body: 'Adobe Clean', 'Adobe Clean Display', system-ui, sans-serif;
+
+  /* Super — 96/90.24/-3.84px */
+  --type-super-size:    96px;
+  --type-super-weight:  900;
+  --type-super-lh:      0.94;
+  --type-super-ls:      -0.04em;
+
+  /* Title 1 — 80/76.8/-3.2px */
+  --type-title-1-size:   80px;
+  --type-title-1-weight: 900;
+  --type-title-1-lh:     0.96;
+  --type-title-1-ls:     -0.04em;
+
+  /* Title 2 — 56/56/-1.68px */
+  --type-title-2-size:   56px;
+  --type-title-2-weight: 900;
+  --type-title-2-lh:     1.0;
+  --type-title-2-ls:     -0.03em;
+
+  /* Title 3 — 48/48/-1.44px */
+  --type-title-3-size:   48px;
+  --type-title-3-weight: 900;
+  --type-title-3-lh:     1.0;
+  --type-title-3-ls:     -0.03em;
+
+  /* Title 4 — 24/24/-0.48px */
+  --type-title-4-size:   24px;
+  --type-title-4-weight: 900;
+  --type-title-4-lh:     1.0;
+  --type-title-4-ls:     -0.02em;
+
+  /* Body Large — 20/24/0 */
+  --type-body-l-size:   20px;
+  --type-body-l-weight: 400;
+  --type-body-l-lh:     1.2;
+  --type-body-l-ls:     0em;
+
+  /* Body Medium — 16/20.8/+0.16px */
+  --type-body-m-size:   16px;
+  --type-body-m-weight: 400;
+  --type-body-m-lh:     1.3;
+  --type-body-m-ls:     0.01em;
+
+  /* Body Small — 14/18.2/+0.14px */
+  --type-body-s-size:   14px;
+  --type-body-s-weight: 400;
+  --type-body-s-lh:     1.3;
+  --type-body-s-ls:     0.01em;
+
+  /* Eyebrow — 16/20.8/-0.16px bold */
+  --type-eyebrow-size:   16px;
+  --type-eyebrow-weight: 700;
+  --type-eyebrow-lh:     1.3;
+  --type-eyebrow-ls:     -0.01em;
+
+  /* Label — 14/18.2/0 bold */
+  --type-label-size:   14px;
+  --type-label-weight: 700;
+  --type-label-lh:     1.3;
+  --type-label-ls:     0em;
+
+  /* Caption — 12/15.6/+0.24px bold */
+  --type-caption-size:   12px;
+  --type-caption-weight: 700;
+  --type-caption-lh:     1.3;
+  --type-caption-ls:     0.02em;
+}
+
+/* ============================================
+   TABLET (768–1023px)
+   ============================================ */
+@media (min-width: 768px) and (max-width: 1023px) {
+  :root {
+    /* Super — 72/69.12/-2.88px */
+    --type-super-size:   72px;
+
+    /* Title 1 — 56/56/-1.68px (ls ratio changes: -0.03em) */
+    --type-title-1-size: 56px;
+    --type-title-1-ls:   -0.03em;
+
+    /* Title 2 — 40/40/-1.2px (-0.03em unchanged) */
+    --type-title-2-size: 40px;
+
+    /* Title 3 — 32/32/-0.96px (-0.03em unchanged) */
+    --type-title-3-size: 32px;
+
+    /* Title 4 — 20/20/-0.4px (-0.02em unchanged) */
+    --type-title-4-size: 20px;
+
+    /* Body Large — 18/23.4/0 */
+    --type-body-l-size: 18px;
+    --type-body-l-lh:   1.3;
+  }
+}
+
+/* ============================================
+   MOBILE (<768px)
+   ============================================ */
+@media (max-width: 767px) {
+  :root {
+    /* Super — 56/54.88/-1.68px (ls ratio changes: -0.03em) */
+    --type-super-size:  56px;
+    --type-super-ls:    -0.03em;
+
+    /* Title 1 — 40/40/-1.2px (-0.03em unchanged from tablet) */
+    --type-title-1-size: 40px;
+    --type-title-1-ls:   -0.03em;
+
+    /* Title 2 — 32/32/-0.96px (-0.03em unchanged) */
+    --type-title-2-size: 32px;
+
+    /* Title 3 — 24/24/-0.48px (ls ratio changes: -0.02em) */
+    --type-title-3-size: 24px;
+    --type-title-3-ls:   -0.02em;
+
+    /* Title 4 — 20/20/-0.2px (ls ratio changes: -0.01em) */
+    --type-title-4-size: 20px;
+    --type-title-4-ls:   -0.01em;
+
+    /* Body Large — 16/20.8/0 */
+    --type-body-l-size: 16px;
+    --type-body-l-lh:   1.3;
+  }
+}
+
+/* ============================================
+   UTILITY CLASSES
+   Apply any class directly in HTML, or
+   reference the tokens in component CSS.
+   ============================================ */
+
+.t-super {
+  font-family: var(--font-display);
+  font-weight: var(--type-super-weight);
+  font-size: var(--type-super-size);
+  line-height: var(--type-super-lh);
+  letter-spacing: var(--type-super-ls);
+}
+
+.t-title-1 {
+  font-family: var(--font-display);
+  font-weight: var(--type-title-1-weight);
+  font-size: var(--type-title-1-size);
+  line-height: var(--type-title-1-lh);
+  letter-spacing: var(--type-title-1-ls);
+}
+
+.t-title-2 {
+  font-family: var(--font-display);
+  font-weight: var(--type-title-2-weight);
+  font-size: var(--type-title-2-size);
+  line-height: var(--type-title-2-lh);
+  letter-spacing: var(--type-title-2-ls);
+}
+
+.t-title-3 {
+  font-family: var(--font-display);
+  font-weight: var(--type-title-3-weight);
+  font-size: var(--type-title-3-size);
+  line-height: var(--type-title-3-lh);
+  letter-spacing: var(--type-title-3-ls);
+}
+
+.t-title-4 {
+  font-family: var(--font-display);
+  font-weight: var(--type-title-4-weight);
+  font-size: var(--type-title-4-size);
+  line-height: var(--type-title-4-lh);
+  letter-spacing: var(--type-title-4-ls);
+}
+
+.t-body-l {
+  font-family: var(--font-body);
+  font-weight: var(--type-body-l-weight);
+  font-size: var(--type-body-l-size);
+  line-height: var(--type-body-l-lh);
+  letter-spacing: var(--type-body-l-ls);
+}
+
+.t-body-m {
+  font-family: var(--font-body);
+  font-weight: var(--type-body-m-weight);
+  font-size: var(--type-body-m-size);
+  line-height: var(--type-body-m-lh);
+  letter-spacing: var(--type-body-m-ls);
+}
+
+.t-body-s {
+  font-family: var(--font-body);
+  font-weight: var(--type-body-s-weight);
+  font-size: var(--type-body-s-size);
+  line-height: var(--type-body-s-lh);
+  letter-spacing: var(--type-body-s-ls);
+}
+
+.t-eyebrow {
+  font-family: var(--font-body);
+  font-weight: var(--type-eyebrow-weight);
+  font-size: var(--type-eyebrow-size);
+  line-height: var(--type-eyebrow-lh);
+  letter-spacing: var(--type-eyebrow-ls);
+}
+
+.t-label {
+  font-family: var(--font-body);
+  font-weight: var(--type-label-weight);
+  font-size: var(--type-label-size);
+  line-height: var(--type-label-lh);
+  letter-spacing: var(--type-label-ls);
+}
+
+.t-caption {
+  font-family: var(--font-body);
+  font-weight: var(--type-caption-weight);
+  font-size: var(--type-caption-size);
+  line-height: var(--type-caption-lh);
+  letter-spacing: var(--type-caption-ls);
+}

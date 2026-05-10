@@ -1,0 +1,113 @@
+/* ============================================
+   Brands strip
+   ----
+   Centered headline above a row of brand logos. Promoted from
+   inline CSS in the home-page build. Two card shapes are supported:
+
+   1. **Logo-only** — a horizontal row of marks, used by the home
+      page. Each mark is a `.brands-strip__logo` (text or SVG); they
+      all share a muted opacity to avoid visual loudness.
+
+   2. **Logo + metric** (NEW) — each item is a `.brands-strip__item`
+      with a `.brands-strip__logo` AND a `.brands-strip__metric`
+      sentence below it (e.g. "Created pages 96 times faster.").
+      Used by the AEM Sites page.
+
+   Both shapes share the same headline, footer CTA, and surface
+   tokens.
+
+   Tokens:
+     --bs-bg      : section bg
+     --bs-title   : headline color
+     --bs-logo    : logo mark color
+     --bs-metric  : metric body color
+
+   Spec: stardust/target/modules/brands-strip.md
+   ============================================ */
+
+:root {
+  --bs-bg:     #ffffff;
+  --bs-title:  #1a1a1a;
+  --bs-logo:   #1a1a1a;
+  --bs-metric: rgba(0, 0, 0, 0.64);
+}
+
+.brands-strip {
+  background: var(--bs-bg);
+  padding-block: var(--s2a-spacing-5xl, 80px);
+  text-align: center;
+}
+
+.brands-strip__title {
+  font-family: var(--font-display, 'Adobe Clean Display', sans-serif);
+  font-weight: 900;
+  font-size: clamp(28px, 3vw, 40px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--bs-title);
+  margin-bottom: 48px;
+  max-width: 28ch;
+  margin-inline: auto;
+}
+
+/* Row 1: logo-only — flat horizontal alignment of marks */
+.brands-strip__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 48px;
+  align-items: center;
+  justify-content: center;
+  color: var(--bs-logo);
+  opacity: 0.75;
+  max-width: 1200px;
+  margin-inline: auto;
+}
+.brands-strip__logo {
+  font-family: var(--font-display, 'Adobe Clean Display', sans-serif);
+  font-weight: 900;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  color: var(--bs-logo);
+}
+
+/* Row 2: logo + metric — each item is a vertical stack */
+.brands-strip__items {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  align-items: start;
+  max-width: 1200px;
+  margin-inline: auto;
+}
+@media (max-width: 1023px) { .brands-strip__items { grid-template-columns: 1fr; gap: 40px; } }
+
+.brands-strip__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.brands-strip__item .brands-strip__logo {
+  /* Logo styling inside an item — same as standalone .brands-strip__logo
+     but at full opacity, since the metric is the focal text. */
+  opacity: 1;
+}
+
+.brands-strip__metric {
+  font-family: var(--font-body, 'Adobe Clean', sans-serif);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  color: var(--bs-metric);
+  max-width: 28ch;
+}
+
+/* Section footer (CTA wrapper) */
+.brands-strip__foot {
+  margin-top: 40px;
+  text-align: center;
+}

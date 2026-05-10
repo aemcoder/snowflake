@@ -1,0 +1,154 @@
+/* ============================================
+   ACOM Grid System
+   Shared across all prototypes
+   ============================================ */
+
+/* ============================================
+   GRID TOKENS
+   ============================================ */
+:root {
+  --grid-gutter: 8px;
+}
+
+/* XS: 320–767  — 6 col, 24px fixed margin */
+@media (max-width: 767px) {
+  :root {
+    --grid-columns: 6;
+    --grid-margin: 24px;
+  }
+}
+
+/* S: 768–1023  — 6 col, 24px fixed margin */
+@media (min-width: 768px) and (max-width: 1023px) {
+  :root {
+    --grid-columns: 6;
+    --grid-margin: 24px;
+  }
+}
+
+/* M: 1024–1279 — 12 col, 8.333% margin */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  :root {
+    --grid-columns: 12;
+    --grid-margin: 8.333%;
+  }
+}
+
+/* L: 1280–1440 — 12 col, 8.333% margin */
+@media (min-width: 1280px) and (max-width: 1440px) {
+  :root {
+    --grid-columns: 12;
+    --grid-margin: 8.333%;
+  }
+}
+
+/* XL: 1441+    — 12 col, 8.333% margin, max-width 1920 */
+@media (min-width: 1441px) {
+  :root {
+    --grid-columns: 12;
+    --grid-margin: 8.333%;
+  }
+}
+
+/* ============================================
+   GRID CONTAINER
+   ============================================ */
+.grid {
+  width: 100%;
+  max-width: 1920px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--grid-margin);
+  padding-right: var(--grid-margin);
+  display: grid;
+  grid-template-columns: repeat(var(--grid-columns), 1fr);
+  gap: var(--grid-gutter);
+}
+
+/* ============================================
+   COLUMN SPAN HELPERS
+   ============================================ */
+.col-1  { grid-column: span 1; }
+.col-2  { grid-column: span 2; }
+.col-3  { grid-column: span 3; }
+.col-4  { grid-column: span 4; }
+.col-5  { grid-column: span 5; }
+.col-6  { grid-column: span 6; }
+.col-7  { grid-column: span 7; }
+.col-8  { grid-column: span 8; }
+.col-9  { grid-column: span 9; }
+.col-10 { grid-column: span 10; }
+.col-11 { grid-column: span 11; }
+.col-12 { grid-column: span 12; }
+
+.full-width { grid-column: 1 / -1; }
+
+/* 6-col overrides for XS/S */
+@media (max-width: 1023px) {
+  .col-sm-1 { grid-column: span 1; }
+  .col-sm-2 { grid-column: span 2; }
+  .col-sm-3 { grid-column: span 3; }
+  .col-sm-4 { grid-column: span 4; }
+  .col-sm-5 { grid-column: span 5; }
+  .col-sm-6 { grid-column: span 6; }
+}
+
+/* ============================================
+   GRID OVERLAY (toggle with G key)
+   ============================================ */
+.grid-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  max-width: 1920px;
+  margin: 0 auto;
+  padding-left: var(--grid-margin);
+  padding-right: var(--grid-margin);
+  display: grid;
+  grid-template-columns: repeat(var(--grid-columns), 1fr);
+  gap: var(--grid-gutter);
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.grid-overlay.visible {
+  opacity: 1;
+}
+
+.grid-overlay span {
+  background: rgba(0, 120, 255, 0.06);
+  border-left: 1px solid rgba(0, 120, 255, 0.08);
+  border-right: 1px solid rgba(0, 120, 255, 0.08);
+}
+
+/* ============================================
+   BREAKPOINT INDICATOR
+   ============================================ */
+.bp-indicator {
+  position: fixed;
+  bottom: 12px;
+  right: 12px;
+  background: #1a1a1a;
+  color: #fff;
+  font-size: 11px;
+  font-family: "SF Mono", "Fira Code", monospace;
+  padding: 6px 10px;
+  border-radius: 4px;
+  z-index: 10000;
+  opacity: 0.85;
+}
+
+.hint {
+  position: fixed;
+  bottom: 12px;
+  left: 12px;
+  font-size: 11px;
+  font-family: "SF Mono", "Fira Code", monospace;
+  color: #aaa;
+  z-index: 10000;
+}
