@@ -103,13 +103,38 @@ const EXTRACT_SECTIONS_FN = `(wrapperSelector, pageUrl) => {
     // because source uses stardust local paths (../runtime/...) while deployed
     // uses DA's media_<hash> URLs — apples to oranges. Image identity is a
     // pixel-diff concern, not an HTML-structure concern.
+    // Strip width/height too: the deployed EDS pipeline resizes images and
+    // overwrites the authored dimensions; source has the canonical values.
+    // Neither is "wrong" — but treating them as a comparison delta is noise.
     root.querySelectorAll('img').forEach((img) => {
-      ['loading', 'decoding', 'fetchpriority', 'srcset', 'sizes'].forEach((a) => img.removeAttribute(a));
+      ['loading', 'decoding', 'fetchpriority', 'srcset', 'sizes', 'width', 'height'].forEach((a) => img.removeAttribute(a));
       if (img.hasAttribute('src')) img.setAttribute('src', '[img]');
     });
     // Strip stardust runtime's anim-enter initial-state style (added by JS,
     // not present in source HTML).
     root.querySelectorAll('.anim-enter[style]').forEach((el) => el.removeAttribute('style'));
+    // Strip GSAP runtime / smooth-scroll inline styles. The hero-pin, mosaic
+    // float, and scroll-trigger scripts inject style="translate: none; rotate:
+    // none; scale: none; transform: translate(...); opacity: ..." on every
+    // animated element. These aren't present in source and aren't authored —
+    // strip whenever an inline style contains a transform/translate token.
+    // Legitimate styles (e.g. brands-strip__logo font-family) survive because
+    // they don't carry transform/translate.
+    root.querySelectorAll('[style]').forEach((el) => {
+      const s = el.getAttribute('style') || '';
+      if (/\\b(transform|translate|rotate|scale)\\s*:/.test(s)) el.removeAttribute('style');
+    });
+    // Unwrap DA's automatic <li><p>text</p></li> → <li>text</li>. DA's HTML
+    // authoring policy wraps cell-level text in <p>; when a cell value is
+    // a list of bullets, each <li>'s contents get auto-wrapped. The wrap is
+    // semantically identical to bare text inside <li> — treat as equivalent.
+    root.querySelectorAll('li').forEach((li) => {
+      if (li.children.length === 1
+          && li.firstElementChild.tagName === 'P'
+          && li.firstElementChild.textContent.trim() === li.textContent.trim()) {
+        li.innerHTML = li.firstElementChild.innerHTML;
+      }
+    });
     // Strip JS-injected accordion / collapsible state: aria-expanded on any
     // element, and the collapsed-height inline style on panel-like elements.
     root.querySelectorAll('[aria-expanded]').forEach((el) => el.removeAttribute('aria-expanded'));

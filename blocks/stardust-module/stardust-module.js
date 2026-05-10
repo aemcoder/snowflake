@@ -112,18 +112,32 @@ function fillSlot(target, cell) {
   if (!target || !cell) return;
 
   if (target.tagName === 'A') {
-    const replaceText = (newText) => {
-      [...target.childNodes].forEach((n) => {
-        if (n.nodeType === Node.TEXT_NODE) n.remove();
-      });
-      if (newText) target.append(document.createTextNode(newText));
-    };
-    const link = cell.querySelector('a');
-    if (link) {
-      target.href = link.href;
-      replaceText(link.textContent.trim());
-    } else {
-      replaceText(cell.textContent.trim());
+    const cellLink = cell.querySelector('a');
+    const newHref = cellLink?.href;
+    const newText = cellLink ? cellLink.textContent.trim() : cell.textContent.trim();
+    // Empty cell + empty link text → the source has no CTA in this slot
+    // position (split-content rows can omit their CTA). Remove the canon's
+    // default target rather than leaving an empty <a> behind. The decorator
+    // signals "no value" by an empty cell (no <a>, no text).
+    if (!cellLink && !newText) {
+      target.remove();
+      return;
+    }
+    if (cellLink && newHref) target.href = newHref;
+    // Replace only text nodes, preserving inline icons (svg).
+    // The new text node is inserted where the original primary text was
+    // (typically before trailing icons); only matters when the canon's link
+    // has text-icon order — most canons have text first.
+    const textNodes = [...target.childNodes].filter((n) => n.nodeType === Node.TEXT_NODE);
+    const firstTextNode = textNodes[0];
+    textNodes.forEach((n) => n.remove());
+    if (newText) {
+      const tn = document.createTextNode(newText);
+      if (firstTextNode && firstTextNode.previousSibling === null) {
+        target.prepend(tn);
+      } else {
+        target.append(tn);
+      }
     }
     return;
   }
@@ -139,15 +153,17 @@ function fillSlot(target, cell) {
   }
 
   // default: drop in inner HTML from the cell.
-  // EDS server-side conversion auto-wraps stray text in <p>; if the cell's
-  // only child is a <p>, unwrap it so we don't get nested <p><p>...</p></p>
-  // when the target element is itself a <p>/<h*>.
-  if (
-    cell.children.length === 1
-    && cell.firstElementChild.tagName === 'P'
-    && cell.firstElementChild.textContent.trim() === cell.textContent.trim()
-  ) {
-    target.innerHTML = cell.firstElementChild.innerHTML;
+  // EDS server-side conversion auto-wraps cell-level content: text → <p>,
+  // bullet runs → <ul>. Both wrappers are EDS authoring policy, not author
+  // intent. When the cell's only child is one of these wrappers AND the
+  // target tag would collide (target <p> can't host nested <p>; target <ul>
+  // can't host nested <ul>), unwrap to avoid the doubled structure.
+  const onlyChild = cell.children.length === 1 ? cell.firstElementChild : null;
+  const isPWrap = onlyChild?.tagName === 'P'
+    && onlyChild.textContent.trim() === cell.textContent.trim();
+  const isUlWrap = onlyChild?.tagName === 'UL' && target.tagName === 'UL';
+  if (isPWrap || isUlWrap) {
+    target.innerHTML = onlyChild.innerHTML;
   } else {
     target.innerHTML = cell.innerHTML;
   }
