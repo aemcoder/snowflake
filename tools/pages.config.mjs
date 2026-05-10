@@ -2,7 +2,7 @@
 // and its deployed preview URL. Used by tools/html-diff.mjs and any future
 // per-page tooling.
 
-export const DEPLOY_BRANCH = 'iter-04';
+export const DEPLOY_BRANCH = 'iter-05';
 export const DEPLOY_ORIGIN = `https://${DEPLOY_BRANCH}--snowflake--aemcoder.aem.page`;
 export const DEPLOY_BASE = `${DEPLOY_ORIGIN}/${DEPLOY_BRANCH}`;
 

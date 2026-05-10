@@ -1,0 +1,25 @@
+{
+  "_comment": "Image migration manifest for the 3 afbs pages (index, llm-optimizer, brand-concierge) — produced for iter-05 (Batch A). Per DEC-011 body images migrate to /media/<site-slug>/<filename>; site-slug is 'afbs'. Collision-avoidance: bc-/llm- prefixes disambiguate same-named files (final-cta-portrait.png exists in both bc and llm source dirs). The extractor (tools/extract-iter05-content.mjs) carries the same source→target map inline; this file is the upload manifest for tools/da-upload.mjs.",
+  "site_slug": "afbs",
+  "items": [
+    { "source": "stardust/products/brand-concierge/assets/scraped/hero-portrait.png",         "target": "/media/afbs/bc-hero-portrait.png" },
+    { "source": "stardust/products/brand-concierge/assets/scraped/split-1-guide.png",        "target": "/media/afbs/bc-split-1-guide.png" },
+    { "source": "stardust/products/brand-concierge/assets/scraped/split-2-orchestrate.png",  "target": "/media/afbs/bc-split-2-orchestrate.png" },
+    { "source": "stardust/products/brand-concierge/assets/scraped/split-2-extra.png",        "target": "/media/afbs/bc-split-2-extra.png" },
+    { "source": "stardust/products/brand-concierge/assets/scraped/why-1-firstparty-data.png", "target": "/media/afbs/bc-why-1-firstparty-data.png" },
+    { "source": "stardust/products/brand-concierge/assets/scraped/why-2-buyer-journeys.png",  "target": "/media/afbs/bc-why-2-buyer-journeys.png" },
+    { "source": "stardust/products/brand-concierge/assets/scraped/why-3-ai-innovation.png",   "target": "/media/afbs/bc-why-3-ai-innovation.png" },
+    { "source": "stardust/products/brand-concierge/assets/scraped/why-4-enterprise-scale.png","target": "/media/afbs/bc-why-4-enterprise-scale.png" },
+    { "source": "stardust/products/brand-concierge/assets/scraped/final-cta-portrait.png",   "target": "/media/afbs/bc-final-cta-portrait.png" },
+    { "source": "stardust/products/llm-optimizer/assets/scraped/img-001-hero-or-1.png",   "target": "/media/afbs/llm-img-001-hero-or-1.png" },
+    { "source": "stardust/products/llm-optimizer/assets/scraped/img-002.png",             "target": "/media/afbs/llm-img-002.png" },
+    { "source": "stardust/products/llm-optimizer/assets/scraped/img-asset-grid.png",      "target": "/media/afbs/llm-img-asset-grid.png" },
+    { "source": "stardust/products/llm-optimizer/assets/scraped/split-1-own-presence.png", "target": "/media/afbs/llm-split-1-own-presence.png" },
+    { "source": "stardust/products/llm-optimizer/assets/scraped/split-2-optimize-deploy.png","target": "/media/afbs/llm-split-2-optimize-deploy.png" },
+    { "source": "stardust/products/llm-optimizer/assets/scraped/split-3-connect-traffic.png","target": "/media/afbs/llm-split-3-connect-traffic.png" },
+    { "source": "stardust/products/llm-optimizer/assets/scraped/final-cta-portrait.png",  "target": "/media/afbs/llm-final-cta-portrait.png" },
+    { "source": "stardust/assets/gen/solution-brand-visibility.jpeg",      "target": "/media/afbs/solution-brand-visibility.jpeg" },
+    { "source": "stardust/assets/gen/solution-content-supply.jpeg",        "target": "/media/afbs/solution-content-supply.jpeg" },
+    { "source": "stardust/assets/gen/solution-customer-engagement.jpeg",   "target": "/media/afbs/solution-customer-engagement.jpeg" }
+  ]
+}
