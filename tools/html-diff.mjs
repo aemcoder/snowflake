@@ -94,10 +94,18 @@ const EXTRACT_SECTIONS_FN = `(wrapperSelector, pageUrl) => {
   }
 
   function normalize(root) {
-    // Collapse <picture> to its inner <img>
+    // Collapse <picture> to its inner <img>. Carry the <picture>'s classes
+    // to the <img> first — the decorator may have set per-canon classes
+    // (llm-final-cta__bg, bc-hero__bg, etc.) on either the <picture>
+    // wrapper or its <img>, and source-side always has them on <img>.
+    // Merging here lets the comparison see equivalent class sets regardless
+    // of which element EDS-side processing chose to host them on.
     root.querySelectorAll('picture').forEach((p) => {
       const img = p.querySelector('img');
-      if (img) p.replaceWith(img); else p.remove();
+      if (img) {
+        p.classList.forEach((c) => img.classList.add(c));
+        p.replaceWith(img);
+      } else { p.remove(); }
     });
     // Strip image attrs added by EDS server. Replace src with a placeholder
     // because source uses stardust local paths (../runtime/...) while deployed
