@@ -8,39 +8,98 @@ Site-specific backlogs live under `sites/<site>/BACKLOG.md`.
 
 ## Post-iter-04 priority view
 
-These items emerged from the iter-04 retrospective (see `iterations/004-allsites-catalog.md` § Struggles + lessons). Organized by what blocks the **conversion batch process** (per DEC-015) from yielding 1:1-fidelity output.
+These items emerged from the iter-04 retrospective (see `iterations/004-allsites-catalog.md` § Struggles + lessons; the full 56-item analysis ran in the iter-04-close conversation). Item IDs `#NN` reference the original analysis numbering — preserved so any item can be tracked across sessions.
 
 **Informal convention adopted at iter-04 close:** an `iter-NNN` is a working session that executes the **conversion flow** on actual page(s) (extract → upload → publish → quality gate). Sessions that improve bridge/tooling without converting pages don't get an iter-NNN number — they appear as commits + BACKLOG drains. Future iter-NNN sessions are expected to be small (1–3 pages per batch per DEC-015).
 
-### Batch-blocking — must land before the next conversion iteration
+### Tier 1 — Batch-blocking (must land before the next conversion iter-NNN)
 
-These items prevent any conversion batch from passing its quality gate. Every later batch depends on them.
+These prevent any conversion batch from passing its DEC-015 quality gate. The first 2 are universal blockers; the rest are batch-specific.
 
-- **Pixel-diff campaign infrastructure** *(elevated to P0)* — see § Pixel-diff campaign infrastructure below. Without per-module + full-page pixel-diff tooling, "1:1 fidelity" is unmeasurable and the batch closing-pass can't gate. **Universal blocker.**
-- **URL-rewriter handles cargo-culted iter-N→iter-M prefixes** — see § URL-rewriter for cargo-culted iter-N→iter-M content below. Batch A (afbs regression) cargo-culted iter-02 content; its image URLs reference `afbs-02--snowflake--aemcoder.aem.page` and resolve only as long as that preview branch stays alive. **Blocks batch A specifically.**
+| ID | Item | Why blocking | Quick fix? |
+|---|---|---|---|
+| **#8** | **Pixel-diff campaign infrastructure** — `scripts/pixel-diff.sh <selector> <orig> <eds>` + `scripts/pixel-diff-page.sh <page>` per existing BACKLOG entry. Per-module diff scores + full-page diff. | Without measurement "1:1 fidelity" is wishful thinking. Universal blocker — every batch closing-pass needs this. | Medium (codify methodology from iter-03 LEARNINGS) |
+| **#25** | **URL-rewriter handles cargo-culted iter-N→iter-M prefixes** — extend `tools/rewrite-content-urls.mjs` to handle `afbs-02--`, `afbs-03--`, any `<branch>--snowflake--aemcoder.aem.page` source URL. Also log unmapped URLs so silent skips don't hide breakage. | Batch A (afbs regression) cargo-culted iter-02 content; 3 deployed pages currently depend on the afbs-02 preview branch staying alive. | Yes (extend match patterns + add unmapped-URL warning) |
+| **#17** | **Per-page CSS loaded as union for every page** in `head.html` — 8 page-CSS files load eagerly on every page. iter-002 BACKLOG already had "Lazy per-page CSS loading". | Cross-page CSS cascade collisions: `sites-page.css` rules leak into afbs pages, may cause subtle pixel-diff hits we'd mistake for content issues. Need per-page CSS scoping (e.g., `<meta name="page-css">`) before pixel-diff signal is clean. | Medium (per-page metadata + loader in scripts.js) |
+| **#5** | **Validate deployed preview before declaring "done"** | iter-04 declared "all 7 pages rendering end-to-end" based on localhost; deploy had 50 404s. Pre-completion-claim discipline. | Process rule, not code |
+| **#14** | **`gh pr checks` in closing-pass** | Catches code-sync, lint, perf regressions before merge. AGENTS.md requires it; iter-04 skipped. | Process rule |
+| **#6** | **`npm run lint` pre-commit** (AGENTS.md requirement) | iter-04 skipped this; possible style/lint regressions on the branch. | Process rule (or pre-commit hook) |
 
-### Lazy — defer until the specific batch that needs them
+### Tier 2 — Lazy (defer until the specific batch needs them)
 
-- **Video `<source src>` slot support** *(5-line `fillSlot` extension)* — only the Semrush batch needs this (sr-promos ships with frozen video URLs). Bundle with that batch.
-- **Consolidate content-extractor patterns** — three divergent patterns (programmatic / agent-direct / cargo-cult) in iter-04. Only blocks **new page extraction**. The 52 already-extracted canons are unaffected by this debt. Address when a batch onboards a wholly-new page.
-- **Hero family canon (`llm-hero` ≅ `aem-hero`)** — spike-001's 2nd-strongest finding. Only needed if a future batch adds `*-hero` variants beyond llm/aem-hero. One-line catalog change once the family canon is authored.
+| ID | Item | When it bites | Quick fix? |
+|---|---|---|---|
+| **#53** | **Video `<source src>` slot support** — `data-slot-attr="src"` extension in `fillSlot` (5-line change). | sr-promos canon ships with frozen video URLs. Blocks Semrush batch's 1:1 fidelity. | Yes |
+| **#28, #34** | **Consolidate content-extractor patterns** — three divergent patterns in iter-04 (programmatic Node, sub-agent-direct-write, copy-from-iter-N). Converge to one canon-schema-driven extractor. | Blocks new-page extraction only; existing 52 canons are unaffected. Pay when a batch onboards a wholly-new page. | Medium |
+| **#54** | **Hero family canon (`llm-hero` ≅ `aem-hero`)** — spike-001's 2nd-strongest finding. | Only matters if a batch adds `*-hero` variants beyond llm/aem-hero. One-line catalog change once family canon is authored. | Small |
+| **#9** | **Mobile/tablet viewport testing** | iter-002 BACKLOG already flagged this; no batch has exercised mobile yet. Required per DEC-015 batch quality gate. | Process rule |
+| **#7** | **PageSpeed Insights per batch** (AGENTS.md publishing-process step 3) | iter-04 skipped; required per batch quality gate. | Process rule |
 
-### Code hygiene — do whenever; no functional blocker
+### Tier 3 — Code/architecture hygiene (no functional blocker)
 
-- **`tools/node_modules/` in git history** — `.gitignore` rule `node_modules/*` (root-only) should be `node_modules/` (anywhere). Then `git rm -r --cached tools/node_modules`. Repo history bloat is permanent; new commits clean up.
-- **Consolidate image manifests** — three different schemas in `tools/migrate-images.*.json`. No content-hash dedup (iter-03's `migrate-images.js` had it). Cosmetic + storage win, not a functional blocker.
-- **`canon/catalog.json` `_unmapped_modules` JSON-comment hack** — split docs into a sibling `.md` instead of stuffing prose into a JSON value.
+| ID | Item | Quick fix? |
+|---|---|---|
+| **#22** | `tools/node_modules/` in git history; `.gitignore` `node_modules/*` (root-only) should be `node_modules/` (anywhere). `git rm -r --cached tools/node_modules` after fix. | Yes |
+| **#23** | `_unmapped_modules` JSON-comment hack in `canon/catalog.json` — split docs into sibling `.md`. | Yes |
+| **#30, #27** | Extract `applyBemPrefix` / `loadCatalog` / `resolveCanon` to `scripts/catalog.js` + add unit tests (`tools/test-prefix-rewrite.mjs`). Currently inlined in `blocks/stardust-module/stardust-module.js`; no permanent test exists. | Medium |
+| **#26** | `tools/da-upload.mjs` retry on 5xx/429. Today: any non-2xx fails the file outright. | Medium |
+| **#31, #32, #36** | **Consolidate image manifests** — 3 schemas (top-level array / `items` key / ad-hoc array). No content-hash dedup (iter-03's `migrate-images.js` had it). Single source-of-truth manifest format with cross-page dedup. | Medium |
+| **#56** | sticky-cta + similar runtime scripts: add per-page early-out guards. Currently throws errors on pages without `.sticky-cta`. | Yes (small per-script guard) |
+| **#29** | `tools/package.json` sub-project divergent from iter-03's tools-use-root-deps pattern. Decide intentionally; not a bug, just inconsistency. | Yes (move deps to root or document) |
+| **#35** | Decide which of `stardust/` (full source tree, ~58 MB) belongs in git long-term. Today: `stardust/runtime/` is committed (deploy-required); `stardust/products/`, `stardust/prototypes/`, `stardust/assets/` are untracked. Works as long as image migration to `/media/` is complete per page. | Process decision |
+| **#15-21** | `aem content clone --force` recovery patterns — codify the revert+`trash content/.git`+`git rm --cached -f content` sequence. | Already in LEARNINGS; could automate via wrapper script |
 
-### Process discipline (no code; rules to follow)
+### Tier 4 — Process discipline (rules from iter-04 retrospective)
 
-These aren't action items — they're rules surfaced by the iter-04 retrospective. They live in LEARNINGS § Deploy gotchas and AGENTS.md § Batched migration; listed here for visibility.
+Not action items. Listed for visibility; live in LEARNINGS § Deploy gotchas + AGENTS.md § Batched migration.
 
-- `aem content clone --force` is destructive (wipes local `content/`, rewrites `.gitignore`, creates `content/.git` submodule). Scope path narrowly (`--path /<sub-path>`), never `--path /`.
-- Pre-flight DA token expiry check in upload tools — `da-upload.mjs` should fail-fast with a clear re-auth message.
-- Sub-agent outputs go to a quarantine dir for review before integration — not direct writes to `content/iter-N/` or `canon/modules/` where recovery is expensive if wiped.
-- A page is "done" only when its deployed-preview rendering passes pixel-diff + perf + mobile + LEARNINGS distillation (per DEC-015). `localhost:3000` rendering is a smoke test, not a done-signal.
-- **`stardust/runtime/` is deploy-required** — commit it (~80 files, 11 MB). Iter-04's first deploy had 38 of 50 404s because it was untracked.
-- **Chrome layer is atomic** — cargo-culting `fragments/{header,footer}.html` requires also cargo-culting `blocks/{header,footer}/{header,footer}.js` (custom loaders) and `styles/fragments/chrome.css`. Missing any of these breaks chrome rendering.
+| ID | Rule |
+|---|---|
+| **#11** | `stardust/runtime/` is deploy-required (~80 files, ~11 MB). Commit it. iter-04 deploy had 38 of 50 404s because it was untracked. |
+| **#12** | Chrome layer is atomic: cargo-culting `fragments/{header,footer}.html` requires also cargo-culting `blocks/{header,footer}/{header,footer}.js` (custom loaders) + `styles/fragments/chrome.css`. Missing any breaks chrome. |
+| **#19, #20** | `aem content clone --force` is destructive — wipes local `content/`, rewrites `.gitignore`, creates `content/.git` submodule. Scope path narrowly (`--path /<sub-path>`), never `--path /`. |
+| **#21** | DA token expiry causes silent 401 cascade. Pre-flight in `da-upload.mjs`: decode token, fail-fast with clear re-auth message. |
+| **#37-39** | Sub-agent outputs go to a quarantine dir for review before integration — not direct writes to `content/iter-N/` or `canon/modules/`. Recovery cost was high when `aem content clone --force` wiped iter-04 agent outputs. |
+| **#18** | Verify commits with `git ls-tree` after staging — iter-04 had commits whose messages claimed "create mode 100644" for files that weren't actually tracked. Don't trust the message alone. |
+| **#40-44** | Distinguish "verified rendering deployed" vs "rendered locally" in every claim. iter-04 said "all 7 pages rendering end-to-end" referring to localhost; user reasonably interpreted as production. |
+| **#43-44** | Act on self-review findings when fast-fixable, don't defer to "next session". The chrome issue was flagged in self-review one turn before deploy; fixing then would have prevented the user-flagged poor render. |
+| **#10** | Closing-pass discipline runs **per batch**, not just per-iteration end. A page isn't done until its batch passes the gate. |
+| **#1-4** | Scope/planning: over-committing to "all phases autonomously" + treating autonomous as license to skip checkpoints. iter-04's all-7-pages compressed the quality gate. DEC-015 batch model addresses this. |
+
+### Tier 5 — Dev-loop friction (low priority)
+
+| ID | Item |
+|---|---|
+| **#45-47** | drafts/ smoke-test setup friction (initial `<body>`-only file didn't get head injection; URL was `/drafts/iter-04-smoke` not `/iter-04-smoke` — wasted iteration cycles). Document in HOWTO or codify a smoke-test helper. |
+| **#46** | Dev server lifecycle hygiene — orphaned `aem-cli up` processes between sessions. Convention: always kill before exit. |
+
+---
+
+**Reference:** every item ID maps to the 56-item analysis from the iter-04 retrospective. Items can be triaged into individual tooling sessions (Tier 1 universal blockers first), bundled with batch-specific iter-NNN sessions (Tier 2), or addressed opportunistically (Tier 3). Tier 4 are rules, not items — they govern how future sessions run.
+
+### Suggested execution plan
+
+Proposed sequencing (informal — adjust as new learnings emerge). Each row is one session. Tooling sessions are unnumbered (per iter-NNN convention); conversion sessions get iter-NNN names + iteration logs.
+
+| Session | Kind | Scope | Drains (BACKLOG IDs) | Output |
+|---|---|---|---|---|
+| **Tooling 1** | bridge | Build `scripts/pixel-diff.sh` + `scripts/pixel-diff-page.sh` per the spec in this BACKLOG § Pixel-diff helper script + § Pixel-diff campaign infrastructure. Extend `tools/rewrite-content-urls.mjs` to handle `afbs-02--` / `afbs-03--` prefixes (#25). Run pixel-diff baseline against all 7 currently-deployed iter-04 pages — captures the as-is delta so iter-005+ can measure improvement. | #8, #25 | Pixel-diff CLI + a baseline-delta report committed under `iter-04-baseline-pixel-diff.md` |
+| **Tooling 2** *(optional, can defer)* | bridge | Quick-fix code hygiene: gitignore fix + remove `tools/node_modules/` (#22). Pre-flight token check + retry in `da-upload.mjs` (#21, #26). Per-page CSS lazy-load (#17) — required for clean pixel-diff signal. | #17, #21, #22, #23, #26 | Tooling commits on `main`; no iter-NNN |
+| **iter-005** | conversion | **Batch A — afbs regression pass.** 3 pages (index, llm-optimizer, brand-concierge). Pixel-diff each, identify per-module deltas, fix cascading CSS/slot issues, re-publish, re-diff. Close pass: full quality gate (deploy ✓, pixel-diff <3% per page ✓, perf ✓, mobile ✓, LEARNINGS distilled ✓). Image-URL rewrite from afbs-02-- to /media/afbs/. | (verifies #25 in production) | iter-005 log; 3 afbs pages at 1:1 fidelity |
+| **iter-006** | conversion | **Batch B — AEM Sites quality pass.** 1 page (new content, distinct product section). Same closing pass. | — | iter-006 log; sites page at 1:1 |
+| **iter-007** | conversion | **Batch C — BC prototypes pair.** 2 pages (prototype + bolder; share many canons; bolder has bc-marquee). Same closing pass. | — | iter-007 log; 2 prototype pages at 1:1 |
+| **iter-008** | conversion | **Batch D — Semrush.** 1 page (distinct design system). Bundle #53 (video slot support) since sr-promos needs it. Same closing pass. | #53 | iter-008 log; Semrush at 1:1 |
+| **Tooling 3** *(post-batches)* | bridge | Generalize content-extractor (#28, #34). Consolidate image manifests (#31, #32, #36). Extract `applyBemPrefix` to shared module + tests (#27, #30). | #27, #28, #30, #31, #32, #34, #36 | Tooling commits on `main` |
+| **iter-009+** | conversion | Onboard next site (or next batch) using the consolidated tooling. | — | next batch log |
+
+**Heuristics for adjusting this plan:**
+
+- If a Tier-1 batch-blocker can't be addressed in a single tooling session (e.g., per-page CSS lazy-loading turns out to need a metadata refactor), split into smaller tooling sessions before opening iter-005.
+- If batch A's pixel-diff campaign surfaces issues that aren't fixable per-page (e.g., a shared canon needs structural changes), promote those to a tooling session between batches A and B.
+- Tier 3 hygiene items can interleave with conversion iterations as opportunity arises — they're never the bottleneck, but a 10-minute cleanup mid-batch is fine if the right moment shows up.
+- If a batch closing-pass fails (pixel-diff > target or perf regression), iterate within the same iter-NNN until it passes. Don't open the next batch until the current one closes.
+
+**The conversion-iteration count tracks progress toward "all 7 pages at 1:1 fidelity"** — iter-005 starts that count from the iter-04 baseline. Tooling sessions don't advance the count but do unblock it.
 
 ---
 
