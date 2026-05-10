@@ -171,10 +171,25 @@ function fillSlot(target, cell) {
   const isPWrap = onlyChild?.tagName === 'P'
     && onlyChild.textContent.trim() === cell.textContent.trim();
   const isUlWrap = onlyChild?.tagName === 'UL' && target.tagName === 'UL';
+  // Capture the canon's item-template class before we overwrite innerHTML.
+  // DA strips classes from authored <li> elements (authoring policy), so
+  // the cell's <li> children come back bare. Re-apply the canon's per-item
+  // class (e.g. split-content__bullet) to each new <li> so per-page CSS
+  // continues to match.
+  let itemClass = '';
+  if (target.tagName === 'UL') {
+    itemClass = target.querySelector(':scope > li')?.className?.trim() || '';
+  }
   if (isPWrap || isUlWrap) {
     target.innerHTML = onlyChild.innerHTML;
   } else {
     target.innerHTML = cell.innerHTML;
+  }
+  if (itemClass && target.tagName === 'UL') {
+    target.querySelectorAll(':scope > li').forEach((li) => {
+      // Don't duplicate if DA somehow preserved a class.
+      if (!li.classList.contains(itemClass.split(/\s+/)[0])) li.className = itemClass;
+    });
   }
 }
 
