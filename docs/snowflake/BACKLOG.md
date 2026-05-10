@@ -12,94 +12,104 @@ These items emerged from the iter-04 retrospective (see `iterations/004-allsites
 
 **Informal convention adopted at iter-04 close:** an `iter-NNN` is a working session that executes the **conversion flow** on actual page(s) (extract → upload → publish → quality gate). Sessions that improve bridge/tooling without converting pages don't get an iter-NNN number — they appear as commits + BACKLOG drains. Future iter-NNN sessions are expected to be small (1–3 pages per batch per DEC-015).
 
-### Tier 1 — Batch-blocking (must land before the next conversion iter-NNN)
+### Tier 1 — One-time deliverables (must ship before next iter-NNN can pass quality gate)
 
-These prevent any conversion batch from passing its DEC-015 quality gate. The first 2 are universal blockers; the rest are batch-specific.
+Code/tooling work, each landing in a specific upcoming session. Every Tier-1 item maps to a planned session.
 
-| ID | Item | Why blocking | Quick fix? |
+| ID | Item | Why blocking | → Lands in |
 |---|---|---|---|
-| **#8** | **Pixel-diff campaign infrastructure** — `scripts/pixel-diff.sh <selector> <orig> <eds>` + `scripts/pixel-diff-page.sh <page>` per existing BACKLOG entry. Per-module diff scores + full-page diff. | Without measurement "1:1 fidelity" is wishful thinking. Universal blocker — every batch closing-pass needs this. | Medium (codify methodology from iter-03 LEARNINGS) |
-| **#25** | **URL-rewriter handles cargo-culted iter-N→iter-M prefixes** — extend `tools/rewrite-content-urls.mjs` to handle `afbs-02--`, `afbs-03--`, any `<branch>--snowflake--aemcoder.aem.page` source URL. Also log unmapped URLs so silent skips don't hide breakage. | Batch A (afbs regression) cargo-culted iter-02 content; 3 deployed pages currently depend on the afbs-02 preview branch staying alive. | Yes (extend match patterns + add unmapped-URL warning) |
-| **#17** | **Per-page CSS loaded as union for every page** in `head.html` — 8 page-CSS files load eagerly on every page. iter-002 BACKLOG already had "Lazy per-page CSS loading". | Cross-page CSS cascade collisions: `sites-page.css` rules leak into afbs pages, may cause subtle pixel-diff hits we'd mistake for content issues. Need per-page CSS scoping (e.g., `<meta name="page-css">`) before pixel-diff signal is clean. | Medium (per-page metadata + loader in scripts.js) |
-| **#5** | **Validate deployed preview before declaring "done"** | iter-04 declared "all 7 pages rendering end-to-end" based on localhost; deploy had 50 404s. Pre-completion-claim discipline. | Process rule, not code |
-| **#14** | **`gh pr checks` in closing-pass** | Catches code-sync, lint, perf regressions before merge. AGENTS.md requires it; iter-04 skipped. | Process rule |
-| **#6** | **`npm run lint` pre-commit** (AGENTS.md requirement) | iter-04 skipped this; possible style/lint regressions on the branch. | Process rule (or pre-commit hook) |
+| **#8** | **Pixel-diff campaign infrastructure** — `scripts/pixel-diff.sh <selector> <orig> <eds>` + `scripts/pixel-diff-page.sh <page>`. Per-module + full-page diff scores. | Without measurement "1:1 fidelity" is unmeasurable. Universal blocker — every batch closing-pass needs this. | **Tooling 1** |
+| **#25** | **URL-rewriter handles cargo-culted iter-N→iter-M prefixes** — extend `tools/rewrite-content-urls.mjs` to handle `afbs-02--`, `afbs-03--`, any `<branch>--snowflake--aemcoder.aem.page` source URL. Log unmapped URLs (no silent skips). | Batch A reuses iter-02 afbs content; 3 deployed pages depend on afbs-02 preview staying alive. | **Tooling 1** (verified by iter-005) |
+| **#17** | **Per-page CSS scoping** — 8 page-CSS files load eagerly via `head.html` union. Move to per-page lazy-load via `<meta name="page-css">` + loader in `scripts.js`. | Cross-page CSS cascade collisions (e.g. `sites-page.css` rules leaking into afbs pages) would muddy pixel-diff signal. Need clean CSS isolation before measuring. | **Tooling 2** |
+| **#21** | **Pre-flight DA token expiry check** in `da-upload.mjs`: decode token, fail-fast with clear re-auth message. | iter-04's first canon upload failed 53/53 with bare 401s because the token had silently expired. | **Tooling 2** |
+| **#26** | `tools/da-upload.mjs` retry on 5xx/429. | Today any transient server error fails the file outright; iter-04 had to re-run uploads. | **Tooling 2** |
+| **#22** | `tools/node_modules/` in git history; fix `.gitignore` `node_modules/*` → `node_modules/`; `git rm -r --cached tools/node_modules`. | Repo bloat. Not a runtime blocker but should be done before more commits accrete. | **Tooling 2** |
 
-### Tier 2 — Lazy (defer until the specific batch needs them)
+### Tier 2 — Per-batch deliverables (lazy — bundle with the batch that needs them)
 
-| ID | Item | When it bites | Quick fix? |
+Each item attaches to a specific upcoming conversion iter-NNN. Not blocking any earlier batch.
+
+| ID | Item | When it bites | → Lands in |
 |---|---|---|---|
-| **#53** | **Video `<source src>` slot support** — `data-slot-attr="src"` extension in `fillSlot` (5-line change). | sr-promos canon ships with frozen video URLs. Blocks Semrush batch's 1:1 fidelity. | Yes |
-| **#28, #34** | **Consolidate content-extractor patterns** — three divergent patterns in iter-04 (programmatic Node, sub-agent-direct-write, copy-from-iter-N). Converge to one canon-schema-driven extractor. | Blocks new-page extraction only; existing 52 canons are unaffected. Pay when a batch onboards a wholly-new page. | Medium |
-| **#54** | **Hero family canon (`llm-hero` ≅ `aem-hero`)** — spike-001's 2nd-strongest finding. | Only matters if a batch adds `*-hero` variants beyond llm/aem-hero. One-line catalog change once family canon is authored. | Small |
-| **#9** | **Mobile/tablet viewport testing** | iter-002 BACKLOG already flagged this; no batch has exercised mobile yet. Required per DEC-015 batch quality gate. | Process rule |
-| **#7** | **PageSpeed Insights per batch** (AGENTS.md publishing-process step 3) | iter-04 skipped; required per batch quality gate. | Process rule |
+| **#53** | **Video `<source src>` slot support** — `data-slot-attr="src"` extension in `fillSlot` (5-line change). | sr-promos canon ships with frozen video URLs. Blocks Semrush 1:1. | **iter-008** (Semrush) |
+| **#28, #34** | **Consolidate content-extractor patterns** — three divergent patterns in iter-04. Converge to one canon-schema-driven extractor. | Blocks new-page extraction only; the 52 already-extracted canons are unaffected. Pay when a wholly-new page is onboarded. | **Tooling 3** (post-batches) |
+| **#31, #32, #36** | **Consolidate image manifests** — 3 schemas in `tools/migrate-images.*.json`. No content-hash dedup. Single source-of-truth format with cross-page dedup. | Cosmetic + storage win. Pay before adding more image-rich sites. | **Tooling 3** (post-batches) |
+| **#54** | **Hero family canon (`llm-hero` ≅ `aem-hero`)** — spike-001's 2nd-strongest finding. | Only matters if a future batch adds `*-hero` variants beyond llm/aem-hero. One-line catalog change once family canon is authored. | **Deferred** (not in current plan) |
 
-### Tier 3 — Code/architecture hygiene (no functional blocker)
+### Tier 3 — Code/architecture hygiene (do opportunistically; no functional blocker)
 
-| ID | Item | Quick fix? |
+| ID | Item | → Address |
 |---|---|---|
-| **#22** | `tools/node_modules/` in git history; `.gitignore` `node_modules/*` (root-only) should be `node_modules/` (anywhere). `git rm -r --cached tools/node_modules` after fix. | Yes |
-| **#23** | `_unmapped_modules` JSON-comment hack in `canon/catalog.json` — split docs into sibling `.md`. | Yes |
-| **#30, #27** | Extract `applyBemPrefix` / `loadCatalog` / `resolveCanon` to `scripts/catalog.js` + add unit tests (`tools/test-prefix-rewrite.mjs`). Currently inlined in `blocks/stardust-module/stardust-module.js`; no permanent test exists. | Medium |
-| **#26** | `tools/da-upload.mjs` retry on 5xx/429. Today: any non-2xx fails the file outright. | Medium |
-| **#31, #32, #36** | **Consolidate image manifests** — 3 schemas (top-level array / `items` key / ad-hoc array). No content-hash dedup (iter-03's `migrate-images.js` had it). Single source-of-truth manifest format with cross-page dedup. | Medium |
-| **#56** | sticky-cta + similar runtime scripts: add per-page early-out guards. Currently throws errors on pages without `.sticky-cta`. | Yes (small per-script guard) |
-| **#29** | `tools/package.json` sub-project divergent from iter-03's tools-use-root-deps pattern. Decide intentionally; not a bug, just inconsistency. | Yes (move deps to root or document) |
-| **#35** | Decide which of `stardust/` (full source tree, ~58 MB) belongs in git long-term. Today: `stardust/runtime/` is committed (deploy-required); `stardust/products/`, `stardust/prototypes/`, `stardust/assets/` are untracked. Works as long as image migration to `/media/` is complete per page. | Process decision |
-| **#15-21** | `aem content clone --force` recovery patterns — codify the revert+`trash content/.git`+`git rm --cached -f content` sequence. | Already in LEARNINGS; could automate via wrapper script |
+| **#23** | `_unmapped_modules` JSON-comment hack in `canon/catalog.json` — split into sibling `.md`. | Any tooling session — small fix |
+| **#27, #30** | Extract `applyBemPrefix` / `loadCatalog` / `resolveCanon` to `scripts/catalog.js` + add unit tests (`tools/test-prefix-rewrite.mjs`). Currently inlined; no permanent test. | **Tooling 3** |
+| **#56** | sticky-cta + similar runtime scripts: add per-page early-out guards. Today throws errors on pages without `.sticky-cta`. | **iter-005** (caught during pixel-diff cleanup) |
+| **#29** | `tools/package.json` sub-project divergent from iter-03's tools-use-root-deps pattern. Decide and align intentionally. | Any tooling session |
+| **#35** | Decide what of `stardust/` (full source tree, ~58 MB) belongs in git long-term. Today: `stardust/runtime/` committed; rest untracked. | Process decision — at iter-008 close (last page migrated) |
+| **#15-21** | `aem content clone --force` recovery automation — codify the revert+`trash content/.git`+`git rm --cached -f content` sequence as a wrapper script. | **Tooling 3** (low value; LEARNINGS already documents the manual recovery) |
 
-### Tier 4 — Process discipline (rules from iter-04 retrospective)
+### Tier 4 — Process rules (applied continuously, not "drained")
 
-Not action items. Listed for visibility; live in LEARNINGS § Deploy gotchas + AGENTS.md § Batched migration.
+Not deliverables — rules that govern every session. Live in LEARNINGS § Deploy gotchas + AGENTS.md § Batched migration; listed here for visibility. *Each rule has an "Applied at" column showing when the rule fires.*
 
-| ID | Rule |
-|---|---|
-| **#11** | `stardust/runtime/` is deploy-required (~80 files, ~11 MB). Commit it. iter-04 deploy had 38 of 50 404s because it was untracked. |
-| **#12** | Chrome layer is atomic: cargo-culting `fragments/{header,footer}.html` requires also cargo-culting `blocks/{header,footer}/{header,footer}.js` (custom loaders) + `styles/fragments/chrome.css`. Missing any breaks chrome. |
-| **#19, #20** | `aem content clone --force` is destructive — wipes local `content/`, rewrites `.gitignore`, creates `content/.git` submodule. Scope path narrowly (`--path /<sub-path>`), never `--path /`. |
-| **#21** | DA token expiry causes silent 401 cascade. Pre-flight in `da-upload.mjs`: decode token, fail-fast with clear re-auth message. |
-| **#37-39** | Sub-agent outputs go to a quarantine dir for review before integration — not direct writes to `content/iter-N/` or `canon/modules/`. Recovery cost was high when `aem content clone --force` wiped iter-04 agent outputs. |
-| **#18** | Verify commits with `git ls-tree` after staging — iter-04 had commits whose messages claimed "create mode 100644" for files that weren't actually tracked. Don't trust the message alone. |
-| **#40-44** | Distinguish "verified rendering deployed" vs "rendered locally" in every claim. iter-04 said "all 7 pages rendering end-to-end" referring to localhost; user reasonably interpreted as production. |
-| **#43-44** | Act on self-review findings when fast-fixable, don't defer to "next session". The chrome issue was flagged in self-review one turn before deploy; fixing then would have prevented the user-flagged poor render. |
-| **#10** | Closing-pass discipline runs **per batch**, not just per-iteration end. A page isn't done until its batch passes the gate. |
-| **#1-4** | Scope/planning: over-committing to "all phases autonomously" + treating autonomous as license to skip checkpoints. iter-04's all-7-pages compressed the quality gate. DEC-015 batch model addresses this. |
+| ID | Rule | Applied at |
+|---|---|---|
+| **#5** | Validate deployed preview before declaring "done". Localhost rendering is a smoke test, not a done-signal. | Every batch closing-pass |
+| **#6** | `npm run lint` pre-commit (AGENTS.md requirement). | Every commit |
+| **#7** | PageSpeed Insights check (AGENTS.md publishing step 3). | Every batch closing-pass |
+| **#9** | Mobile/tablet viewport testing. | Every batch closing-pass |
+| **#10** | Closing-pass discipline runs **per batch**, not just per-iteration end. A page isn't done until its batch passes the gate. | Every batch |
+| **#11** | `stardust/runtime/` is deploy-required. Commit it on any branch that deploys. | Every iteration branch from `main` |
+| **#12** | Chrome layer is atomic: `fragments/{header,footer}.html` + `blocks/{header,footer}/{header,footer}.js` + `styles/fragments/chrome.css` travel together. | Every iteration branch |
+| **#14** | `gh pr checks` in closing-pass — catches code-sync, lint, perf regressions. | Every batch closing-pass |
+| **#18** | Verify commits with `git ls-tree` after staging — don't trust commit-message "create mode" alone. | Every commit involving new files |
+| **#19, #20** | `aem content clone --force` is destructive. Use `--path /<sub-path>`, never `--path /`. | Every clone invocation |
+| **#37-39** | Sub-agent outputs go to a quarantine dir for review before integration — not direct writes to `content/iter-N/` or `canon/modules/`. | Every sub-agent dispatch |
+| **#40-44** | Distinguish "verified rendering deployed" vs "rendered locally" in every claim. | Every progress update |
+| **#43-44** | Act on self-review findings when fast-fixable; don't defer to "next session". | Every self-review pass |
+| **#1-4** | Scope/planning: don't over-commit to "all phases autonomously"; treating autonomous as license to skip checkpoints causes quality gates to compress. DEC-015 batch model addresses this. | Every iter-NNN scoping |
 
-### Tier 5 — Dev-loop friction (low priority)
+### Tier 5 — Dev-loop friction (low priority; address when convenient)
 
-| ID | Item |
-|---|---|
-| **#45-47** | drafts/ smoke-test setup friction (initial `<body>`-only file didn't get head injection; URL was `/drafts/iter-04-smoke` not `/iter-04-smoke` — wasted iteration cycles). Document in HOWTO or codify a smoke-test helper. |
-| **#46** | Dev server lifecycle hygiene — orphaned `aem-cli up` processes between sessions. Convention: always kill before exit. |
+| ID | Item | → Address |
+|---|---|---|
+| **#45-47** | drafts/ smoke-test setup friction (initial `<body>`-only file didn't get head injection; URL was `/drafts/iter-04-smoke` not `/iter-04-smoke`). Codify a smoke-test helper in HOWTO. | Any tooling session |
+| **#46** | Dev server lifecycle hygiene — orphaned `aem-cli up` processes between sessions. Convention: always kill before exit. | Process rule, no code |
 
 ---
 
-**Reference:** every item ID maps to the 56-item analysis from the iter-04 retrospective. Items can be triaged into individual tooling sessions (Tier 1 universal blockers first), bundled with batch-specific iter-NNN sessions (Tier 2), or addressed opportunistically (Tier 3). Tier 4 are rules, not items — they govern how future sessions run.
-
 ### Suggested execution plan
 
-Proposed sequencing (informal — adjust as new learnings emerge). Each row is one session. Tooling sessions are unnumbered (per iter-NNN convention); conversion sessions get iter-NNN names + iteration logs.
+Each row is one session. Tooling sessions are unnumbered (per iter-NNN convention); conversion sessions get iter-NNN names + iteration logs. The "Drains" column lists Tier-1/2/3 item IDs the session ships. Tier-4 rules apply continuously across all sessions and aren't drained.
 
-| Session | Kind | Scope | Drains (BACKLOG IDs) | Output |
-|---|---|---|---|---|
-| **Tooling 1** | bridge | Build `scripts/pixel-diff.sh` + `scripts/pixel-diff-page.sh` per the spec in this BACKLOG § Pixel-diff helper script + § Pixel-diff campaign infrastructure. Extend `tools/rewrite-content-urls.mjs` to handle `afbs-02--` / `afbs-03--` prefixes (#25). Run pixel-diff baseline against all 7 currently-deployed iter-04 pages — captures the as-is delta so iter-005+ can measure improvement. | #8, #25 | Pixel-diff CLI + a baseline-delta report committed under `iter-04-baseline-pixel-diff.md` |
-| **Tooling 2** *(optional, can defer)* | bridge | Quick-fix code hygiene: gitignore fix + remove `tools/node_modules/` (#22). Pre-flight token check + retry in `da-upload.mjs` (#21, #26). Per-page CSS lazy-load (#17) — required for clean pixel-diff signal. | #17, #21, #22, #23, #26 | Tooling commits on `main`; no iter-NNN |
-| **iter-005** | conversion | **Batch A — afbs regression pass.** 3 pages (index, llm-optimizer, brand-concierge). Pixel-diff each, identify per-module deltas, fix cascading CSS/slot issues, re-publish, re-diff. Close pass: full quality gate (deploy ✓, pixel-diff <3% per page ✓, perf ✓, mobile ✓, LEARNINGS distilled ✓). Image-URL rewrite from afbs-02-- to /media/afbs/. | (verifies #25 in production) | iter-005 log; 3 afbs pages at 1:1 fidelity |
-| **iter-006** | conversion | **Batch B — AEM Sites quality pass.** 1 page (new content, distinct product section). Same closing pass. | — | iter-006 log; sites page at 1:1 |
-| **iter-007** | conversion | **Batch C — BC prototypes pair.** 2 pages (prototype + bolder; share many canons; bolder has bc-marquee). Same closing pass. | — | iter-007 log; 2 prototype pages at 1:1 |
-| **iter-008** | conversion | **Batch D — Semrush.** 1 page (distinct design system). Bundle #53 (video slot support) since sr-promos needs it. Same closing pass. | #53 | iter-008 log; Semrush at 1:1 |
-| **Tooling 3** *(post-batches)* | bridge | Generalize content-extractor (#28, #34). Consolidate image manifests (#31, #32, #36). Extract `applyBemPrefix` to shared module + tests (#27, #30). | #27, #28, #30, #31, #32, #34, #36 | Tooling commits on `main` |
-| **iter-009+** | conversion | Onboard next site (or next batch) using the consolidated tooling. | — | next batch log |
+| Session | Kind | Drains | Output |
+|---|---|---|---|
+| **Tooling 1** | bridge | **#8, #25** (Tier 1) | `scripts/pixel-diff.sh` + `scripts/pixel-diff-page.sh` + URL-rewriter prefix extension + baseline-delta report capturing iter-04's as-is pixel deltas across all 7 deployed pages |
+| **Tooling 2** | bridge | **#17, #21, #22, #26** (Tier 1) | Per-page CSS lazy-load + token pre-flight + da-upload retry + gitignore/node_modules cleanup. All on `main`. Optional: #23 (catalog JSON-comment cleanup) bundled here if time |
+| **iter-005** | conversion | (verifies #25 in production) + opportunistic **#56** | **Batch A — afbs regression pass.** 3 pages (index, llm-optimizer, brand-concierge). Pixel-diff each → fix per-module deltas → re-publish → re-diff until <3% per page. Image URLs rewritten from `afbs-02--` to `/media/afbs/`. Full quality gate per DEC-015. |
+| **iter-006** | conversion | — | **Batch B — AEM Sites quality pass.** 1 page. Same closing-pass shape. |
+| **iter-007** | conversion | — | **Batch C — BC prototypes pair.** 2 pages (proto + bolder; share canons; bolder has bc-marquee). Same closing-pass. |
+| **iter-008** | conversion | **#53** + decide **#35** at close | **Batch D — Semrush.** 1 page; bundles video-slot extension (#53). At batch close: decide what of `stardust/` stays in git long-term (#35), now that all 7 pages reference `/media/`. |
+| **Tooling 3** | bridge | **#27, #28, #30, #31, #32, #34** (Tiers 2+3) + opportunistic **#15-21, #29** | Generalize content-extractor + consolidate image manifests + extract `applyBemPrefix` to shared module with tests. Done post-batches because no single batch needed it. |
+| **iter-009+** | conversion | — | Onboard next site (or next batch) using the consolidated tooling. |
 
-**Heuristics for adjusting this plan:**
+### Item-to-session coverage check
 
-- If a Tier-1 batch-blocker can't be addressed in a single tooling session (e.g., per-page CSS lazy-loading turns out to need a metadata refactor), split into smaller tooling sessions before opening iter-005.
-- If batch A's pixel-diff campaign surfaces issues that aren't fixable per-page (e.g., a shared canon needs structural changes), promote those to a tooling session between batches A and B.
-- Tier 3 hygiene items can interleave with conversion iterations as opportunity arises — they're never the bottleneck, but a 10-minute cleanup mid-batch is fine if the right moment shows up.
-- If a batch closing-pass fails (pixel-diff > target or perf regression), iterate within the same iter-NNN until it passes. Don't open the next batch until the current one closes.
+Every actionable Tier-1/2/3 item maps to a session. Cross-reference:
 
-**The conversion-iteration count tracks progress toward "all 7 pages at 1:1 fidelity"** — iter-005 starts that count from the iter-04 baseline. Tooling sessions don't advance the count but do unblock it.
+- Tier 1 (6 items): #8 → T1, #25 → T1, #17 → T2, #21 → T2, #26 → T2, #22 → T2 ✓
+- Tier 2 (4 items): #53 → iter-008, #28/#34 → T3, #31/#32/#36 → T3, #54 → Deferred ✓
+- Tier 3 (6 items): #23 → opportunistic, #27/#30 → T3, #56 → iter-005, #29 → opportunistic, #35 → iter-008 close, #15-21 → T3 ✓
+- Tier 4 (process rules): applied at every relevant gate; not drained
+- Tier 5 (#45-47, #46): opportunistic
+
+**Heuristics for adjusting:**
+
+- If a Tier-1 deliverable can't fit in its planned session (e.g., per-page CSS lazy-load needs more design), split into smaller tooling sessions before opening the dependent iter-NNN.
+- If batch A's pixel-diff surfaces issues that aren't fixable per-page (e.g., a shared canon needs structural changes), promote that fix to a between-batch tooling session.
+- Tier 3 items can interleave opportunistically — never the bottleneck, but a 10-minute cleanup mid-batch is fine when the moment arises.
+- If a batch closing-pass fails (pixel-diff > target or perf regression), iterate within the same iter-NNN until it passes. Don't open the next batch until current closes.
+
+**Conversion-iteration count tracks progress toward "all 7 pages at 1:1 fidelity":** iter-005 starts that count from the iter-04 baseline. Tooling sessions don't advance the count but unblock it.
 
 ---
 
