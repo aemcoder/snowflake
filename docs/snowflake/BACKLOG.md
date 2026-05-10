@@ -44,7 +44,7 @@ Each item attaches to a specific upcoming conversion iter-NNN. Not blocking any 
 | **#27, #30** | Extract `applyBemPrefix` / `loadCatalog` / `resolveCanon` to `scripts/catalog.js` + add unit tests (`tools/test-prefix-rewrite.mjs`). Currently inlined; no permanent test. | **Tooling 3** |
 | **#56** | sticky-cta + similar runtime scripts: add per-page early-out guards. Today throws errors on pages without `.sticky-cta`. | **iter-005** (caught during pixel-diff cleanup) |
 | ~~**#29**~~ | ~~`tools/package.json` sub-project divergent from iter-03's tools-use-root-deps pattern~~ → drained at bridge-promotion: tools use root devDeps pattern (cheerio, playwright, diff all in root `package.json`). | **SHIPPED** (bridge-promotion session) |
-| **#35** | Decide what of `stardust/` (full source tree, ~58 MB) belongs in git long-term. Today: `stardust/runtime/` committed; rest untracked. | Process decision — at iter-008 close (last page migrated) |
+| **#35** | Decide what of `stardust/` (full source tree, ~58 MB) belongs in git long-term. Currently tracked: `stardust/runtime/` (deploy-required) + 7 source page HTMLs (~444 KB; needed by `tools/html-diff.mjs`). Untracked: `stardust/assets/` (~58 MB raw images/SVGs; not needed by the bridge or html-diff). Final decision on `stardust/assets/` deferred to iter-008 close (after all 7 pages reference `/media/<site>/` paths). | Process decision — at iter-008 close (last page migrated) |
 | **#15-21** | `aem content clone --force` recovery automation — codify the revert+`trash content/.git`+`git rm --cached -f content` sequence as a wrapper script. | **Tooling 3** (low value; LEARNINGS already documents the manual recovery) |
 
 ### Tier 4 — Process rules (applied continuously, not "drained")

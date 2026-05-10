@@ -91,8 +91,14 @@ styles/
 head.html                           # links: boilerplate styles, stardust runtime CSS (globals +
                                     # chrome + per-module union), chrome.css, per-page CSS files
 
-stardust/runtime/                   # vendored CSS, JS, fonts, images served at /stardust/runtime/
+stardust/                           # vendored stardust source
+  runtime/                          # CSS, JS, fonts, images served at /stardust/runtime/
                                     # (deploy-required; LEARNINGS § Deploy gotchas)
+  index.html                        # afbs index — html-diff source-of-truth
+  products/<page>.html              # llm-optimizer, brand-concierge, experience-manager/sites
+  prototypes/<page>.html            # semrush-home + products/{bc-prototype, bc-bolder}
+                                    # source pages used by tools/html-diff.mjs (BACKLOG #35:
+                                    # assets/ subtree still untracked; ~58 MB images deferred)
 
 tools/                              # Node-side tooling (root devDeps, no sub-project package.json)
   da-upload.mjs                     # unified DA upload (--what canons|content|images|publish|all)

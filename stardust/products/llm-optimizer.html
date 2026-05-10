@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Adobe LLM Optimizer — AI search & generative SEO for brand visibility</title>
+  <link rel="icon" type="image/svg+xml" href="../runtime/assets/adobe-logo-red.svg">
+
+  <!-- Global design system -->
+  <link rel="stylesheet" href="../runtime/styles/global/reset.css">
+  <link rel="stylesheet" href="../runtime/styles/global/grid.css">
+  <link rel="stylesheet" href="../runtime/styles/global/typography.css">
+  <link rel="stylesheet" href="../runtime/styles/page.css">
+
+  <!-- Nav -->
+  <link rel="stylesheet" href="../runtime/styles/nav.css">
+  <link rel="stylesheet" href="../runtime/styles/mega-nav.css">
+  <link rel="stylesheet" href="../runtime/styles/mobile-nav.css">
+
+  <!-- Modules used by this page -->
+  <link rel="stylesheet" href="../runtime/styles/rainbow-strip.css">
+  <link rel="stylesheet" href="../runtime/styles/split-content.css">
+  <link rel="stylesheet" href="../runtime/styles/acrobat-feature-3up.css">
+  <link rel="stylesheet" href="../runtime/styles/faq-accordion.css">
+
+  <style>
+    /* Bizpro tokens */
+    :root {
+      --s2a-color-blue-900: #3b63fb;
+      --s2a-color-blue-1000: #274dea;
+      --s2a-color-background-default: #ffffff;
+      --s2a-color-background-subtle: #f8f8f8;
+      --s2a-color-content-default: #000000;
+      --s2a-color-content-subtle: rgba(0,0,0,0.64);
+      --s2a-color-content-background-subtle: #505050;
+      --s2a-color-transparent-black-08: rgba(0,0,0,0.08);
+
+      --s2a-typography-font-size-eyebrow: 16px;
+      --s2a-typography-line-height-eyebrow: 20px;
+      --s2a-typography-letter-spacing-eyebrow: -0.2px;
+
+      --s2a-spacing-xs: 8px;  --s2a-spacing-sm: 12px;
+      --s2a-spacing-md: 16px; --s2a-spacing-lg: 24px;
+      --s2a-spacing-xl: 32px; --s2a-spacing-2xl: 40px;
+      --s2a-spacing-3xl: 48px; --s2a-spacing-4xl: 64px;
+      --s2a-spacing-5xl: 80px; --s2a-spacing-6xl: 96px;
+      --s2a-layout-lg: 124px;
+
+      --s2a-border-radius-sm: 8px;  --s2a-border-radius-md: 16px;
+      --s2a-border-radius-lg: 32px; --s2a-border-radius-999: 999px;
+
+      --s2a-duration-fast: 200ms; --s2a-duration-base: 400ms;
+      --s2a-easing-default: cubic-bezier(0.42, 0, 0, 1);
+
+      --grid-margin-sm: 24px;
+      --grid-margin-md: 8.333vw;
+    }
+
+    /* Container + buttons + type utilities */
+    .container { width: 100%; padding-inline: var(--grid-margin-sm); }
+    @media (min-width: 768px) { .container { padding-inline: var(--grid-margin-md); } }
+    @media (min-width: 1441px) { .container { max-width: 1920px; margin-inline: auto; } }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      height: 48px; width: fit-content; padding: 0 24px;
+      border-radius: 75px;
+      font-family: var(--font-body); font-size: 14px; font-weight: 700; line-height: 18px;
+      border: 1.5px solid transparent; text-decoration: none;
+      transition: background var(--s2a-duration-fast), border-color var(--s2a-duration-fast), color var(--s2a-duration-fast);
+      white-space: nowrap; cursor: pointer;
+    }
+    .btn--primary { background: #000; color: #fff; border-color: #000; }
+    .btn--primary:hover { background: #1f1f1f; }
+    .btn--solid-white { background: #fff; color: #000; border-color: #fff; }
+    .btn--solid-white:hover { background: #e8e8e8; }
+    .btn--outline { background: transparent; color: #000; border-color: #000; }
+    .btn--outline:hover { background: rgba(0,0,0,0.04); }
+    .btn--ghost-white { background: transparent; color: #fff; border-color: #fff; backdrop-filter: blur(16px); }
+    .btn--ghost-white:hover { background: rgba(255,255,255,0.08); }
+
+    .title-2 {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(32px, 4.375vw, 56px); line-height: 1.0;
+      letter-spacing: clamp(-0.8px, -0.13vw, -1.68px);
+    }
+    .body-md {
+      font-family: var(--font-body); font-weight: 400;
+      font-size: 16px; line-height: 20px; letter-spacing: 0.16px;
+      max-width: 80ch;
+    }
+    .anim-enter { opacity: 0; transform: translateY(40px); will-change: opacity, transform; }
+
+    /* gnav — Get-started CTA matches signin height (40px) */
+    .gnav-cta {
+      display: inline-flex; align-items: center; height: 40px;
+      padding: 0 20px; background: #fff; color: #000;
+      border-radius: 999px;
+      font-family: var(--font-body); font-size: 14px; font-weight: 700;
+      line-height: 18px; text-decoration: none;
+      transition: background 0.2s ease; margin-left: 4px;
+    }
+    .gnav-cta:hover { background: #e8e8e8; }
+    .gnav-subbrand {
+      font-family: var(--font-body); font-size: 16px; font-weight: 700;
+      color: #fff; letter-spacing: -0.01em;
+      padding-left: 8px; margin-left: 4px;
+      border-left: 1px solid rgba(255,255,255,0.24);
+      align-self: center; line-height: 18px; white-space: nowrap;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    #gnav.gnav--scrolled .gnav-subbrand {
+      color: #1a1a1a;
+      border-left-color: rgba(0,0,0,0.16);
+    }
+    @media (max-width: 767px) { .gnav-subbrand { display: none; } }
+
+    /* ═══════════════════════════════════════════════════════════════
+       HERO — composed from tokens (per S22 / option 3 from AEM Sites).
+       Two-column: title/body/CTAs left, UI mockup right. Dark surface.
+       ═══════════════════════════════════════════════════════════════ */
+    .llm-hero {
+      position: relative;
+      background:
+        radial-gradient(ellipse 60% 90% at 0% 50%, rgba(139,104,232,0.30), transparent 60%),
+        radial-gradient(ellipse 60% 90% at 100% 50%, rgba(254,54,0,0.14), transparent 60%),
+        #0c0820;
+      color: #fff;
+      padding: 120px var(--grid-margin-md, 8.333vw) 96px;
+    }
+    @media (max-width: 1023px) { .llm-hero { padding-inline: var(--grid-margin-sm); } }
+    .llm-hero__grid {
+      display: grid; grid-template-columns: 1fr 1.1fr;
+      gap: 64px; align-items: center;
+      max-width: 1920px; margin-inline: auto;
+    }
+    @media (max-width: 1023px) {
+      .llm-hero__grid { grid-template-columns: 1fr; gap: 48px; }
+    }
+    .llm-hero__copy { display: flex; flex-direction: column; align-items: flex-start; gap: 24px; }
+    .llm-hero__eyebrow {
+      font-family: var(--font-body); font-weight: 700;
+      font-size: 14px; letter-spacing: 0.08em; text-transform: uppercase;
+      color: rgba(255,255,255,0.65);
+    }
+    .llm-hero__title {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(44px, 5vw, 72px);
+      line-height: 1.0; letter-spacing: -0.03em;
+      max-width: 18ch;
+    }
+    .llm-hero__body {
+      font-family: var(--font-body); font-weight: 400;
+      font-size: 18px; line-height: 1.4;
+      color: rgba(255,255,255,0.78);
+      max-width: 56ch;
+    }
+    .llm-hero__ctas { display: inline-flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+    .llm-hero__media {
+      position: relative;
+      aspect-ratio: 16 / 11;
+      border-radius: 24px;
+      overflow: hidden;
+      background: linear-gradient(160deg, #1a0e3a 0%, #0c0820 100%);
+    }
+    .llm-hero__bg {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+      border-radius: inherit;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       SEMRUSH PROMO BAND — large gradient panel with announcement
+       (different from home page's chip/pill version: full-width,
+       centered, single CTA, larger band)
+       content_json.sections.semrush_announcement
+       ═══════════════════════════════════════════════════════════════ */
+    .semrush-promo {
+      background:
+        radial-gradient(ellipse 60% 90% at 0% 50%, rgba(139,104,232,0.55), transparent 60%),
+        radial-gradient(ellipse 60% 90% at 100% 50%, rgba(254,54,0,0.30), transparent 60%),
+        #1d0e3d;
+      color: #fff;
+      padding-block: var(--s2a-spacing-5xl);
+      text-align: center;
+    }
+    .semrush-promo__inner {
+      max-width: 720px; margin-inline: auto;
+      padding-inline: var(--grid-margin-sm);
+    }
+    .semrush-promo__head {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(24px, 2.5vw, 32px); line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+    .semrush-promo__sub {
+      font-family: var(--font-body); font-weight: 400;
+      font-size: 16px; line-height: 1.4;
+      color: rgba(255,255,255,0.78);
+      margin-bottom: 24px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       SECTION INTRO — centered headline above split-content rows
+       ═══════════════════════════════════════════════════════════════ */
+    .llm-intro {
+      background: #fff;
+      padding-top: var(--s2a-spacing-6xl);
+      padding-bottom: var(--s2a-spacing-3xl);
+    }
+    .llm-intro__inner {
+      max-width: 880px; margin: 0 auto;
+      text-align: center; padding-inline: var(--grid-margin-sm);
+    }
+    .llm-intro__title {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(28px, 3.5vw, 44px); line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: #1a1a1a;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       STATS GRID — 3 stat cards on light blue surface
+       (page-local; candidate for promotion to a stats-grid module)
+       content_json.sections.stats
+       ═══════════════════════════════════════════════════════════════ */
+    .llm-stats {
+      background: #d6e8f0;
+      padding-block: var(--s2a-spacing-6xl);
+    }
+    .llm-stats__header {
+      max-width: 720px; margin: 0 auto 64px;
+      text-align: center; padding-inline: var(--grid-margin-sm);
+    }
+    .llm-stats__title {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(28px, 3.5vw, 44px); line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: #1a1a1a;
+    }
+    .llm-stats__grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      max-width: 1200px; margin: 0 auto;
+      padding-inline: var(--grid-margin-md, 8.333vw);
+    }
+    @media (max-width: 1023px) { .llm-stats__grid { grid-template-columns: 1fr; gap: 40px; padding-inline: var(--grid-margin-sm); } }
+    .llm-stat { text-align: center; }
+    .llm-stat__num {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(48px, 5vw, 72px); line-height: 1;
+      letter-spacing: -0.03em; color: #1a1a1a;
+      margin-bottom: 16px;
+    }
+    .llm-stat__body {
+      font-family: var(--font-body); font-weight: 400;
+      font-size: 15px; line-height: 1.5;
+      color: rgba(0,0,0,0.78);
+      max-width: 32ch; margin: 0 auto 12px;
+    }
+    .llm-stat__source {
+      font-family: var(--font-body); font-weight: 700;
+      font-size: 13px;
+      color: #1a1a1a;
+      text-decoration: underline;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       TRAINING CTA — single panel + headline + CTA
+       (page-local; could be a simple-cta-card module later)
+       content_json.sections.training_cta
+       ═══════════════════════════════════════════════════════════════ */
+    .training-cta {
+      background: #f8f8f8;
+      padding-block: var(--s2a-spacing-5xl);
+    }
+    .training-cta__inner {
+      max-width: 720px; margin: 0 auto;
+      text-align: center; padding-inline: var(--grid-margin-sm);
+    }
+    .training-cta__title {
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(24px, 2.8vw, 36px); line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: #1a1a1a;
+      margin-bottom: 24px;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       FINAL CTA — portrait variant (lifted from home final-cta;
+       candidate for promotion to a portrait-cta module)
+       content_json.sections.final_cta
+       ═══════════════════════════════════════════════════════════════ */
+    .llm-final-cta {
+      position: relative;
+      background: #000;
+      padding-block: var(--s2a-spacing-6xl);
+    }
+    .llm-final-cta__grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 64px; align-items: center;
+      max-width: 1280px; margin: 0 auto;
+      padding-inline: var(--grid-margin-md, 8.333vw);
+    }
+    @media (max-width: 1023px) {
+      .llm-final-cta__grid { grid-template-columns: 1fr; gap: 32px; padding-inline: var(--grid-margin-sm); }
+    }
+    .llm-final-cta__title {
+      color: #fff;
+      font-family: var(--font-display); font-weight: 900;
+      font-size: clamp(32px, 3.5vw, 48px); line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+      max-width: 18ch;
+    }
+    .llm-final-cta__media {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      border-radius: 16px;
+      overflow: hidden;
+      background: linear-gradient(160deg, #2a3548 0%, #18202c 100%);
+    }
+    .llm-final-cta__bg {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       FOOTER — verbatim from home page (per content.json _inherits_from)
+       ═══════════════════════════════════════════════════════════════ */
+    .footer { position: relative; background: #000; }
+    .footer__main {
+      display: flex; flex-direction: column;
+      gap: var(--s2a-spacing-2xl);
+      padding: 64px var(--grid-margin-sm) 0;
+    }
+    @media (min-width: 768px) { .footer__main { padding-inline: var(--s2a-layout-lg); } }
+    .footer__cols {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 32px 20px;
+    }
+    @media (min-width: 900px) {
+      .footer__cols { grid-template-columns: repeat(6, 1fr); gap: 0 var(--s2a-spacing-xs); }
+    }
+    .footer__col { display: flex; flex-direction: column; gap: var(--s2a-spacing-lg); }
+    .footer__col-title {
+      font-family: var(--font-body); font-weight: 700; color: #fff;
+      font-size: 16px; line-height: 20px; letter-spacing: -0.2px;
+    }
+    .footer__col ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--s2a-spacing-xs); }
+    .footer__col ul li a {
+      font-family: var(--font-body); font-size: 16px; font-weight: 400;
+      color: rgba(255,255,255,0.64); line-height: 20px; letter-spacing: 0.16px;
+    }
+    .footer__col ul li a:hover { color: rgba(255,255,255,0.9); }
+    .footer__bottom {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+      padding-block: 32px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      margin-top: 48px;
+    }
+    .footer__legal { display: flex; align-items: center; gap: 32px; flex-wrap: wrap; }
+    .footer__legal-item {
+      font-family: var(--font-body);
+      font-size: 12px; font-weight: 700;
+      color: rgba(255,255,255,0.64);
+      letter-spacing: 0.04em;
+    }
+    .footer__legal-item a { color: rgba(255,255,255,0.64); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      .anim-enter { opacity: 1 !important; transform: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- GNAV — module from gnav.md, product-page nav-links content -->
+  <header id="gnav">
+    <div class="gnav-inner">
+      <div class="gnav-left">
+        <img src="../runtime/assets/adobe-logo.svg"       alt="Adobe" class="gnav-logo">
+        <img src="../runtime/assets/adobe-logo-black.svg" alt="Adobe" class="gnav-logo-black">
+        <span class="gnav-subbrand">for Business</span>
+        <div class="gnav-logo-sm-wrap" aria-hidden="true">
+          <img src="../runtime/assets/adobe-logo-sm.svg"       alt="" class="gnav-logo-sm">
+          <img src="../runtime/assets/adobe-logo-sm-black.svg" alt="" class="gnav-logo-sm-black">
+        </div>
+        <button id="mobileNavToggle" class="gnav-hamburger" aria-label="Open menu" aria-expanded="false">
+          <span></span><span></span>
+        </button>
+        <nav class="gnav-links">
+          <a href="#" class="gnav-link" id="gnavProducts">Main Menu <span class="gnav-chevron"><svg width="8" height="5" viewBox="0 0 8 5" fill="none" aria-hidden="true"><path d="M1 1L4 4L7 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+          <a href="#" class="gnav-link">LLM Optimizer</a>
+          <a href="#" class="gnav-link">Features</a>
+          <a href="#" class="gnav-link">Resources</a>
+          <a href="#" class="gnav-link">Pricing</a>
+        </nav>
+      </div>
+      <div class="gnav-right">
+        <button class="gnav-apps" aria-label="Apps">
+          <img src="../runtime/assets/icons/S2_Icon_AppsAll_20_N.svg" alt="">
+        </button>
+        <a href="#" class="gnav-cta">Get started</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO — content_json.sections.hero -->
+  <section class="llm-hero">
+    <div class="llm-hero__grid">
+      <div class="llm-hero__copy">
+        <p class="llm-hero__eyebrow">ADOBE LLM OPTIMIZER</p>
+        <h1 class="llm-hero__title">Drive brand authority in AI search and discovery.</h1>
+        <p class="llm-hero__body">Stop speculating and optimize for AI search with clear direction. With Adobe LLM Optimizer, now infused with unmatched data from Semrush, enterprises can drive measurable visibility, qualified traffic, and influence at every stage of the customer journey.</p>
+        <div class="llm-hero__ctas">
+          <a href="#" class="btn btn--solid-white">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M3 1.5l9 5.5-9 5.5z"/></svg>
+            Watch overview
+          </a>
+          <a href="#" class="btn btn--ghost-white">Take a tour</a>
+        </div>
+      </div>
+      <div class="llm-hero__media" aria-hidden="true">
+        <img src="llm-optimizer/assets/scraped/img-001-hero-or-1.png" alt="" width="720" height="518" class="llm-hero__bg">
+      </div>
+    </div>
+  </section>
+
+  <!-- WEBINAR PROMO — module: rainbow-strip
+       content_json.sections.webinar_promo -->
+  <section class="rainbow-strip">
+    <p class="rainbow-strip__msg">Stay ahead as AI transforms brand visibility. Join our webinar to learn how.</p>
+    <a href="#" class="rainbow-strip__cta">Register now</a>
+  </section>
+
+  <!-- SEMRUSH PROMO BAND — content_json.sections.semrush_announcement -->
+  <section class="semrush-promo">
+    <div class="semrush-promo__inner">
+      <h2 class="semrush-promo__head">Adobe completes the acquisition of Semrush.</h2>
+      <p class="semrush-promo__sub">Access the world's most powerful data for AI search optimization.</p>
+      <a href="#" class="btn btn--ghost-white">Learn more</a>
+    </div>
+  </section>
+
+  <!-- INTRO — content_json.sections.section_intro -->
+  <section class="llm-intro">
+    <div class="llm-intro__inner anim-enter">
+      <h2 class="llm-intro__title">Ensure visibility across LLMs and generative AI engines with Adobe LLM Optimizer &mdash; enhanced with industry leading data from Semrush.</h2>
+    </div>
+  </section>
+
+  <!-- SPLIT-CONTENT — module: split-content (NEW)
+       content_json.sections.split_content -->
+  <section class="split-content">
+    <div class="split-content__inner">
+
+      <article class="split-content__row anim-enter" data-image-side="left">
+        <div class="split-content__media">
+          <img src="llm-optimizer/assets/scraped/split-1-own-presence.png" alt="" width="2000" height="1500">
+        </div>
+        <div class="split-content__copy">
+          <h3 class="split-content__title">Own your presence within AI search and discovery.</h3>
+          <p class="split-content__body">Ensure your brand, products, and content are visible and credible as customers turn to AI to make decisions.</p>
+          <ul class="split-content__bullets">
+            <li class="split-content__bullet">Access an insights-backed database from Semrush, with millions of prompts informed by Google, ChatGPT, and other AI platform clickstream data.</li>
+            <li class="split-content__bullet">Understand if, how, and where your brand and content are showing up in AI search results.</li>
+            <li class="split-content__bullet">Track your AI search share-of-voice and AI-driven citations against competitors as well as industry benchmarks to identify gaps.</li>
+            <li class="split-content__bullet">Detect potential inaccuracies or hallucinations in AI answers that may be impacting brand perception and trust.</li>
+          </ul>
+          <a href="#" class="split-content__cta">Learn more</a>
+        </div>
+      </article>
+
+      <article class="split-content__row anim-enter" data-image-side="right">
+        <div class="split-content__media">
+          <img src="llm-optimizer/assets/scraped/split-2-optimize-deploy.png" alt="" width="1000" height="750">
+        </div>
+        <div class="split-content__copy">
+          <h3 class="split-content__title">Optimize and deploy content for increased AI search performance.</h3>
+          <p class="split-content__body">Move from insight to action with prescriptive recommendations, one-click implementation, and enterprise-ready integrations.</p>
+          <ul class="split-content__bullets">
+            <li class="split-content__bullet">Automatically get actionable suggestions for fixing technical issues and building relevance around key topics to boost site and product visibility.</li>
+            <li class="split-content__bullet">Identify what content AI agents can't read and seamlessly deploy optimizations with a single click.</li>
+            <li class="split-content__bullet">Analyze brand presence on third-party social and community platforms, then get suggested actions to improve visibility in those sources.</li>
+            <li class="split-content__bullet">Securely integrate into enterprise ecosystems using standards such as Agent2Agent (A2A) and Model Context Protocol (MCP).</li>
+          </ul>
+          <a href="#" class="split-content__cta">Learn more</a>
+        </div>
+      </article>
+
+      <article class="split-content__row anim-enter" data-image-side="left">
+        <div class="split-content__media">
+          <img src="llm-optimizer/assets/scraped/split-3-connect-traffic.png" alt="" width="1000" height="750">
+        </div>
+        <div class="split-content__copy">
+          <h3 class="split-content__title">Connect AI-driven traffic to measurable growth.</h3>
+          <p class="split-content__body">Quantify the total business impact of your brand's presence across AI channels and chatbots.</p>
+          <ul class="split-content__bullets">
+            <li class="split-content__bullet">Map AI-driven visibility to user behavior and business performance to enable teams to demonstrate impact across engagement, conversion, and downstream traffic metrics.</li>
+            <li class="split-content__bullet">Out-of-the-box reporting allows teams to quickly share insights with internal stakeholders and leadership &mdash; making it easy to communicate business impact.</li>
+            <li class="split-content__bullet">Collaborate on optimization tasks and track the status of identified opportunities within a central hub.</li>
+            <li class="split-content__bullet">Projected traffic value in dollars helps teams prioritize the optimizations that drive the greatest increase in visibility across AI-powered search.</li>
+          </ul>
+          <a href="#" class="split-content__cta">Learn more</a>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- STATS — content_json.sections.stats -->
+  <section class="llm-stats">
+    <div class="llm-stats__header anim-enter">
+      <h2 class="llm-stats__title">Why an AI search and discovery strategy is critical.</h2>
+    </div>
+    <div class="llm-stats__grid">
+      <div class="llm-stat anim-enter">
+        <p class="llm-stat__num">50%+</p>
+        <p class="llm-stat__body">decrease in brands' organic search traffic by 2028 as consumers embrace generative AI-powered search.</p>
+        <a href="https://www.gartner.com/en/newsroom/press-releases" class="llm-stat__source">According to Gartner</a>
+      </div>
+      <div class="llm-stat anim-enter">
+        <p class="llm-stat__num">80%</p>
+        <p class="llm-stat__body">of consumers now rely on AI-written results for at least 40% of their searches, reducing organic web traffic by 15 to 25%.</p>
+        <a href="#" class="llm-stat__source">According to Bain &amp; Company</a>
+      </div>
+      <div class="llm-stat anim-enter">
+        <p class="llm-stat__num">4700%</p>
+        <p class="llm-stat__body">rise in generative AI-powered shopping traffic to U.S. retail sites.</p>
+        <a href="#" class="llm-stat__source">According to ADI research</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTEGRATIONS — module: acrobat-feature-3up (teal surface, 2 cards)
+       content_json.sections.integrations -->
+  <section class="acrobat-feature acrobat-feature--teal">
+    <div class="container">
+      <div class="acrobat-feature__header anim-enter">
+        <h2 class="title-2 acrobat-feature__title">Unlock more with Adobe integrations.</h2>
+        <p class="body-md acrobat-feature__body">Connect Adobe products to create and deliver timely, tailored experiences for every customer.</p>
+      </div>
+
+      <div class="acrobat-cards" style="grid-template-columns: repeat(2, 1fr); max-width: 1000px; margin-inline: auto;">
+
+        <div class="acrobat-card anim-enter">
+          <div class="acrobat-card__asset">
+            <img src="llm-optimizer/assets/scraped/img-asset-grid.png" alt="" width="1000" height="750">
+          </div>
+          <div class="acrobat-card__copy">
+            <div class="acrobat-card__text">
+              <p class="acrobat-card__title">Accelerate commerce growth with LLM Optimization.</p>
+              <p class="acrobat-card__body">Ensure your products, content, and commerce experiences are preferred by large language models and AI-powered discovery tools. Adapt your brand to the AI era and increase your traffic and conversions.</p>
+            </div>
+            <a href="#" class="acrobat-cta">
+              Learn more about Adobe Commerce
+              <svg viewBox="0 0 6 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 1L5 6L1 11"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="acrobat-card anim-enter">
+          <div class="acrobat-card__asset">
+            <img src="llm-optimizer/assets/scraped/img-002.png" alt="" width="1536" height="520">
+          </div>
+          <div class="acrobat-card__copy">
+            <div class="acrobat-card__text">
+              <p class="acrobat-card__title">Measure brand impact with Adobe Customer Journey Analytics and AI Analytics.</p>
+              <p class="acrobat-card__body">Surface broader analytics data inside LLM Optimizer and understand how AI referral traffic connects to business outcomes, such as engagement and conversions.</p>
+            </div>
+            <a href="#" class="acrobat-cta">
+              Learn more about Customer Journey Analytics
+              <svg viewBox="0 0 6 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 1L5 6L1 11"/></svg>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- RESOURCES — page-local 6-up grid (candidate for resource-grid module promotion)
+       content_json.sections.resources -->
+  <section style="background: #fff; padding-block: var(--s2a-spacing-6xl);">
+    <div style="text-align: center; margin-bottom: 48px;">
+      <h2 class="title-2" style="color: #1a1a1a;">Learn more about Adobe LLM Optimizer and AI-driven search.</h2>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-width: 1200px; margin: 0 auto; padding-inline: var(--grid-margin-md, 8.333vw);">
+      <a href="#" class="resource-card" style="display: flex; flex-direction: column; gap: 10px; padding: 24px; background: #f8f8f8; border-radius: 16px; min-height: 160px; text-decoration: none;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.6" aria-hidden="true"><path d="M5 4h11l3 3v13H5z"/><path d="M16 4v3h3"/></svg>
+        <p style="font-family: var(--font-body); font-weight: 700; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(0,0,0,0.55);">Blog</p>
+        <p style="font-family: var(--font-body); font-weight: 700; font-size: 15px; line-height: 1.35; color: #1a1a1a; flex: 1;">Control your brand narrative in the agentic web.</p>
+      </a>
+      <a href="#" class="resource-card" style="display: flex; flex-direction: column; gap: 10px; padding: 24px; background: #f8f8f8; border-radius: 16px; min-height: 160px; text-decoration: none;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.6" aria-hidden="true"><path d="M5 4h11l3 3v13H5z"/><path d="M16 4v3h3"/></svg>
+        <p style="font-family: var(--font-body); font-weight: 700; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(0,0,0,0.55);">Blog</p>
+        <p style="font-family: var(--font-body); font-weight: 700; font-size: 15px; line-height: 1.35; color: #1a1a1a; flex: 1;">Boost brand discovery with Adobe LLM Optimizer.</p>
+      </a>
+      <a href="#" class="resource-card" style="display: flex; flex-direction: column; gap: 10px; padding: 24px; background: #f8f8f8; border-radius: 16px; min-height: 160px; text-decoration: none;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.6" aria-hidden="true"><path d="M5 4h11l3 3v13H5z"/><path d="M16 4v3h3"/></svg>
+        <p style="font-family: var(--font-body); font-weight: 700; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(0,0,0,0.55);">Blog</p>
+        <p style="font-family: var(--font-body); font-weight: 700; font-size: 15px; line-height: 1.35; color: #1a1a1a; flex: 1;">The explosive rise of generative AI referral traffic.</p>
+      </a>
+      <a href="#" class="resource-card" style="display: flex; flex-direction: column; gap: 10px; padding: 24px; background: #f8f8f8; border-radius: 16px; min-height: 160px; text-decoration: none;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.6" aria-hidden="true"><path d="M5 4h11l3 3v13H5z"/><path d="M16 4v3h3"/></svg>
+        <p style="font-family: var(--font-body); font-weight: 700; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(0,0,0,0.55);">Blog</p>
+        <p style="font-family: var(--font-body); font-weight: 700; font-size: 15px; line-height: 1.35; color: #1a1a1a; flex: 1;">Brand trust in the age of AI search.</p>
+      </a>
+      <a href="#" class="resource-card" style="display: flex; flex-direction: column; gap: 10px; padding: 24px; background: #f8f8f8; border-radius: 16px; min-height: 160px; text-decoration: none;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.6" aria-hidden="true"><path d="M5 4h11l3 3v13H5z"/><path d="M16 4v3h3"/></svg>
+        <p style="font-family: var(--font-body); font-weight: 700; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(0,0,0,0.55);">Blog</p>
+        <p style="font-family: var(--font-body); font-weight: 700; font-size: 15px; line-height: 1.35; color: #1a1a1a; flex: 1;">Three ways to ensure AI search success as a brand.</p>
+      </a>
+      <a href="#" class="resource-card" style="display: flex; flex-direction: column; gap: 10px; padding: 24px; background: #f8f8f8; border-radius: 16px; min-height: 160px; text-decoration: none;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="1.6" aria-hidden="true"><rect x="3" y="6" width="14" height="10" rx="1.5"/><path d="M21 9l-4 3 4 3z"/></svg>
+        <p style="font-family: var(--font-body); font-weight: 700; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(0,0,0,0.55);">Webinar</p>
+        <p style="font-family: var(--font-body); font-weight: 700; font-size: 15px; line-height: 1.35; color: #1a1a1a; flex: 1;">The new front door &mdash; why brands must optimize for AI discovery now.</p>
+      </a>
+    </div>
+  </section>
+
+  <!-- TRAINING CTA — content_json.sections.training_cta -->
+  <section class="training-cta">
+    <div class="training-cta__inner anim-enter">
+      <h2 class="training-cta__title">Turn AI vision into real business impact &ndash; get hands on AI training today.</h2>
+      <a href="#" class="btn btn--outline">Learn more</a>
+    </div>
+  </section>
+
+  <!-- FAQs — module: faq-accordion
+       content_json.sections.faqs -->
+  <section class="faq-accordion">
+    <div class="faq-accordion__inner">
+      <h2 class="faq-accordion__title">Questions? We have answers.</h2>
+
+      <ul class="faq-accordion__list">
+        <li class="faq-accordion__item">
+          <button class="faq-accordion__trigger" type="button">
+            <span>What is Adobe LLM Optimizer?</span>
+            <span class="faq-accordion__icon" aria-hidden="true"></span>
+          </button>
+          <div class="faq-accordion__panel">
+            <p class="faq-accordion__answer">Adobe LLM Optimizer is a generative AI search and discovery optimization solution that helps brands improve how their content is cited and surfaced in AI-powered search results. It provides automated insights, recommendations, and optimizations across major LLMs.</p>
+          </div>
+        </li>
+        <li class="faq-accordion__item">
+          <button class="faq-accordion__trigger" type="button">
+            <span>How does Adobe LLM Optimizer benefit from Semrush insights?</span>
+            <span class="faq-accordion__icon" aria-hidden="true"></span>
+          </button>
+          <div class="faq-accordion__panel">
+            <p class="faq-accordion__answer">Adobe LLM Optimizer and Semrush AI Optimization both address AI search visibility, but each uses a distinct data methodology to estimate LLM responses. Adobe LLM Optimizer statistically approximates LLM answers to selected prompts to help predict an AI-model's typical behavior. This model is strengthened by the clickstream data and insights-backed prompt database offered by Semrush.</p>
+          </div>
+        </li>
+        <li class="faq-accordion__item">
+          <button class="faq-accordion__trigger" type="button">
+            <span>What problem does Adobe LLM Optimizer solve?</span>
+            <span class="faq-accordion__icon" aria-hidden="true"></span>
+          </button>
+          <div class="faq-accordion__panel">
+            <p class="faq-accordion__answer">Websites are seeing decreased click-through rates and engagement as users get answers directly from AI results and generative summaries. LLM Optimizer helps brands ensure they stay visible, cited, and chosen by identifying gaps and providing recommendations to improve discoverability across major LLMs.</p>
+          </div>
+        </li>
+        <li class="faq-accordion__item">
+          <button class="faq-accordion__trigger" type="button">
+            <span>Who is Adobe LLM Optimizer for?</span>
+            <span class="faq-accordion__icon" aria-hidden="true"></span>
+          </button>
+          <div class="faq-accordion__panel">
+            <p class="faq-accordion__answer">Adobe LLM Optimizer is for digital marketing, SEO, content, web development, publishing teams, and merchandizing teams who are responsible for creating content, driving website traffic, optimizing search strategies, and managing the discoverability of brands across LLMs.</p>
+          </div>
+        </li>
+        <li class="faq-accordion__item">
+          <button class="faq-accordion__trigger" type="button">
+            <span>How does Adobe LLM Optimizer work?</span>
+            <span class="faq-accordion__icon" aria-hidden="true"></span>
+          </button>
+          <div class="faq-accordion__panel">
+            <p class="faq-accordion__answer">Adobe LLM Optimizer empowers marketers to identify opportunities to drive visibility across LLMs and proactively optimizes content. It leverages the following framework: discover, optimize, and measure.</p>
+          </div>
+        </li>
+        <li class="faq-accordion__item">
+          <button class="faq-accordion__trigger" type="button">
+            <span>What makes Adobe LLM Optimizer different from traditional SEO tools?</span>
+            <span class="faq-accordion__icon" aria-hidden="true"></span>
+          </button>
+          <div class="faq-accordion__panel">
+            <p class="faq-accordion__answer">Unlike traditional SEO or generative engine optimization (GEO) tools, Adobe LLM Optimizer goes beyond tracking mentions. It diagnoses why content isn't being cited, prescribes what to fix, deploys optimizations directly, and connects AI search visibility to business outcomes.</p>
+          </div>
+        </li>
+        <li class="faq-accordion__item">
+          <button class="faq-accordion__trigger" type="button">
+            <span>What is an LLM?</span>
+            <span class="faq-accordion__icon" aria-hidden="true"></span>
+          </button>
+          <div class="faq-accordion__panel">
+            <p class="faq-accordion__answer">A large language model (LLM) is an advanced type of AI trained on massive datasets of text to understand and generate human-like language. LLMs power conversational interfaces, AI search, and content generation across enterprise and consumer applications.</p>
+          </div>
+        </li>
+        <li class="faq-accordion__item">
+          <button class="faq-accordion__trigger" type="button">
+            <span>What are examples of LLMs used in marketing and search?</span>
+            <span class="faq-accordion__icon" aria-hidden="true"></span>
+          </button>
+          <div class="faq-accordion__panel">
+            <p class="faq-accordion__answer">Some widely used LLMs in enterprise marketing and discovery include OpenAI's ChatGPT, Google's Gemini, Anthropic's Claude, Meta's Llama, and Perplexity. Each has distinct capabilities and citation patterns that Adobe LLM Optimizer tracks and optimizes for.</p>
+          </div>
+        </li>
+        <li class="faq-accordion__item">
+          <button class="faq-accordion__trigger" type="button">
+            <span>How are LLMs different from general AI?</span>
+            <span class="faq-accordion__icon" aria-hidden="true"></span>
+          </button>
+          <div class="faq-accordion__panel">
+            <p class="faq-accordion__answer">LLMs are a subset of artificial intelligence, focused specifically on language understanding and generation. While general AI may include vision, robotics, and decision systems, LLMs specialize in interpreting and producing text &mdash; which is why they sit at the heart of conversational search and content discovery.</p>
+          </div>
+        </li>
+        <li class="faq-accordion__item">
+          <button class="faq-accordion__trigger" type="button">
+            <span>Why do LLMs matter for digital marketers and content teams?</span>
+            <span class="faq-accordion__icon" aria-hidden="true"></span>
+          </button>
+          <div class="faq-accordion__panel">
+            <p class="faq-accordion__answer">LLMs are redefining how users search and discover content. Instead of clicking through links, users increasingly rely on AI-generated answers &mdash; meaning brand visibility, accuracy, and citation across LLMs is now a primary marketing channel.</p>
+          </div>
+        </li>
+        <li class="faq-accordion__item">
+          <button class="faq-accordion__trigger" type="button">
+            <span>Can I use Adobe LLM Optimizer with my commerce solution?</span>
+            <span class="faq-accordion__icon" aria-hidden="true"></span>
+          </button>
+          <div class="faq-accordion__panel">
+            <p class="faq-accordion__answer">Yes. Adobe LLM Optimizer is designed to work alongside your existing commerce solution, including Adobe Commerce and other major commerce platforms, to ensure your products and product content are visible across AI-powered shopping channels.</p>
+          </div>
+        </li>
+        <li class="faq-accordion__item">
+          <button class="faq-accordion__trigger" type="button">
+            <span>Does Adobe LLM Optimizer measure traffic from LLMs?</span>
+            <span class="faq-accordion__icon" aria-hidden="true"></span>
+          </button>
+          <div class="faq-accordion__panel">
+            <p class="faq-accordion__answer">Yes. It provides visibility into traffic and engagement originating from AI assistants, agentic browsers, and generative search experiences &mdash; connecting those signals to downstream business outcomes when integrated with Adobe Customer Journey Analytics.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- FINAL CTA — content_json.sections.final_cta -->
+  <section class="llm-final-cta">
+    <div class="llm-final-cta__grid">
+      <div class="anim-enter">
+        <h2 class="llm-final-cta__title">Let's talk about what Adobe LLM Optimizer can do for your business.</h2>
+        <a href="#" class="btn btn--solid-white">Get started</a>
+      </div>
+      <div class="llm-final-cta__media anim-enter">
+        <img src="llm-optimizer/assets/scraped/final-cta-portrait.png" alt="" class="llm-final-cta__bg">
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER — _inherits_from home page -->
+  <footer class="footer">
+    <div class="footer__main">
+      <div class="footer__cols">
+        <div class="footer__col">
+          <div class="footer__col-title">Contact us</div>
+          <ul><li><a href="#">Request a demo</a></li></ul>
+          <div class="footer__col-title" style="margin-top:24px">Our solutions</div>
+          <ul>
+            <li><a href="#">Customer engagement</a></li>
+            <li><a href="#">Content supply chain</a></li>
+            <li><a href="#">Brand visibility</a></li>
+            <li><a href="#">B2B CX orchestration</a></li>
+            <li><a href="#">AI for business</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <div class="footer__col-title">Large &amp; medium<br>business</div>
+          <ul>
+            <li><a href="#">Explore products</a></li>
+            <li><a href="#">Adobe Analytics</a></li>
+            <li><a href="#">Adobe Express</a></li>
+            <li><a href="#">Acrobat Sign</a></li>
+            <li><a href="#">Brand intelligence</a></li>
+            <li><a href="#">GenStudio</a></li>
+            <li><a href="#">Real-Time CDP</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <div class="footer__col-title">Individuals &amp;<br>small business</div>
+          <ul>
+            <li><a href="#">Explore all products</a></li>
+            <li><a href="#">Adobe Express</a></li>
+            <li><a href="#">Adobe Firefly</a></li>
+            <li><a href="#">Creative Cloud</a></li>
+            <li><a href="#">Photoshop</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <div class="footer__col-title">Resources &amp;<br>support</div>
+          <ul>
+            <li><a href="#">Resource center</a></li>
+            <li><a href="#">Customer success stories</a></li>
+            <li><a href="#">Adobe business blog</a></li>
+            <li><a href="#">Customer support</a></li>
+            <li><a href="#">Community forums</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <div class="footer__col-title">Adobe</div>
+          <ul>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Investors</a></li>
+            <li><a href="#">Newsroom</a></li>
+            <li><a href="#">Adobe for All</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <div class="footer__col-title">Region</div>
+          <ul><li><a href="#">English (US)</a></li></ul>
+        </div>
+      </div>
+
+      <div class="footer__bottom">
+        <div class="footer__legal">
+          <span class="footer__legal-item">© 2026 Adobe. All rights reserved.</span>
+          <span class="footer__legal-item"><a href="#">Privacy</a></span>
+          <span class="footer__legal-item"><a href="#">Terms of Use</a></span>
+          <span class="footer__legal-item"><a href="#">Cookie preferences</a></span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    window.__reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  </script>
+  <script src="../runtime/scripts/stagger-reveal.js"></script>
+  <script src="../runtime/scripts/faq-accordion.js"></script>
+  <script>
+    (function () {
+      var gnav = document.getElementById('gnav');
+      function update() { gnav.classList.toggle('gnav--scrolled', window.scrollY > 40); }
+      window.addEventListener('scroll', update, { passive: true });
+      update();
+    }());
+  </script>
+
+</body>
+</html>

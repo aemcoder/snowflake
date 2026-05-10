@@ -1,11 +1,8 @@
-/* eslint-disable no-underscore-dangle, no-restricted-syntax */
-/* eslint-disable no-use-before-define, no-nested-ternary */
-// Bridge runtime entry point. Style-rule disables above apply to this file only:
-//   - dunder-prefixed window/document state markers (__lenis, __reducedMotion) are
-//     intentional "internal/cached" signals;
-//   - for-of + use-before-define + nested-ternary are validated iter-04 patterns
-//     in stardust runtime hooks; refactoring is a future code-cleanup session, not
-//     bridge-promotion scope.
+/* eslint-disable no-underscore-dangle */
+// Bridge runtime entry point. The dunder prefix on window state markers
+// (__lenis, __reducedMotion) is an intentional "cached/internal" signal —
+// rule disabled at file scope. Other style-rule conflicts get surgical
+// per-line disables.
 
 import {
   buildBlock,
@@ -166,6 +163,7 @@ async function loadStardustRuntime() {
 
   // Vendor (sequential — gsap → ScrollTrigger → ScrollSmoother)
   const vendor = ['gsap.min.js', 'ScrollTrigger.min.js', 'ScrollSmoother.min.js', 'lenis.min.js'];
+  // eslint-disable-next-line no-restricted-syntax
   for (const v of vendor) {
     try {
       // eslint-disable-next-line no-await-in-loop
@@ -188,6 +186,8 @@ async function loadStardustRuntime() {
     console.error(err);
   })));
 
+  // initStardustPage is a function declaration below — hoisted, but lint is unaware.
+  // eslint-disable-next-line no-use-before-define
   initStardustPage();
 }
 
@@ -239,7 +239,11 @@ function initStardustPage() {
     if (!track || !prev || !next) return;
 
     let idx = 0;
-    const perPage = () => (window.innerWidth >= 1024 ? 3 : (window.innerWidth >= 768 ? 2 : 1));
+    const perPage = () => {
+      if (window.innerWidth >= 1024) return 3;
+      if (window.innerWidth >= 768) return 2;
+      return 1;
+    };
     const maxIdx = () => Math.max(0, track.children.length - perPage());
     const step = () => {
       const max = maxIdx();
