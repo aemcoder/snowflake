@@ -11,6 +11,9 @@ Terms used throughout this documentation, defined once here so the rest of the d
 - **Module** — one stardust section. A self-contained visual unit (hero, FAQ, footer, …) identified by a BEM-style class on a `<section>` element. The bridge unit of authoring: one module = one DA block table.
 - **Slot** — an editable content position inside a module template, marked with `data-slot="<name>"`. The decorator fills slots from cells in the DA block table at render time. Three types are handled specially: text (default), link (`<a>`), and image (`<img>`/`<picture>`). A repeating list of slots is marked with `data-slot-list="<name>"`.
 - **Canon template** — the per-module HTML fragment at `/canon/modules/<id>.html` with `data-slot` markers. Derived once from stardust output (committed to repo, not generated at build time). The template the decorator fills.
+- **Family canon** — a canon template authored with placeholder classes (`__root`, `__<suffix>`, `--<suffix>`) that serves multiple BEM prefixes via the catalog. E.g. `canon/modules/final-cta.html` is the family canon for 4 module-ids (`llm-final-cta`, `bc-final-cta`, `aem-final-cta`, `aem-forrester`). See DEC-014.
+- **Catalog** — `/canon/catalog.json`, a small data file mapping every authored `module-id` to a `{ canon, bemPrefix? }` record. The decorator fetches it once per page load and uses it to route module-ids to canons + to parameterize family canons per instance. See DEC-014.
+- **Class-prefix parameterization** — the decorator's BEM-class-rewrite pass that runs on family-canon clones: `__root` → `${prefix}`, `__<suffix>` → `${prefix}__<suffix>`, `--<suffix>` → `${prefix}--<suffix>`. Real utility classes (e.g. `btn--solid-white`) are untouched because they don't start with `__` / `--` at index 0. See DEC-014.
 - **Block** (EDS) — the unit of authored content in EDS. Authored as a `<table>` with the block name in the header row; rendered as `<div class="<block-name>">` with options as additional classes. The `stardust-module` block (under `/blocks/stardust-module/`) is the only block this bridge defines.
 - **Decorator** — the JS function that runs per block. EDS auto-loads `/blocks/<name>/<name>.js` and calls its default export. The bridge's decorator (`/blocks/stardust-module/stardust-module.js`) reads the module ID from the block's option class, fetches the canon template, fills slots from the block table.
 - **Site** — one migrated website. Has its own DA org/repo, its own GitHub repo, its own `docs/snowflake/sites/<name>/` folder. Today only `experience-manager` exists; future iterations may onboard more.
@@ -50,7 +53,10 @@ fragments/                          # site chrome — code-deployed static (DEC-
   footer.html                       # footer; loaded by /blocks/footer/footer.js at runtime
 
 canon/                              # derived module templates with [data-slot] markers
+  catalog.json                      # module-id → {canon, bemPrefix?} mapping (DEC-014)
   modules/<id>.html                 # one file per module, slots marked
+                                    # family canons use __root/__suffix/--suffix placeholders;
+                                    # single-canon modules use literal BEM classes
 
 blocks/
   stardust-module/{js,css}          # the generic decorator; one block for all modules
@@ -96,7 +102,15 @@ A single decorator handles every module. Reads:
 - single-slot rows: `[<slot-name>, <value>]`
 - list-item rows: `["item", <col1>, <col2>, ...]` — used for repeating items in a list slot
 
-Fetches `/canon/modules/<id>.html`, fills `[data-slot]` elements (preserving inline SVG icons in link slots, copying classes from picture/img slots), expands `[data-slot-list]` with one cloned item per `item` row, replaces the block content. Strips the module-id class from the EDS block + wrapper + section to prevent runtime-script class collisions.
+Resolution flow (iter-04):
+1. Fetches `/canon/catalog.json` once per page load (cached) via `loadCatalog()`.
+2. `resolveCanon(moduleId)` returns `{ canonPath, bemPrefix }`. Fall-through: when module-id isn't in catalog, `canonPath = /canon/modules/${moduleId}.html` and `bemPrefix = null`.
+3. Fetches the canon HTML, parses via `<template>` element (inert; avoids eager image loads).
+4. `applyBemPrefix(canon, bemPrefix)` rewrites placeholder classes on the cloned canon DOM if `bemPrefix` is set. Idempotent on already-prefixed classes because placeholders use exact leading `__` / `--`.
+5. Fills `[data-slot]` elements (preserving inline SVG icons in link slots, copying classes from picture/img slots), expands `[data-slot-list]` with one cloned item per `item` row.
+6. Replaces the block content with the canon clone, strips the module-id class from the EDS block + wrapper + section to prevent runtime-script class collisions.
+
+See DEC-014 for the catalog mechanism + class-prefix-parameterization design. See LEARNINGS § Catalog mechanism for the placeholder convention and family-canon decision criteria.
 
 ### `scripts/scripts.js` polyfills (dev-path only; no-ops on deployed)
 - `promoteMetadataBlock(main)` — moves the in-body `Metadata` table to `<head>` `<meta>` tags before `decorateTemplateAndTheme()` runs.

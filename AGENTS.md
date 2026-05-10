@@ -187,6 +187,18 @@ This project is a long-running R&D effort to bridge the stardust redesign skill 
 
 The full design of the learning system lives at `docs/snowflake/iterations/000-design.md`. Read it before contributing.
 
+### Batched migration (per DEC-015, adopted iter-004)
+
+When an iteration migrates multiple pages, work in **batches** of 1–3 related pages rather than all-at-once. Each batch closes with a quality gate before the next starts:
+
+- Deploy verified on `<branch>--<repo>--<org>.aem.page` (not just `localhost:3000`).
+- Pixel-diff measured (per BACKLOG § Pixel-diff campaign infrastructure).
+- PageSpeed Insights check logged.
+- Mobile/tablet viewport check.
+- LEARNINGS distilled for findings specific to the batch.
+
+This is the closing-pass discipline applied per-batch, not just per-iteration. A page is not "done" until its batch passes the gate. iter-004's retrospective concluded that attempting all-7-pages in one iteration compressed the quality gate past the point of doing it well; iter-005+ work in batches.
+
 ### Reading order when starting a new iteration
 
 1. `docs/snowflake/ARCHITECTURE.md` — current state of the bridge.
