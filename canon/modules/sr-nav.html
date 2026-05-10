@@ -1,0 +1,26 @@
+<!--
+  module:    sr-nav
+  extracted: stardust/prototypes/semrush-home.html:692-706
+  slots:     brand (text), items (list of {link}), login (link), signup (link)
+  notes:     Page singleton (only used on semrush-home). The "Semrush" wordmark
+             carries a CSS-rendered orange square via [::before], so the brand slot
+             only authors the visible text.
+             [nav.sr-nav__menu] children are list-templated — first [a] is the
+             per-item template; the decorator clones it once per "item" row to
+             produce the menu links.
+             The right-side action group has two stable slots: a plain "log in"
+             link and the primary "sign up" CTA. Their classes
+             ([btn btn--primary]) are preserved so the orange CTA styling stays.
+-->
+<header class="sr-nav">
+  <div class="sr-nav__inner">
+    <a class="sr-nav__brand" href="#" data-slot="brand">Semrush</a>
+    <nav class="sr-nav__menu" data-slot-list="items">
+      <a href="#" data-slot="link">Products</a>
+    </nav>
+    <div class="sr-nav__cta">
+      <a href="#" data-slot="login">Log in</a>
+      <a class="btn btn--primary" href="#" data-slot="signup">Sign up free</a>
+    </div>
+  </div>
+</header>

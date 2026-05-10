@@ -1,0 +1,49 @@
+<!--
+  [module: bc-hero-proto]
+  [section: bc-hero] prototype variant
+  extracted:  stardust/prototypes/products/brand-concierge.html:907-939
+              stardust/prototypes/products/brand-concierge-bolder.html:947-979
+  slots:      eyebrow (text), title (text), body (text), cta1 (link),
+              image (image), chat1 (text), chat2 (text), chat3 (text), chat4 (text)
+  notes:      Differs from canonical bc-hero by the decorative mesh layer
+              (4 blobs) and the floating chat bubbles overlaid on the portrait.
+              The h1 splits the title into <span class="word"> tokens at render
+              time via the CSS-only word-cascade animation. Authors supply the
+              full title text in the [title] slot; the runtime split keeps the
+              authoring contract identical to the non-prototype hero.
+              Decision: separate module-id (`bc-hero-proto`) so prototype pages
+              opt into this variant explicitly via DA content; the existing
+              `bc-hero` canon keeps the simpler skeleton used on the live BC
+              product page.
+              The four chat bubbles are exposed as named slots so authors can
+              tweak conversation copy; positions/colors are visual choreography
+              and not exposed.
+-->
+<section class="bc-hero" id="bc-hero">
+  <div class="bc-hero__mesh" aria-hidden="true">
+    <div class="bc-hero__blob bc-hero__blob--1"></div>
+    <div class="bc-hero__blob bc-hero__blob--2"></div>
+    <div class="bc-hero__blob bc-hero__blob--3"></div>
+    <div class="bc-hero__blob bc-hero__blob--4"></div>
+  </div>
+  <div class="bc-hero__grid">
+    <div class="bc-hero__copy">
+      <p class="bc-hero__eyebrow" data-slot="eyebrow">ADOBE BRAND CONCIERGE</p>
+      <h1 class="bc-hero__title" data-slot="title">Turn conversations into conversions.</h1>
+      <p class="bc-hero__body" data-slot="body">Transform your digital properties into immersive, conversational experiences that anticipate customer needs, guide discovery, and build trust with Brand Concierge &mdash; powered by AI.</p>
+      <div class="bc-hero__cta-wrap">
+        <a href="#" class="btn btn--solid-white" data-slot="cta1">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true"><path d="M3 1.5l9 5.5-9 5.5z"/></svg>
+          Watch overview
+        </a>
+      </div>
+    </div>
+    <div class="bc-hero__media" id="bc-hero-portrait">
+      <img src="/stardust/prototypes/products/brand-concierge/assets/scraped/hero-portrait.png" alt="" class="bc-hero__bg" data-slot="image">
+      <div class="bc-hero__chat bc-hero__chat--1" data-slot="chat1">Based on your interests, how about a morning spa retreat and sunset sailing tour?</div>
+      <div class="bc-hero__chat bc-hero__chat--2" data-slot="chat2">That sounds amazing!</div>
+      <div class="bc-hero__chat bc-hero__chat--3" data-slot="chat3">Booking confirmed</div>
+      <div class="bc-hero__chat bc-hero__chat--4" data-slot="chat4">All set! Your custom adventure is booked and ready to go.</div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,23 @@
+<!--
+  module:    sr-stats
+  extracted: stardust/prototypes/semrush-home.html:843-875
+  slots:     eyebrow (text), title (text), items (list of {value, label, body})
+  notes:     Header carries an eyebrow + h2 above the grid.
+             First [.sr-stat] is the per-item template; decorator clones per
+             item row. The big "value" string ([28B], [43T], [239M+]) is
+             rendered with the orange-gradient text effect from page CSS.
+             Source had 5 stats; the canon is N-agnostic (any item count works).
+-->
+<section class="sr-stats">
+  <div class="sr-stats__head">
+    <span class="eyebrow" data-slot="eyebrow">Stats and facts</span>
+    <h2 class="title-2" data-slot="title">The data you need to outrank the competition</h2>
+  </div>
+  <div class="sr-stats__grid" data-slot-list="items">
+    <div class="sr-stat anim-enter">
+      <div class="sr-stat__value" data-slot="value">28B</div>
+      <div class="sr-stat__label" data-slot="label">Keywords</div>
+      <p class="sr-stat__body" data-slot="body">More keywords means more ways to win.</p>
+    </div>
+  </div>
+</section>

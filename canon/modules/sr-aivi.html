@@ -1,0 +1,37 @@
+<!--
+  module:    sr-aivi
+  extracted: stardust/prototypes/semrush-home.html:878-892
+  slots:     image (img), eyebrow (text), title (text), body (text), cta (link)
+  notes:     Page singleton — structurally distinct from the existing
+             [canon/modules/split-content.html] (which is list-templated with
+             a bullets slot) and from [sr-promos] (which is list-templated
+             with a video slot). [sr-aivi] is a single split-content row,
+             so slots are top-level scalars, not list items.
+
+             FROZEN: shared [.split-content] / [.split-content__inner] /
+             [.split-content__row] / [.split-content__media] / [.split-content__copy]
+             classes from the runtime. The [.sr-aivi__media] modifier on the
+             media wrapper paints the soft purple-to-orange gradient.
+
+             [data-image-side="right"] is hard-coded (single-row layout —
+             no alternation needed).
+
+             CTA carries [btn--outline-dark] — author must reuse those
+             classes if they reset the cta cell. The [sr-promos__cta] helper
+             class is kept (the source uses it on this row to align margin).
+-->
+<section class="split-content sr-aivi">
+  <div class="split-content__inner">
+    <div class="split-content__row" data-image-side="right">
+      <div class="split-content__media sr-aivi__media">
+        <img src="" alt="" data-slot="image">
+      </div>
+      <div class="split-content__copy">
+        <span class="eyebrow" data-slot="eyebrow">AI VISIBILITY INDEX</span>
+        <h2 class="split-content__title" data-slot="title">Who's winning AI search? Find out.</h2>
+        <p class="split-content__body" data-slot="body">Explore the strategies powering today's AI search leaders and get clear steps to build your own.</p>
+        <a class="btn btn--outline-dark sr-promos__cta" href="#" data-slot="cta">Explore the index</a>
+      </div>
+    </div>
+  </div>
+</section>

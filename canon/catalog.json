@@ -10,6 +10,8 @@
     "training-cta":  { "canon": "/canon/modules/training-cta.html", "bemPrefix": "training-cta" },
     "bc-training":   { "canon": "/canon/modules/training-cta.html", "bemPrefix": "bc-training" },
 
+    "brands-strip-aem": { "canon": "/canon/modules/brands-strip-aem.html" },
+
     "_unmapped_modules": "All other module-ids (faq-accordion, bc-use-cases, hero-announce, etc.) fall back to /canon/modules/${moduleId}.html with no prefix rewrite. Add an entry here when a new module-id should redirect to a family canon or share a canon with a different name."
   }
 }

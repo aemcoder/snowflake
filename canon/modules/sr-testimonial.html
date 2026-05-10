@@ -1,0 +1,41 @@
+<!--
+  module:    sr-testimonial
+  extracted: stardust/prototypes/semrush-home.html:895-919
+  slots:     eyebrow (text), title (text), quote (text), portrait (img),
+             name (text), role (text), logo (img), metric-value (text),
+             metric-label (text)
+  notes:     Page singleton — no prior testimonial canon shares this DOM
+             (existing [canon/modules/testimonial.html] is a different shape).
+             The big quotation mark glyph ([\201C]) is a CSS [::before] on
+             [.sr-testimonial__quote] and is not authored.
+             AMBIGUITY: source uses an inline [style="color: #0E1735; margin-bottom: 4px;"]
+             on the [h2.title-3] for visual tweak — preserved verbatim so the
+             rendering matches the source. A later iteration may move this to
+             page CSS. Likewise the [.sr-testimonial__metric] anim-enter has
+             an inline transition-delay; preserved.
+-->
+<section class="sr-testimonial">
+  <div class="sr-testimonial__inner">
+    <div class="sr-testimonial__copy anim-enter">
+      <span class="eyebrow" data-slot="eyebrow">Our customers</span>
+      <h2 class="title-3" style="color: #0E1735; margin-bottom: 4px;" data-slot="title">How we help marketers win</h2>
+      <p class="sr-testimonial__quote" data-slot="quote">Semrush for Enterprise has been a game-changer for our marketing teams. It's helped us work more efficiently, cutting down on manual tasks so we can focus on what really matters — engaging with our audience and driving growth.</p>
+      <div class="sr-testimonial__byline">
+        <div class="sr-testimonial__byline-img">
+          <img src="" alt="" data-slot="portrait">
+        </div>
+        <div>
+          <div class="sr-testimonial__byline-name" data-slot="name">James Roth</div>
+          <div class="sr-testimonial__byline-role" data-slot="role">CRO at ZoomInfo</div>
+        </div>
+        <div class="sr-testimonial__byline-logo">
+          <img src="" alt="" data-slot="logo">
+        </div>
+      </div>
+    </div>
+    <div class="sr-testimonial__metric anim-enter" style="transition-delay: 120ms;">
+      <div class="sr-testimonial__metric-value" data-slot="metric-value">+373%</div>
+      <div class="sr-testimonial__metric-label" data-slot="metric-label">Increase in share of voice</div>
+    </div>
+  </div>
+</section>

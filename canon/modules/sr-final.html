@@ -1,0 +1,16 @@
+<!--
+  module:    sr-final
+  extracted: stardust/prototypes/semrush-home.html:981-985
+  slots:     title (text), body (text), cta (link)
+  notes:     Page singleton — structurally distinct from the [final-cta]
+             family (2-column grid with image background), so this is not
+             routed through [canon/modules/final-cta.html] in the catalog.
+             The shape is a flat centered [section(h2,p,a)].
+             Background is a radial-gradient stack on [.sr-final] (page CSS),
+             not an authored image.
+-->
+<section class="sr-final">
+  <h2 data-slot="title">Get started with Semrush today</h2>
+  <p data-slot="body">Try Semrush free for seven days. Cancel anytime.</p>
+  <a class="btn btn--primary" href="#" data-slot="cta">Start free trial</a>
+</section>

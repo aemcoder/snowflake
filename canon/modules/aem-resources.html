@@ -1,0 +1,30 @@
+<!--
+  [section: aem-resources]
+  source:    stardust/products/experience-manager/sites.html:1180-1238
+  slots:     title, items (list: link href + category + title + svg-icon-key)
+  foot-cta:  the "See all" link at the bottom
+  notes:     Each card has an inline SVG icon (~5 distinct paths reused
+             across 10 cards). The icon is selected by a category-key (Blog,
+             Webinar, Customer Story, Guide, Report, Component, generic).
+             For iter-04 simplicity the canon ships ONE icon path and authors
+             cannot easily swap. Per-icon authoring is BACKLOG; for now the
+             canon preserves the visible structure and the runtime CSS
+             handles per-category visual treatment.
+-->
+<section class="aem-resources">
+  <div class="aem-resources__header anim-enter">
+    <h2 class="title-2 aem-resources__title" data-slot="title">Learn more about Experience Manager Sites.</h2>
+  </div>
+
+  <div class="aem-resources__grid" data-slot-list="items">
+    <a href="#" class="aem-resource-card anim-enter" data-slot="link">
+      <svg class="aem-resource-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 4h11l3 3v13H5z"/><path d="M16 4v3h3"/></svg>
+      <p class="aem-resource-card__category" data-slot="category">Category</p>
+      <p class="aem-resource-card__title" data-slot="title">Card title</p>
+    </a>
+  </div>
+
+  <div class="aem-resources__foot anim-enter">
+    <a href="#" class="btn btn--outline" data-slot="foot-cta">See all Experience Manager Sites resources</a>
+  </div>
+</section>

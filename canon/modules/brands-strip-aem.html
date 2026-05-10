@@ -1,0 +1,28 @@
+<!--
+  [section: brands-strip] — AEM Sites variant (logo+metric per brand)
+  source:    stardust/products/experience-manager/sites.html:1106-1174
+  slots:     title, items (list: aria-label + metric), foot-cta
+  notes:     Different from afbs/index brands-strip (which is logos-only).
+             Spike-001 confirmed: the AEM Sites variant has logo+metric per
+             item, fundamentally different content model. Catalog routes
+             the module-id `brands-strip-aem` to this canon (NEW catalog
+             entry) so it doesn't collide with the existing brands-strip canon.
+             SVG logos for IBM/HanesBrands/Kyndryl are authored inline in the
+             canon as decoration; new brands require code changes (BACKLOG).
+-->
+<section class="brands-strip">
+  <h2 class="brands-strip__title" data-slot="title">Helping global brands drive business impact with personalization.</h2>
+
+  <div class="brands-strip__items" data-slot-list="items">
+    <div class="brands-strip__item anim-enter">
+      <span class="brands-strip__logo" data-slot="logo-html">
+        <!-- placeholder; default IBM-shape SVG injected as opaque block from DA cell -->
+      </span>
+      <p class="brands-strip__metric" data-slot="metric">Metric text</p>
+    </div>
+  </div>
+
+  <div class="brands-strip__foot anim-enter">
+    <a href="#" class="btn btn--outline" data-slot="foot-cta">Read more stories</a>
+  </div>
+</section>
