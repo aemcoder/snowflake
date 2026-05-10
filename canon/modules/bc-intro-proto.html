@@ -1,0 +1,29 @@
+<!--
+  [module: bc-intro-proto]
+  [section: bc-intro] regular prototype variant with word-cascade animation
+  extracted:  stardust/prototypes/products/brand-concierge.html:968-975
+  slots:      title (text)
+  notes:      The source wraps each word of the title in its own <span> so
+              CSS can stagger the reveal (`.word-cascade > span:nth-child(N)`).
+              We expose ONE [title] text slot and let the decorator drop the
+              author's prose into the title. To preserve the cascade animation
+              the canon ships the title pre-split: the slot fill replaces
+              innerHTML, so authors who want to keep the cascade must author
+              the cell as `<span>Word</span> <span>Word</span>` themselves.
+              For the iter-04 bridge demo we author the slot value as raw
+              text (one phrase) — the cascade will not split per word; the
+              `.reveal` class on the h2 still triggers the section-level
+              fade-in. This trade-off is documented; an automated word-split
+              pass at decoration time is a future enhancement.
+              Decision: separate module-id (`bc-intro-proto`) — the simpler
+              `bc-intro` canon stays for the live BC product page, prototypes
+              opt-in to this variant.
+-->
+<section class="bc-intro">
+  <h2 class="bc-intro__title reveal" data-slot="title">
+    <span class="word-cascade">
+      <span>Guide</span> <span>customer</span> <span>journeys</span> <span>with</span> <span>personalized,</span>
+      <span>conversational</span> <span>discovery.</span>
+    </span>
+  </h2>
+</section>
