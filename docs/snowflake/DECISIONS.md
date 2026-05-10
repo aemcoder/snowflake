@@ -365,4 +365,27 @@ Iterations now start from `main` with the bridge in place. They add:
 
 ---
 
+## DEC-017 — Iteration content is re-extracted from stardust source, not cargo-culted
+
+**Date:** 2026-05-10 (iter-005)
+
+**Context:** iter-004 carried `content/iter-04/{index,llm-optimizer,brand-concierge}.html` forward from `content/afbs-02/` verbatim (the three "afbs cargo-culted" pages). iter-005's first plan continued the same pattern — `cargo-cult content/iter-04/... → content/iter-05/`. The user corrected this explicitly:
+
+> "you must start from scratch, it's the whole point of that exercise, use documentation yes but do not use code/content converted in previous iterations"
+
+The point of an iteration is to **verify the bridge mechanics from a clean input**. Cargo-culting content from a prior iteration tests whether old content survives a re-deploy; it doesn't test whether the bridge can rebuild the page from canonical source. Two iterations could each look successful on their own while collectively masking a regression in the extraction/canon pipeline that only the clean rebuild would catch.
+
+**Decision:** Each conversion `iter-NNN` re-extracts its content from the canonical stardust source (`stardust/*.html`) — not from prior `content/*/` outputs. Bridge code on `main` (DEC-016) is inherited; bridge code on the iteration branch can be tweaked; **content** is always derived fresh.
+
+Mechanically, this means each conversion iteration produces an extraction tool (or extends an existing one) that takes `stardust/*.html` as input and emits `content/<iter>/*.html`. iter-005's `tools/extract-iter05-content.mjs` is the prototype; iter-006+ should consolidate to a single parameterized extractor (BACKLOG #28/#34).
+
+**Consequences:**
+- The first iter-NNN on each site pays the extractor cost; subsequent iterations on the same site can reuse + tweak.
+- A canon-driven extractor (read `[data-slot]` schema from canon, extract source values by class match) is the path of least resistance once the bridge is mature — iter-005's extractor demonstrates this design.
+- Authoring edits made in DA between iterations (e.g. content corrections by humans) need a *separate* persistence story: either round-trip back into `stardust/*.html`, or treat DA as the source-of-truth and forfeit fresh-extraction. Today we treat stardust as canonical; if that flips, DEC-017 changes.
+
+**Cross-refs:** DEC-016 (bridge on main); BACKLOG #28/#34 (extractor consolidation); LEARNINGS § Canon-driven content extraction.
+
+---
+
 *New decisions go here. Append; don't rewrite.*

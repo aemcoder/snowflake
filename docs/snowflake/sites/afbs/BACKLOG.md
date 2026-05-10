@@ -6,19 +6,33 @@ Things to do specifically for this site. For generic bridge backlog, see `docs/s
 
 ## Up next
 
-### Per-module fidelity parity to <3% per page *(added: iter-003; methodology revised: Tooling 1)*
+### Per-module fidelity parity to <3% per page *(addressed: iter-005 for bc + llm-optimizer; partially addressed for index)*
 
-Iter-003 deployed pages had full-page pixel diffs of 25–42% vs originals. The brand-concierge +298 px height delta is fully explained by canonical chrome substitution (SITE-DEC-001) and is *expected*, not a regression. The remaining diff is per-module spacing/alignment + DOM-divergence deltas accumulating down the page.
+**Status as of iter-005:**
 
-Tooling 1's HTML diff (`tools/html-diff.mjs`) measures the bridge-contract source of these deltas directly (slot fill, BEM class drift, EDS-injected attrs); see generic LEARNINGS § HTML structural diff over pixel diff. **iter-005 (Batch A)** is the focused campaign that closes the gap on these 3 afbs pages: run `node tools/html-diff.mjs --page <slug>` per page, fix per-module deltas (canon or content), re-deploy, re-diff until each page <3% drift, no module >10%.
+| page             | drift   | gate (<3%)   | blocker for index |
+|------------------|---------|--------------|-------------------|
+| brand-concierge  | 0.80 %  | ✓ PASS       | —                 |
+| llm-optimizer    | 2.69 %  | ✓ PASS       | —                 |
+| index            | 5.79 %  | ✗ above gate | needs BACKLOG #53 (`data-slot-attr`) |
 
-### Migrate body images to DA `/media` folder *(addressed: iter-003 — for new content; iter-002 content remains)*
+iter-05 bridge fixes drove brand-concierge 23× lower, llm-optimizer 9× lower, index 3× lower from the iter-04 baseline. Bridge changes:
+- `<ul>` unwrap in decorator's fillSlot (mirrors `<p>` unwrap)
+- Empty-link cell removes target (drains phantom `<a>` on split-content rows without CTAs)
+- Text replaces first non-whitespace text node in-place (preserves canon's text-icon ordering)
+- Picture-wrapper class propagation (`<picture>` AND inner `<img>`)
+- Preserve canon `<li>` class (workaround for DA stripping class on `<li>`)
+- Drop `title-2` + `__cta` from final-cta and training-cta canons (no source variant uses them)
+- html-diff normalization for runtime injections (GSAP transforms, hub-router clip-path styles, hhub-* state classes, injected card-bg siblings)
+- Index page routed to `acrobat-feature-3up` canon (variant divergence from llm-optimizer's --teal variant)
 
-iter-003 produced fresh content at `/afbs-03/` with all images at `/media/afbs/<file>` per DEC-011. Iter-002's `/afbs-02/` content **still references `https://afbs-02--…aem.page/stardust/...`** branch-locked URLs. Today the 3 pages reference body images via branch-relative URLs (`https://afbs-02--snowflake--aemcoder.aem.page/stardust/...`). This is a known shortcut from iter-002 (SITE-DEC-003).
+**Remaining index drift** is concentrated in 3 modules — brands-strip 31.3%, acrobat-feature 13.0%, product-section 8.2% — all blocked on the same bridge feature: per-item `data-slot-attr` (BACKLOG #53). Once that lands, the index page reaches <3% via canon updates + content extractor changes alone.
 
-Iter-003 research established that the canonical pattern for cross-document shared assets is the top-level `/media` folder (LEARNINGS § Image storage — three patterns), not per-document dot-folders. Dot-folders are designed for author drag-drop on a single doc; `/media` is designed for assets reused across documents — which describes our migration assets exactly. The `content.da.live/aemcoder/snowflake/media/<file>` URL is branch- and document-independent.
+### Migrate body images to DA `/media` folder *(drained: iter-005)*
 
-Approach (per DEC-011): walk each `<page>.html`, find `<img src>` references, upload each binary to `/media/afbs/<filename>` via DA Source API (PUT, multipart/form-data with field `data`, see LEARNINGS § Image upload via API), rewrite the cell to use the `content.da.live/aemcoder/snowflake/media/afbs/...` URL. Per-page work is mechanical — should be scripted (cross-ref generic BACKLOG § DA-upload helper script).
+**Status:** DRAINED for iter-005 content. 19 binaries uploaded to `/media/afbs/` per DEC-011 using `tools/migrate-images.afbs.json`. Naming pattern: `bc-` / `llm-` prefixes resolve the `final-cta-portrait.png` collision (same basename, different source dirs); index-page images keep their basename. The extractor (`tools/extract-iter05-content.mjs`) emits content with `https://content.da.live/aemcoder/snowflake/media/afbs/...` URLs directly — no separate rewrite step needed.
+
+Historical: iter-02's `/afbs-02/` and iter-03's `/afbs-03/` content still reference branch-locked URLs on their respective branches. Those iterations are frozen; this item only addresses iter-05+ content.
 
 ### Pixel-fidelity check on each page
 
