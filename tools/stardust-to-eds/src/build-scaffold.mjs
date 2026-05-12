@@ -136,9 +136,15 @@ function templatizeSection(section) {
     const blockName = inferBlockName(group.elements[0], sectionName);
 
     // Capture every instance — first one with templatization, rest read-only.
-    const instances = group.elements.map((el, i) => (
-      walkSlots(el, { templatize: i === 0 })
-    ));
+    // Also snapshot each instance's outer attributes so the runtime can
+    // restore per-instance state (e.g. one .hub-card.is-active out of five,
+    // distinct data-pillar values, individual ids) onto cloned templates.
+    const instances = group.elements.map((el, i) => {
+      const result = walkSlots(el, { templatize: i === 0 });
+      result.outerAttrs = {};
+      [...el.attributes].forEach((a) => { result.outerAttrs[a.name] = a.value; });
+      return result;
+    });
     const slots = instances[0].slots;
 
     // Build a <template> wrapping the now-templatized first instance.
@@ -157,7 +163,7 @@ function templatizeSection(section) {
       slots,
       kind: 'repeated',
       count: group.elements.length,
-      instances: instances.map((i) => i.values),
+      instances: instances.map((i) => ({ values: i.values, outerAttrs: i.outerAttrs })),
     });
   }
 
@@ -168,7 +174,7 @@ function templatizeSection(section) {
       name: sectionName,
       slots: staticResult.slots,
       kind: 'static',
-      instances: [staticResult.values],
+      instances: [{ values: staticResult.values }],
     });
   }
 

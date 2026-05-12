@@ -120,7 +120,7 @@ ${body}
 
 function renderSection(section) {
   const blocksHtml = section.blocks
-    .flatMap((block) => block.instances.map((values) => renderBlockTable(block, values)))
+    .flatMap((block) => block.instances.map((instance) => renderBlockTable(block, instance)))
     .join('\n');
   return `    <div>\n${blocksHtml}\n    </div>`;
 }
@@ -135,14 +135,25 @@ function renderSection(section) {
  *     </div>
  *     ...
  *   </div>
+ *
+ * Per-instance outer attributes (when present) are serialized as a
+ * synthetic `_outerAttrs` row carrying JSON. The runtime applies these
+ * to the cloned template's outer element so that the original
+ * per-instance state is preserved across the conversion round-trip.
  */
-function renderBlockTable(block, values) {
-  const rows = block.slots.map((slot) => {
-    const raw = values[slot.name] ?? '';
+function renderBlockTable(block, instance) {
+  const slotRows = block.slots.map((slot) => {
+    const raw = instance.values[slot.name] ?? '';
     const cell = renderSlotCell(slot, raw);
     return `      <div>\n        <div>${escapeHtml(slot.name)}</div>\n        <div>${cell}</div>\n      </div>`;
-  }).join('\n');
-  return `      <div class="${escapeAttr(block.name)}">\n${rows}\n      </div>`;
+  });
+  if (instance.outerAttrs && Object.keys(instance.outerAttrs).length > 0) {
+    const json = JSON.stringify(instance.outerAttrs);
+    slotRows.unshift(
+      `      <div>\n        <div>_outerAttrs</div>\n        <div>${escapeHtml(json)}</div>\n      </div>`,
+    );
+  }
+  return `      <div class="${escapeAttr(block.name)}">\n${slotRows.join('\n')}\n      </div>`;
 }
 
 /**

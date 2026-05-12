@@ -123,6 +123,29 @@ function fillSlots(root, values) {
   });
 }
 
+/**
+ * Restore per-instance outer attributes onto a cloned template element.
+ * The scaffold's template carries the FIRST instance's attributes; this
+ * overwrites them with each instance's captured set so per-instance state
+ * (e.g. one card carrying .is-active, distinct data-* identifiers) survives.
+ */
+function applyOuterAttrs(root, json) {
+  if (!json) return;
+  let attrs;
+  try {
+    attrs = JSON.parse(json);
+  } catch {
+    return;
+  }
+  // Remove existing attributes that aren't in the captured set
+  [...root.attributes].forEach((a) => {
+    if (!(a.name in attrs)) root.removeAttribute(a.name);
+  });
+  Object.entries(attrs).forEach(([name, value]) => {
+    root.setAttribute(name, value);
+  });
+}
+
 function substituteSlots(scaffoldMain, byName) {
   // Expand <template data-block> first (deepest-first iteration order via DOM).
   // In real browsers, <template> children live in template.content; linkedom
@@ -138,6 +161,8 @@ function substituteSlots(scaffoldMain, byName) {
     const parent = tpl.parentNode;
     instances.forEach((instance) => {
       const clone = inner.cloneNode(true);
+      // eslint-disable-next-line no-underscore-dangle
+      applyOuterAttrs(clone, instance.values._outerAttrs);
       fillSlots(clone, instance.values);
       parent.insertBefore(clone, tpl);
     });
