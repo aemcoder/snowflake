@@ -156,14 +156,15 @@ function substituteSlots(scaffoldMain, byName) {
 }
 
 function runScaffoldScripts(scripts) {
+  // Create real <script> elements so production CSP (no 'unsafe-eval') accepts
+  // them. EDS pages serve a per-request nonce on every <script>; reuse it so
+  // 'strict-dynamic' authorises our injection.
+  const nonce = document.querySelector('script[nonce]')?.nonce;
   scripts.forEach((src) => {
-    try {
-      // eslint-disable-next-line no-new-func
-      new Function(src)();
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.error('scaffold script failed', err);
-    }
+    const el = document.createElement('script');
+    if (nonce) el.nonce = nonce;
+    el.textContent = src;
+    document.body.append(el);
   });
 }
 
