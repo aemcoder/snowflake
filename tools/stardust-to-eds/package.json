@@ -1,0 +1,19 @@
+{
+  "name": "stardust-to-eds",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Convert stardust proposed/migrated HTML to an EDS+DA setup: scaffold per page in code bus, slot tables per page in DA, header/footer as static fragments.",
+  "bin": {
+    "stardust-to-eds": "./bin/cli.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node ./bin/cli.mjs"
+  },
+  "dependencies": {
+    "linkedom": "^0.18.0"
+  }
+}

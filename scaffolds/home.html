@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+/* ---- Section: gnav ---- */
+.gnav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 8px; pointer-events: none; }
+.gnav-inner { position: relative; display: flex; align-items: center; justify-content: space-between; height: 64px; padding: 0 16px; max-width: 1904px; margin: 0 auto; border-radius: var(--radius); pointer-events: auto; }
+.gnav-inner::before { content: ''; position: absolute; inset: 0; z-index: -1; border-radius: var(--radius); background: rgba(255,255,255,0.51); backdrop-filter: blur(64px); -webkit-backdrop-filter: blur(64px); opacity: 0; transition: opacity 0.35s ease; pointer-events: none; }
+.gnav.is-scrolled .gnav-inner::before { opacity: 1; }
+.gnav-left { display: flex; align-items: center; gap: 32px; height: 100%; }
+.gnav-logo { display: inline-flex; align-items: center; gap: 8px; height: 100%; color: #ffffff; transition: color 0.35s ease; }
+.gnav.is-scrolled .gnav-logo { color: var(--color-fg); }
+.gnav-logo .wordmark { font-family: var(--heading-font-family); font-weight: 900; font-size: 18px; letter-spacing: -0.02em; line-height: 1; }
+.gnav-logo .glyph { width: 22px; height: 22px; border-radius: 4px; background: var(--color-adobe-red); flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; color: #ffffff; font-size: 12px; font-weight: 900; font-family: var(--heading-font-family); }
+.gnav-links { display: flex; align-items: center; gap: 24px; }
+.gnav-links button, .gnav-links a { font-family: var(--body-font-family); font-size: 14px; font-weight: 700; color: #ffffff; text-decoration: none; padding: 4px 8px; border-radius: 8px; transition: color 0.35s ease, opacity 0.15s ease, background var(--duration-fast) ease; }
+.gnav.is-scrolled .gnav-links button, .gnav.is-scrolled .gnav-links a { color: var(--color-fg); }
+.gnav-links:has(button:hover) button, .gnav-links:has(a:hover) a { opacity: 0.65; }
+.gnav-links:has(button:hover) button:hover, .gnav-links:has(a:hover) a:hover { opacity: 1; }
+.gnav-right { display: flex; align-items: center; gap: 12px; }
+@media (max-width: 1023px) {
+  .gnav-links { display: none; }
+}
+
+/* ---- Section: hero ---- */
+.hero { position: relative; background: var(--color-bg); border-radius: 0 0 var(--radius-section-bottom) var(--radius-section-bottom); padding: 189px 0 96px; min-height: 100vh; overflow: hidden; }
+.hero-text { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 24px; text-align: center; max-width: 980px; margin: 0 auto; padding: 0 24px; }
+.hero-eyebrow { display: inline-flex; align-items: center; gap: 8px; }
+.hero-eyebrow .glyph { width: 24px; height: 24px; border-radius: 6px; background: var(--color-adobe-red); flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; color: #ffffff; font-family: var(--heading-font-family); font-weight: 900; font-size: 13px; }
+.hero-title { max-width: 16ch; color: var(--color-fg); }
+.hero-body { max-width: 48ch; color: var(--color-text-mid); }
+.hero-ctas { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.hero-ctas .btn--trial { box-shadow: 0 6px 24px rgba(59,99,251,0.18); }
+
+/* Hero mosaic — 5 cols × 3 rows */
+.hero-mosaic { position: absolute; inset: 0; z-index: 1; display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(3, 1fr); gap: 8px; padding: 96px 8.333% 24px; opacity: 0.18; pointer-events: none; }
+.hero-mosaic .tile { border-radius: var(--radius); overflow: hidden; }
+.hero-text + .hero-mosaic { z-index: 0; }
+@media (max-width: 1023px) { .hero-mosaic { display: none; } }
+
+/* ---- Section: pillar-router ---- */
+.pillar-router { padding: var(--section-padding) 0; background: var(--color-bg); }
+.section-header { display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; max-width: 760px; margin: 0 auto var(--spacing-2xl); padding: 0 24px; }
+.hub-router { display: flex; gap: 8px; max-width: 1700px; margin: 0 auto; padding: 0 24px; align-items: stretch; }
+.hub-card { flex: 1 1 291px; min-height: 480px; background: var(--color-surface-soft); border-radius: var(--radius); padding: 32px 28px; display: flex; flex-direction: column; gap: 16px; cursor: pointer; transition: flex-basis var(--duration-spring) var(--ease-spring-out), background var(--duration-spring) var(--ease-spring-out), color var(--duration-spring) var(--ease-spring-out); position: relative; overflow: hidden; }
+.hub-card.is-active { flex: 2 1 491px; background: var(--color-fg); color: #ffffff; }
+.hub-card .hub-label { font-family: var(--body-font-family); font-weight: 700; font-size: 14px; letter-spacing: 0.02em; color: var(--color-text-muted); transition: color var(--duration-spring) var(--ease-spring-out); }
+.hub-card.is-active .hub-label { color: rgba(255,255,255,0.7); }
+.hub-card .hub-tagline { color: var(--color-fg); }
+.hub-card.is-active .hub-tagline { color: #ffffff; }
+.hub-card .hub-body { color: var(--color-text-mid); margin-top: auto; max-width: 28ch; }
+.hub-card.is-active .hub-body { color: rgba(255,255,255,0.78); }
+.hub-card .hub-cta { width: 48px; height: 48px; border-radius: 50%; background: var(--color-fg); color: #ffffff; display: inline-flex; align-items: center; justify-content: center; margin-top: 8px; font-size: 22px; font-weight: 400; transition: background var(--duration-fast) ease; }
+.hub-card.is-active .hub-cta { background: #ffffff; color: var(--color-fg); }
+@media (max-width: 1023px) {
+  .hub-router { flex-direction: column; }
+  .hub-card { min-height: 220px; flex: 1 1 auto; }
+  .hub-card.is-active { flex: 1 1 auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hub-card { transition: none; }
+}
+
+/* ---- Section: secondary-pillar-grid (perks-4-up) ---- */
+.perks-grid { padding: var(--section-padding) 0; background: var(--color-bg); }
+.perks-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; max-width: 1700px; margin: 0 auto; padding: 0 24px; }
+.perk-card { background: var(--color-surface-light); border-radius: var(--radius); padding: 32px 24px; display: flex; flex-direction: column; gap: 12px; min-height: 220px; }
+.perk-card .perk-title { color: var(--color-text-deep-charcoal); }
+.perk-card .perk-body { color: var(--color-text-mid); }
+@media (max-width: 1023px) { .perks-row { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 767px)  { .perks-row { grid-template-columns: 1fr; } }
+
+/* ---- Section: editorial-bento ---- */
+.editorial-bento { padding: var(--section-padding) 0 var(--section-padding); background: var(--color-surface-soft); margin-top: calc(-1 * var(--radius-section-bottom)); position: relative; z-index: 1; }
+.editorial-bento .section-header { margin-bottom: 64px; }
+.bento-row { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 16px; max-width: 1700px; margin: 0 auto; padding: 0 24px; align-items: stretch; }
+.bento-left { position: relative; min-height: 540px; border-radius: var(--radius); overflow: hidden; background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 50%, #4a4a4a 100%); color: #ffffff; padding: 48px; display: flex; flex-direction: column; justify-content: flex-end; gap: 16px; }
+.bento-left .stat-eyebrow { font-family: var(--body-font-family); font-weight: 700; font-size: 16px; letter-spacing: -0.01em; color: rgba(255,255,255,0.7); }
+.bento-left .stat-figure-wrap, .bento-left .stat-body-wrap { color: rgba(255,255,255,0.95); max-width: 28ch; }
+.bento-right { display: flex; flex-direction: column; gap: 0; }
+.bento-right-image { background: var(--color-card-mid-gray); border-radius: var(--radius); aspect-ratio: 16 / 11; box-shadow: 0 4px 100px rgba(0,0,0,0.25); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; color: var(--color-text-mid); font-family: var(--font-mono); font-size: 12px; }
+.bento-right-image::before { content: ''; position: absolute; inset: 12%; border: 2px dashed rgba(0,0,0,0.18); border-radius: 8px; pointer-events: none; }
+.bento-right .bento-right-copy { padding: 24px 24px 0; display: flex; flex-direction: column; gap: 12px; }
+.bento-right .ai-eyebrow { color: var(--color-text-muted); font-weight: 700; font-size: 16px; letter-spacing: -0.01em; }
+.bento-right h3 { color: var(--color-fg); }
+@media (max-width: 1023px) { .bento-row { grid-template-columns: 1fr; } .bento-left { min-height: 420px; padding: 32px; } }
+
+/* ---- Section: stories-carousel ---- */
+.stories { padding: var(--section-padding) 0; background: var(--color-bg); }
+.stories-track { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(360px, 1fr); gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 0 24px 24px; -webkit-overflow-scrolling: touch; scrollbar-width: thin; max-width: 1700px; margin: 0 auto; }
+.stories-track::-webkit-scrollbar { height: 6px; }
+.stories-track::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
+.story-card { scroll-snap-align: start; background: var(--color-surface-soft); border-radius: var(--radius); padding: 32px; display: flex; flex-direction: column; gap: 20px; min-height: 360px; }
+.story-card .company-logo[data-placeholder] { aspect-ratio: auto; min-height: 56px; max-width: 140px; }
+.story-card blockquote { margin: 0; font-family: var(--body-font-family); font-size: 18px; line-height: 1.4; letter-spacing: 0; color: var(--color-text-deep-charcoal); flex-grow: 1; }
+.story-card .person-row { display: flex; flex-direction: column; gap: 4px; margin-top: auto; }
+.story-card .person-row .name { font-family: var(--body-font-family); font-weight: 700; font-size: 14px; color: var(--color-fg); }
+.story-card .person-row .role { font-family: var(--body-font-family); font-size: 13px; color: var(--color-text-mid); }
+.story-card .person-row > [data-placeholder] { min-height: 30px; }
+.stories-nav { display: flex; gap: 8px; justify-content: center; margin-top: 32px; }
+.stories-nav .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--color-border); transition: transform var(--duration-fast) ease, background var(--duration-fast) ease; cursor: pointer; }
+.stories-nav .dot.is-active { background: var(--color-fg); transform: scale(1.25); }
+
+/* ---- Section: enterprise-band ---- */
+.enterprise-band { background: var(--color-fg); color: #ffffff; padding: var(--section-padding) 0; border-radius: 0 0 var(--radius-section-bottom) var(--radius-section-bottom); }
+.enterprise-inner { display: flex; flex-direction: column; align-items: center; gap: 24px; text-align: center; max-width: 880px; margin: 0 auto; padding: 0 24px; }
+.enterprise-inner .t-eyebrow { color: rgba(255,255,255,0.7); }
+.enterprise-inner h2 { color: #ffffff; max-width: 18ch; }
+.enterprise-inner .body { color: rgba(255,255,255,0.7); max-width: 56ch; }
+.enterprise-inner .enterprise-ctas { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.enterprise-inner .btn--ghost-white { color: #ffffff; border-color: rgba(255,255,255,0.85); }
+.enterprise-inner .btn--ghost-white:hover { background: rgba(255,255,255,0.15); }
+.enterprise-inner [data-placeholder="true"] { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.4); color: rgba(255,255,255,0.85); }
+.enterprise-inner [data-placeholder="true"] .placeholder-eyebrow { color: #ffffff; }
+.enterprise-inner [data-placeholder="true"] .placeholder-shape { color: rgba(255,255,255,0.7); }
+
+/* ---- Section: free-tools-strip ---- */
+.free-tools { padding: var(--section-padding) 0; background: var(--color-surface-soft); }
+.tools-track { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(280px, 320px); gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 0 24px 24px; max-width: 1700px; margin: 0 auto; }
+.tool-card { scroll-snap-align: start; background: #ffffff; border-radius: var(--radius); padding: 24px; display: flex; flex-direction: column; gap: 16px; min-height: 240px; }
+.tool-card .tool-name h3 { color: var(--color-fg); }
+.tool-card .arrow { margin-top: auto; width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--color-fg); display: inline-flex; align-items: center; justify-content: center; transition: background var(--duration-fast) ease; }
+.tool-card:hover .arrow { background: rgba(0,0,0,0.06); }
+
+/* ---- Section: resources ---- */
+.resources { padding: var(--section-padding) 0; background: var(--color-bg); }
+.resources-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1700px; margin: 0 auto; padding: 0 24px; }
+.resource-card { background: var(--color-surface-soft); border-radius: var(--radius); overflow: hidden; display: flex; flex-direction: column; transition: transform var(--duration-fast) ease; }
+.resource-card:hover { transform: translateY(-2px); }
+.resource-card .resource-image { background: var(--color-card-mid-gray); aspect-ratio: 16 / 9; }
+.resource-card .resource-body { padding: 24px; display: flex; flex-direction: column; gap: 12px; flex-grow: 1; }
+.resource-card .resource-title { color: var(--color-fg); font-family: var(--heading-font-family); font-weight: 900; font-size: 22px; line-height: 1.1; letter-spacing: -0.02em; }
+.resource-card .arrow { margin-top: auto; align-self: flex-start; width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--color-fg); display: inline-flex; align-items: center; justify-content: center; }
+@media (max-width: 1023px) { .resources-row { grid-template-columns: 1fr; } }
+
+/* ---- Section: closing-cta ---- */
+.closing-cta { padding: var(--section-padding) 0 calc(var(--section-padding) + 60px); background: var(--color-bg); }
+.closing-inner { display: flex; flex-direction: column; align-items: center; gap: 24px; text-align: center; max-width: 880px; margin: 0 auto; padding: 0 24px; }
+.closing-inner h2 { max-width: 16ch; color: var(--color-fg); }
+
+/* ---- Sticky CTA ---- */
+.sticky-cta { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 102; display: inline-flex; align-items: center; gap: 14px; height: 56px; min-width: 279px; padding: 0 22px 0 14px; background: var(--color-fg); color: #ffffff; border-radius: var(--radius); box-shadow: 0 8px 32px rgba(0,0,0,0.24), 0 2px 8px rgba(0,0,0,0.12); cursor: pointer; transition: transform var(--duration-fast) ease, box-shadow var(--duration-fast) ease; }
+.sticky-cta:hover { transform: translateX(-50%) translateY(-2px); }
+.sticky-cta .icon { width: 32px; height: 32px; border-radius: 50%; background: var(--color-trial-blue); flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; color: #ffffff; font-weight: 900; font-family: var(--heading-font-family); font-size: 16px; }
+.sticky-cta .label { font-family: var(--body-font-family); font-size: 16px; font-weight: 700; }
+.sticky-cta .price-hint { font-family: var(--body-font-family); font-size: 12px; color: rgba(255,255,255,0.7); margin-left: 8px; }
+
+/* Modal (sticky-CTA expanded) */
+.cta-modal-backdrop { position: fixed; inset: 0; z-index: 110; background: rgba(0,0,0,0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); opacity: 0; pointer-events: none; transition: opacity var(--duration-base) ease; }
+.cta-modal-backdrop.is-open { opacity: 1; pointer-events: auto; }
+.cta-modal { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%) translateY(120%); z-index: 111; width: min(1100px, calc(100% - 40px)); max-height: calc(100vh - 80px); background: #ffffff; border-radius: 24px; padding: 32px; box-shadow: 0 8px 32px rgba(0,0,0,0.24); transition: transform var(--duration-spring) var(--ease-spring-out); overflow: auto; }
+.cta-modal.is-open { transform: translateX(-50%) translateY(0); }
+.cta-modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+.cta-modal-header h3 { font-family: var(--heading-font-family); font-weight: 900; font-size: 28px; line-height: 1; letter-spacing: -0.02em; color: var(--color-fg); }
+.cta-modal-close { width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--color-fg); display: inline-flex; align-items: center; justify-content: center; font-size: 18px; }
+.plan-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.plan-card { background: var(--color-surface-light); border-radius: var(--radius); padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+.plan-card .plan-header { display: flex; flex-direction: column; gap: 8px; padding-bottom: 16px; border-bottom: 1px solid rgba(0,0,0,0.08); }
+.plan-card .plan-features { display: flex; flex-direction: column; gap: 8px; }
+.plan-card .plan-features li { padding: 8px 0; border-bottom: 1px solid rgba(0,0,0,0.06); font-size: 14px; color: var(--color-text-mid); }
+.plan-card .btn--trial { align-self: stretch; justify-content: center; }
+@media (max-width: 1023px) { .plan-cards { grid-template-columns: 1fr; } }
+
+/* ---- Footer ---- */
+.site-footer { background: var(--color-fg); color: #ffffff; padding: 96px 0 32px; }
+.footer-inner { max-width: 1700px; margin: 0 auto; padding: 0 24px; }
+.footer-grid { display: grid; grid-template-columns: repeat(5, 1fr) 1fr 1fr; gap: 32px; padding-bottom: 64px; border-bottom: 1px solid rgba(255,255,255,0.12); }
+.footer-col h4 { font-family: var(--heading-font-family); font-weight: 900; font-size: 16px; line-height: 1.2; letter-spacing: -0.01em; margin-bottom: 16px; color: #ffffff; }
+.footer-col ul { display: flex; flex-direction: column; gap: 6px; }
+.footer-col a, .footer-col [data-placeholder] { font-size: 14px; color: rgba(255,255,255,0.7); }
+.footer-col [data-placeholder] { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.4); padding: 8px 10px; min-height: 32px; }
+.footer-col [data-placeholder] .placeholder-eyebrow { color: #ffffff; }
+.footer-col [data-placeholder] .placeholder-shape { color: rgba(255,255,255,0.7); }
+.footer-wordmark { font-family: var(--heading-font-family); font-weight: 900; font-size: 200px; line-height: 0.85; letter-spacing: -0.05em; color: #ffffff; padding: 48px 0 8px; }
+@media (max-width: 1279px) { .footer-wordmark { font-size: 140px; } }
+@media (max-width: 1023px) { .footer-wordmark { font-size: 96px; } }
+@media (max-width: 767px)  { .footer-wordmark { font-size: 64px; } }
+.legal-row { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px; padding-top: 32px; font-size: 12px; color: rgba(255,255,255,0.5); }
+.legal-row a { transition: color var(--duration-fast) ease; }
+.legal-row a:hover { color: #ffffff; }
+@media (max-width: 1023px) { .footer-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 767px)  { .footer-grid { grid-template-columns: 1fr; } }
+
+/* ---- Reduced motion ---- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition-duration: 0ms !important; animation-duration: 0ms !important; }
+  .gnav-inner::before { transition: none; }
+}
+
+body { padding-bottom: 96px; }
+</style>
+</head>
+<body>
+
+<main>
+
+<!-- ============ HERO ============ -->
+<section class="hero" data-section="hero" data-intent="emotional hook" data-layout="full-bleed" data-media="image" data-items="2">
+  <div class="hero-mosaic" aria-hidden="true">
+    <template data-count="15" data-block="tile"><span data-placeholder="true" data-placeholder-type="image" data-placeholder-source="hero mosaic tile 1 of 15 — home.json captures no hero imagery" class="tile"><span data-slot="placeholder-eyebrow" class="placeholder-eyebrow"></span></span></template>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  </div>
+  <div class="hero-text" data-ta-group="">
+    <div class="hero-eyebrow t-eyebrow" data-ta-unit="">
+      <span data-slot="glyph" class="glyph" aria-hidden="true"></span>
+      <span data-slot="span"></span>
+    </div>
+    <h1 data-slot="hero-title" class="hero-title t-title-1" data-ta=""></h1>
+    <p data-slot="hero-body" class="hero-body t-body-m" data-ta=""></p>
+    <div class="hero-ctas" data-ta-unit="">
+      <template data-count="2" data-block="btn"><a href="/signup/" class="btn btn--trial">Start free trial</a></template>
+      
+    </div>
+  </div>
+</section>
+
+<!-- ============ PILLAR-ROUTER ============ -->
+<section class="pillar-router" data-section="pillar-router" data-intent="value proposition" data-layout="grid" data-items="5" data-interactive="accordion">
+  <header class="section-header" data-ta-group="">
+    <p data-slot="body" class="t-eyebrow" data-ta=""></p>
+    <h2 data-slot="subheadline" class="t-title-2" data-ta=""></h2>
+  </header>
+  <div class="hub-router" role="tablist" aria-label="Product pillars">
+    <template data-count="5" data-block="hub-card"><article class="hub-card is-active" data-pillar="semrush-one" tabindex="0">
+      <p data-slot="hub-label" class="hub-label"></p>
+      <h3 data-slot="hub-tagline" class="hub-tagline t-title-3"></h3>
+      <p data-slot="hub-body" class="hub-body t-body-m"></p>
+      <span data-slot="hub-cta" class="hub-cta" aria-hidden="true"></span>
+    </article></template>
+    
+    
+    
+    
+  </div>
+</section>
+
+<!-- ============ SECONDARY-PILLAR-GRID ============ -->
+<section class="perks-grid" data-section="secondary-pillar-grid" data-intent="value proposition" data-layout="grid" data-items="4">
+  <header class="section-header" data-ta-group="">
+    <p data-slot="body" class="t-eyebrow" data-ta=""></p>
+    <h2 data-slot="section-headline" class="t-title-2 section-headline" data-ta="" data-placeholder-note="synthesized"></h2>
+  </header>
+  <div class="perks-row">
+    <template data-count="4" data-block="perk-card"><article class="perk-card">
+      <h3 data-slot="perk-title" class="perk-title t-title-4"></h3>
+      <p data-slot="perk-body" class="perk-body t-body-m"></p>
+      <div data-slot="perk-body-2" class="perk-body" data-placeholder="true" data-placeholder-type="other" data-placeholder-source="secondary-pillar-grid Local card body — H4 'Own your local presence' rewritten to tagline; secondary line unsourced"></div>
+    </article></template>
+    
+    
+    
+  </div>
+</section>
+
+
+<!-- ============ EDITORIAL-BENTO ============ -->
+<section class="editorial-bento" data-section="editorial-bento" data-intent="build trust" data-layout="grid" data-items="2" data-media="image">
+  <header class="section-header" data-ta-group="">
+    <p data-slot="body" class="t-eyebrow" data-ta=""></p>
+    <h2 data-slot="section-headline" class="t-title-2 section-headline" data-ta="" data-placeholder-note="synthesized"></h2>
+  </header>
+  <div class="bento-row">
+    <article class="bento-left">
+      <p data-slot="stat-eyebrow" class="stat-eyebrow"></p>
+      <div data-slot="stat-figure-wrap" class="stat-figure-wrap" data-placeholder="true" data-placeholder-type="stat" data-placeholder-source="editorial-bento bento-left stat-figure — STATS AND FACTS H2 exists in home.json; no stat values captured"></div>
+      <div data-slot="stat-body-wrap" class="stat-body-wrap" data-placeholder="true" data-placeholder-type="other" data-placeholder-source="editorial-bento bento-left stat-body"></div>
+    </article>
+    <div class="bento-right">
+      <div class="bento-right-image" aria-hidden="true">photographic image · AI Visibility Index</div>
+      <div class="bento-right-copy">
+        <p data-slot="ai-eyebrow" class="ai-eyebrow"></p>
+        <h3 data-slot="subheadline-3" class="t-title-3"></h3>
+        <div data-slot="body-2" data-placeholder="true" data-placeholder-type="other" data-placeholder-source="editorial-bento bento-right body — AI Visibility Index supporting copy not captured"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STORIES-CAROUSEL ============ -->
+<section class="stories" data-section="stories-carousel" data-intent="build trust" data-layout="grid" data-items="11" data-interactive="carousel" data-fragment="testimonial-card" data-fragment-role="source">
+  <header class="section-header" data-ta-group="">
+    <p data-slot="body" class="t-eyebrow" data-ta=""></p>
+    <h2 data-slot="subheadline" class="t-title-2" data-ta=""></h2>
+    <p data-slot="body-2" class="t-body-m" data-ta=""></p>
+  </header>
+  <div class="stories-track" id="stories-track" tabindex="0" aria-label="Customer story carousel">
+    <template data-count="11" data-block="story-card"><article class="story-card">
+      <div data-slot="company-logo" class="company-logo" data-placeholder="true" data-placeholder-type="image" data-placeholder-source="stories-carousel card 1 of 11 company-logo — PRODUCT.md names brands but no logo files captured"></div>
+      <blockquote data-slot="quote" data-placeholder="true" data-placeholder-type="quote" data-placeholder-source="stories-carousel card 1 of 11 quote — testimonialCards.count=11 but quote text not captured"></blockquote>
+      <div class="person-row">
+        <span data-slot="name" class="name" data-placeholder="true" data-placeholder-type="other" data-placeholder-source="stories-carousel card 1 of 11 name"></span>
+        <span data-slot="role" class="role" data-placeholder="true" data-placeholder-type="other" data-placeholder-source="stories-carousel card 1 of 11 role"></span>
+      </div>
+    </article></template>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  </div>
+  <nav class="stories-nav" aria-label="Stories navigation">
+    <template data-count="4" data-block="dot"><span class="dot is-active"></span></template>
+    
+    
+    
+  </nav>
+</section>
+
+<!-- ============ ENTERPRISE-BAND ============ -->
+<section class="enterprise-band" data-section="enterprise-band" data-intent="value proposition" data-layout="full-bleed" data-items="1">
+  <div class="enterprise-inner" data-ta-group="">
+    <p data-slot="body" class="t-eyebrow" data-ta=""></p>
+    <h2 data-slot="subheadline" class="t-title-2" data-ta=""></h2>
+    <div data-slot="body-2" class="body" data-placeholder="true" data-placeholder-type="other" data-placeholder-source="enterprise-band body — H2 preserved verbatim; supporting copy not captured"></div>
+    <div class="enterprise-ctas" data-ta-unit="">
+      <template data-count="2" data-block="btn"><a href="/enterprise/" class="btn btn--ghost-white">Talk to sales</a></template>
+      
+    </div>
+  </div>
+</section>
+
+<!-- ============ FREE-TOOLS-STRIP ============ -->
+<section class="free-tools" data-section="free-tools-strip" data-intent="discovery" data-layout="grid" data-items="5" data-interactive="carousel">
+  <header class="section-header" data-ta-group="">
+    <p data-slot="body" class="t-eyebrow" data-ta=""></p>
+    <h2 data-slot="section-headline" class="t-title-2 section-headline" data-ta="" data-placeholder-note="synthesized"></h2>
+  </header>
+  <div class="tools-track">
+    <template data-count="5" data-block="tool-card"><article class="tool-card">
+      <div data-slot="tool-name" class="tool-name" data-placeholder="true" data-placeholder-type="other" data-placeholder-source="free-tools-strip tool-card 1 of 5 name+body — home.json carries only the gnav heading 'Explore Free Tools'; tool list unsourced"></div>
+      <span data-slot="arrow" class="arrow" aria-hidden="true"></span>
+    </article></template>
+    
+    
+    
+    
+  </div>
+</section>
+
+<!-- ============ RESOURCES ============ -->
+<section class="resources" data-section="resources" data-intent="cross-link" data-layout="grid" data-items="3" data-fragment="resource-card" data-fragment-role="source">
+  <header class="section-header" data-ta-group="">
+    <p data-slot="body" class="t-eyebrow" data-ta=""></p>
+    <h2 data-slot="section-headline" class="t-title-2 section-headline" data-ta=""></h2>
+  </header>
+  <div class="resources-row">
+    <template data-count="3" data-block="resource-card"><article class="resource-card">
+      <div class="resource-image" aria-hidden="true"></div>
+      <div class="resource-body">
+        <span data-slot="date" data-placeholder="true" data-placeholder-type="other" data-placeholder-source="resources card 1 date"></span>
+        <h3 data-slot="resource-title" class="resource-title"></h3>
+        <span data-slot="excerpt" data-placeholder="true" data-placeholder-type="other" data-placeholder-source="resources card 1 excerpt"></span>
+        <span data-slot="arrow" class="arrow" aria-hidden="true"></span>
+      </div>
+    </article></template>
+    
+    
+  </div>
+</section>
+
+<!-- ============ CLOSING-CTA ============ -->
+<section class="closing-cta" data-section="closing-cta" data-intent="drive action" data-layout="full-bleed" data-items="1">
+  <div class="closing-inner" data-ta-group="">
+    <p data-slot="body" class="t-eyebrow" data-ta=""></p>
+    <h2 data-slot="subheadline" class="t-title-1" data-ta=""></h2>
+    <div data-slot="body-2" class="body" data-placeholder="true" data-placeholder-type="other" data-placeholder-source="closing-cta body — trial-terms unsourced; flag for verification against semrush's actual offer"></div>
+    <a data-slot="btn--primary" href="/signup/" class="btn btn--primary"></a>
+  </div>
+</section>
+
+</main>
+
+
+
+<aside class="sticky-cta" id="stickyCta" data-section="sticky-cta" data-intent="drive action" data-layout="floating" data-items="1" data-interactive="modal" role="button" tabindex="0" aria-haspopup="dialog" aria-controls="ctaModal">
+  <span class="icon" aria-hidden="true">★</span>
+  <span class="label">Start free trial</span>
+  <span class="price-hint">See plans</span>
+</aside>
+
+<div class="cta-modal-backdrop" id="ctaModalBackdrop" aria-hidden="true"></div>
+
+<div class="cta-modal" id="ctaModal" role="dialog" aria-modal="true" aria-labelledby="ctaModalTitle" aria-hidden="true">
+  <header class="cta-modal-header">
+    <h3 id="ctaModalTitle">Pick a plan to start your trial.</h3>
+    <button type="button" class="cta-modal-close" id="ctaModalClose" aria-label="Close">×</button>
+  </header>
+  <div class="plan-cards">
+    <article class="plan-card">
+      <div class="plan-header">
+        <span class="t-eyebrow">Plan tier 1</span>
+        <h4 data-placeholder="true" data-placeholder-type="other" data-placeholder-source="sticky-cta modal plan-card 1 tier-name — pricing on /pricing/ which is out of scope">
+          <span class="placeholder-eyebrow">PLACEHOLDER · tier</span>
+          <span class="placeholder-shape">e.g. Pro / Guru / Business</span>
+        </h4>
+        <div data-placeholder="true" data-placeholder-type="price" data-placeholder-source="sticky-cta modal plan-card 1 price">
+          <span class="placeholder-eyebrow">PLACEHOLDER · price</span>
+          <span class="placeholder-shape">$ — / mo</span>
+        </div>
+      </div>
+      <ul class="plan-features">
+        <li data-placeholder="true" data-placeholder-type="other" data-placeholder-source="sticky-cta plan 1 feature 1">
+          <span class="placeholder-eyebrow">PLACEHOLDER · feature</span>
+          <span class="placeholder-shape">e.g. 5 projects</span>
+        </li>
+        <li data-placeholder="true" data-placeholder-type="other" data-placeholder-source="sticky-cta plan 1 feature 2">
+          <span class="placeholder-eyebrow">PLACEHOLDER · feature</span>
+          <span class="placeholder-shape">e.g. 500 keyword tracks per day</span>
+        </li>
+        <li data-placeholder="true" data-placeholder-type="other" data-placeholder-source="sticky-cta plan 1 feature 3">
+          <span class="placeholder-eyebrow">PLACEHOLDER · feature</span>
+          <span class="placeholder-shape">e.g. 100 reports per day</span>
+        </li>
+      </ul>
+      <a href="/signup/" class="btn btn--trial">Start free trial</a>
+    </article>
+    <article class="plan-card">
+      <div class="plan-header">
+        <span class="t-eyebrow">Plan tier 2</span>
+        <h4 data-placeholder="true" data-placeholder-type="other" data-placeholder-source="sticky-cta modal plan-card 2 tier-name — pricing on /pricing/ which is out of scope">
+          <span class="placeholder-eyebrow">PLACEHOLDER · tier</span>
+          <span class="placeholder-shape">e.g. Pro / Guru / Business</span>
+        </h4>
+        <div data-placeholder="true" data-placeholder-type="price" data-placeholder-source="sticky-cta modal plan-card 2 price">
+          <span class="placeholder-eyebrow">PLACEHOLDER · price</span>
+          <span class="placeholder-shape">$ — / mo</span>
+        </div>
+      </div>
+      <ul class="plan-features">
+        <li data-placeholder="true" data-placeholder-type="other" data-placeholder-source="sticky-cta plan 2 feature 1">
+          <span class="placeholder-eyebrow">PLACEHOLDER · feature</span>
+          <span class="placeholder-shape">e.g. 5 projects</span>
+        </li>
+        <li data-placeholder="true" data-placeholder-type="other" data-placeholder-source="sticky-cta plan 2 feature 2">
+          <span class="placeholder-eyebrow">PLACEHOLDER · feature</span>
+          <span class="placeholder-shape">e.g. 500 keyword tracks per day</span>
+        </li>
+        <li data-placeholder="true" data-placeholder-type="other" data-placeholder-source="sticky-cta plan 2 feature 3">
+          <span class="placeholder-eyebrow">PLACEHOLDER · feature</span>
+          <span class="placeholder-shape">e.g. 100 reports per day</span>
+        </li>
+      </ul>
+      <a href="/signup/" class="btn btn--trial">Start free trial</a>
+    </article>
+    <article class="plan-card">
+      <div class="plan-header">
+        <span class="t-eyebrow">Plan tier 3</span>
+        <h4 data-placeholder="true" data-placeholder-type="other" data-placeholder-source="sticky-cta modal plan-card 3 tier-name — pricing on /pricing/ which is out of scope">
+          <span class="placeholder-eyebrow">PLACEHOLDER · tier</span>
+          <span class="placeholder-shape">e.g. Pro / Guru / Business</span>
+        </h4>
+        <div data-placeholder="true" data-placeholder-type="price" data-placeholder-source="sticky-cta modal plan-card 3 price">
+          <span class="placeholder-eyebrow">PLACEHOLDER · price</span>
+          <span class="placeholder-shape">$ — / mo</span>
+        </div>
+      </div>
+      <ul class="plan-features">
+        <li data-placeholder="true" data-placeholder-type="other" data-placeholder-source="sticky-cta plan 3 feature 1">
+          <span class="placeholder-eyebrow">PLACEHOLDER · feature</span>
+          <span class="placeholder-shape">e.g. 5 projects</span>
+        </li>
+        <li data-placeholder="true" data-placeholder-type="other" data-placeholder-source="sticky-cta plan 3 feature 2">
+          <span class="placeholder-eyebrow">PLACEHOLDER · feature</span>
+          <span class="placeholder-shape">e.g. 500 keyword tracks per day</span>
+        </li>
+        <li data-placeholder="true" data-placeholder-type="other" data-placeholder-source="sticky-cta plan 3 feature 3">
+          <span class="placeholder-eyebrow">PLACEHOLDER · feature</span>
+          <span class="placeholder-shape">e.g. 100 reports per day</span>
+        </li>
+      </ul>
+      <a href="/signup/" class="btn btn--trial">Start free trial</a>
+    </article>
+  </div>
+</div>
+
+
+
+<script>
+(function(){
+  // gnav scroll state
+  var gnav = document.getElementById('gnav');
+  function onScroll(){ if(window.scrollY > 40){ gnav.classList.add('is-scrolled'); } else { gnav.classList.remove('is-scrolled'); } }
+  document.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // pillar-router accordion (click + keyboard)
+  var hubCards = document.querySelectorAll('.hub-card');
+  hubCards.forEach(function(card){
+    function activate(){ hubCards.forEach(function(c){ c.classList.remove('is-active'); }); card.classList.add('is-active'); }
+    card.addEventListener('click', activate);
+    card.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); activate(); } });
+  });
+
+  // sticky-CTA modal
+  var sticky = document.getElementById('stickyCta');
+  var modal = document.getElementById('ctaModal');
+  var backdrop = document.getElementById('ctaModalBackdrop');
+  var closeBtn = document.getElementById('ctaModalClose');
+  function openModal(){ modal.classList.add('is-open'); backdrop.classList.add('is-open'); modal.setAttribute('aria-hidden','false'); backdrop.setAttribute('aria-hidden','false'); document.body.style.overflow = 'hidden'; }
+  function closeModal(){ modal.classList.remove('is-open'); backdrop.classList.remove('is-open'); modal.setAttribute('aria-hidden','true'); backdrop.setAttribute('aria-hidden','true'); document.body.style.overflow = ''; sticky.focus(); }
+  sticky.addEventListener('click', openModal);
+  sticky.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); openModal(); } });
+  closeBtn.addEventListener('click', closeModal);
+  backdrop.addEventListener('click', closeModal);
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && modal.classList.contains('is-open')){ closeModal(); } });
+
+  // stories carousel — dots reflect scroll position
+  var track = document.getElementById('stories-track');
+  var dots = document.querySelectorAll('.stories-nav .dot');
+  if(track && dots.length){
+    track.addEventListener('scroll', function(){
+      var ratio = track.scrollLeft / Math.max(1, track.scrollWidth - track.clientWidth);
+      var idx = Math.min(dots.length - 1, Math.floor(ratio * dots.length));
+      dots.forEach(function(d, i){ d.classList.toggle('is-active', i === idx); });
+    }, { passive: true });
+    dots.forEach(function(d, i){ d.addEventListener('click', function(){
+      var step = (track.scrollWidth - track.clientWidth) / Math.max(1, dots.length - 1);
+      track.scrollTo({ left: i * step, behavior: 'smooth' });
+    }); });
+  }
+
+  // hero mosaic — only animate when motion is allowed
+  var allowMotion = window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
+  if(allowMotion){
+    var mosaic = document.querySelector('.hero-mosaic');
+    if(mosaic){
+      mosaic.style.transition = 'opacity 600ms ease, transform 800ms cubic-bezier(0.16, 1, 0.3, 1)';
+      mosaic.style.opacity = '0';
+      requestAnimationFrame(function(){ mosaic.style.opacity = '0.18'; });
+    }
+  }
+})();
+</script>
+</body>
+</html>

@@ -2,6 +2,17 @@
 coverage/*
 logs/*
 node_modules/*
+tools/stardust-to-eds/node_modules/
+.out/
+drafts/
+
+# local skill installs and harness artifacts (per-machine, not for the repo)
+.agents/
+.claude/
+.playwright-mcp/
+
+# test/screenshot artifacts
+stardust-*.png
 
 helix-importer-ui
 .DS_Store
@@ -11,3 +22,7 @@ helix-importer-ui
 # Ensure these files are tracked
 !CLAUDE.md
 !AGENTS.md
+
+.hlx/.da-token.json
+
+content
