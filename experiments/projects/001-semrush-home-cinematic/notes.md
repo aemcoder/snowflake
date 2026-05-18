@@ -348,6 +348,38 @@ Top-of-page screenshot at `diff/rendered-viewport.jpg` shows:
    `body > .announcement-banner` would break. We grepped — none of
    the source CSS uses such selectors. Safe for this input.
 
+## Phase: Production Round-Trip (post-DA-publish debug)
+
+User published to `aem.live`. Page was broken. Two compounding causes:
+
+1. **Code wasn't deployed.** All our overlay work was uncommitted
+   local. `main` runs the parallel `tools/stardust-to-eds`
+   system. Fix: branched to `sf-overlay-exp`, single commit, pushed
+   to origin. AEM Code Sync deployed it within seconds. Now
+   `https://sf-overlay-exp--snowflake--aemcoder.aem.page/sf-5th-attempt/exp-001/home`
+   serves our code.
+2. **DA source format was wrong.** Our table format produced flat
+   `<p>` soup after pipeline. Footer Metadata table was ignored.
+   Fixes documented in `knowledge/learnings.md`:
+   - PUT the body fragment of `drafts/home.html` (div-with-class
+     shape) instead of the table-format `output/da/home.html`.
+   - Added a `<div class="metadata">` block inside `<main>` for
+     `template`/`title` rows.
+
+After both fixes:
+- `overlayApplied: "home"` ✓
+- 11 sections in main ✓
+- Header + footer fragments injected ✓
+- 0 console errors ✓
+- `<span class="accent">` stripped by pipeline (minor regression)
+
+`aem.live` on `main` branch remains broken because main's code
+doesn't speak our format. Acceptable for this experiment — the
+purpose was end-to-end validation on a feature branch.
+
+See `diff/production-overlay-working.jpg` for the production
+screenshot.
+
 ## Phase: DA Upload (post-run-#001 follow-up)
 
 - User authenticated via `aem content clone --path /` → token

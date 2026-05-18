@@ -18,6 +18,101 @@ verified fact, and link back here.
 
 ---
 
+## 2026-05-18 — EDS pipeline does not convert DA-source `<table>` → `<div class="blockname">`
+
+(from [001-semrush-home-cinematic](../projects/001-semrush-home-cinematic/),
+debugging the published `aem.page` render)
+
+This contradicts my prior assumption. The team docs say "Blocks are
+`<table>`s with a header row carrying the block name + options" —
+that's the convention for **Word / Google Docs** source where the
+ingest pipeline runs the table-to-block conversion. For
+**DA-sourced** documents, the pipeline does NOT do that conversion.
+What DA stores is what the renderer ships, modulo light markdown-ish
+inner-content normalisation.
+
+Observed behaviour when our DA source contained `<table>` blocks:
+- `<th>BlockName</th>` row → dropped entirely (block name lost).
+- `<td>cell content</td>` → flattened to bare `<p>cell content</p>`.
+- The whole table → a single `<div>` wrapping a sequence of `<p>` tags.
+- No `<div class="blockname">` wrapper at all.
+
+**The canonical DA-source shape is divs-with-class, already in
+post-pipeline form**, exactly like:
+```html
+<main>
+  <div>
+    <div class="hero">
+      <div><div>slot-name</div><div>slot-value</div></div>
+      ...
+    </div>
+  </div>
+</main>
+```
+Anything calling itself a "DA-to-EDS converter" should emit this
+shape directly, NOT the Word-Docs-style table convention.
+
+(Confirmed by inspecting `/sf-semrush/home.html` in DA — the
+canonical pattern uses divs-with-class as the source.)
+
+**Action taken:** updated our DA doc to the div-shape (body fragment
+of `drafts/home.html`, which already had that shape from
+`transform-da-to-eds.mjs`). After re-upload + re-preview, the page
+rendered correctly.
+
+## 2026-05-18 — Metadata must be a `<div class="metadata">` block inside `<main>`, not a `<table>` in `<footer>`
+
+(from [001-semrush-home-cinematic](../projects/001-semrush-home-cinematic/),
+same debug session)
+
+Team docs said "the footer typically holds a Metadata table that
+the pipeline expands into `<meta>` tags." Empirically: our
+`<footer><table>...</table></footer>` was **ignored** by the
+pipeline. Zero `<meta>` tags in the rendered head other than the
+EDS-injected viewport / twitter:* defaults.
+
+What worked: a `<div class="metadata">` block inside `<main>` with
+the same row shape as any other block:
+```html
+<main>
+  <div>...content blocks...</div>
+  <div>
+    <div class="metadata">
+      <div><div>template</div><div>home</div></div>
+      <div><div>title</div><div>Page Title</div></div>
+    </div>
+  </div>
+</main>
+```
+After re-upload + re-preview, `<meta name="template" content="home">`
+and `<meta name="title" content="Page Title">` appeared in the
+rendered head, and our overlay engine could resolve the template
+name. Until that point, the engine kept bailing out (no template ⇒
+falling through to standard EDS decoration ⇒ 40 × 404 trying to
+load `/blocks/<name>/<name>.{css,js}` for every detected block).
+
+Footer in DA source seems to be a vestigial slot; main-with-
+metadata-block is the canonical way.
+
+## 2026-05-18 — Pipeline normalises inline HTML inside cells; `<span class="accent">` is stripped
+
+(from [001-semrush-home-cinematic](../projects/001-semrush-home-cinematic/))
+
+Our title slot value was
+`Be found <span class="accent">everywhere</span> search happens`.
+The pipeline emitted just `Be found everywhere search happens` —
+the span was removed.
+
+It seems the pipeline runs a markdown-ish normaliser over inner
+cell content that keeps `<strong>` / `<em>` / `<h1>`-`<h6>` /
+`<a>` / `<img>` but discards arbitrary `<span class="...">`.
+
+For typography accents the EDS-friendly path is `<strong>` (becomes
+button primary in default decoration; needs class scoping if used
+inside a heading) or a class on the parent element rather than an
+inline span. Worth re-examining slot-value escaping rules in the
+generator.
+
 ## 2026-05-18 — DA stores HTML literally; tables survive intact
 
 (from [001-semrush-home-cinematic](../projects/001-semrush-home-cinematic/),
