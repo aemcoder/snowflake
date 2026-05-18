@@ -79,4 +79,19 @@ Template name: **`patagonia-home`**.
 
 ## Status
 
-See `notes.md` for the in-progress log.
+**Closed 2026-05-18 (tagged `iter-003-close`).**
+
+- Production URL (frozen against `sf-overlay-exp-003` branch):
+  `https://sf-overlay-exp-003--snowflake--aemcoder.aem.page/sf-overlay-exp-003/home`
+- DA editor URL:
+  `https://da.live/edit#/aemcoder/snowflake/sf-overlay-exp-003/home`
+- 6 sections rendered, Inter Tight loaded, page visually faithful
+  to the original Patagonia surfer hero.
+
+See `notes.md` for the full phase log (Capture → Analyze → Generate
+→ Wire → Round-trip → Reflect → Close).
+
+### Cross-project knowledge promoted from this run
+
+- Synthesize `<main>` if source has none.
+- Disambiguate first-class collisions via `data-section`.

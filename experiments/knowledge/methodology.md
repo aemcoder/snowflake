@@ -107,6 +107,34 @@ fall back to system-ui — visually subtle, semantically wrong.
 Discovered in run #002 when the converted Vanguard page rendered
 with system-ui where the original used Mona Sans.
 
+### Template wrapping and section uniqueness
+
+Two transformations the template needs that aren't slot-related:
+
+1. **Synthesize `<main>` if the source doesn't have one.** The
+   overlay engine `querySelector('main')`s the parsed template.
+   When the source's body-level sections aren't already wrapped
+   in `<main>`, wrap them in one when writing the template file.
+   (Discovered in run #003 — Patagonia's sections were direct
+   `<body>` children.)
+
+2. **Ensure each `<section>`'s first class is unique** within
+   the template. The overlay engine matches DA blocks to template
+   sections by `section.className.split(' ')[0]`. If the source
+   has multiple sections sharing a first class (common when
+   utility classes like `section`, `card`, `tile` are used),
+   rewrite so a stable discriminator (typically `data-section`'s
+   value) becomes the first class. Keep the original classes
+   in the list afterward — CSS rules depending on them still
+   match. (Discovered in run #003 — three section classes
+   collided.)
+
+   Example:
+   ```diff
+   - <section class="section" data-section="activity-tile-grid">
+   + <section class="activity-tile-grid section" data-section="activity-tile-grid">
+   ```
+
 ### Critical rules for the DA doc
 
 These are the lessons from run #001 — DO NOT re-derive them empirically.

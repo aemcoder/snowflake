@@ -18,6 +18,60 @@ verified fact, and link back here.
 
 ---
 
+## 2026-05-18 — Source HTML may not have a `<main>` wrapper
+
+(from [003-patagonia-proposed-a](../projects/003-patagonia-proposed-a/))
+
+Runs #001 and #002 both had `<main>…</main>` in their source HTML.
+The overlay engine queries `doc.body.querySelector('main')` to extract
+the template's main content — if the parser returns null, the
+engine bails with `console.warn('[overlay] template "X" has no <main>')`.
+
+Run #003's Patagonia source has **no `<main>` element**. Its
+top-level sections are direct children of `<body>`, sandwiched
+between `<header>` and `<footer>`. This is valid HTML5 and a
+perfectly reasonable authoring choice.
+
+**Generic rule:** the Generate phase must wrap the body-level
+sections in a synthesized `<main>` when the source doesn't already
+have one. The `<main>` is not authored content; it's a contract
+boundary between the overlay engine and the template. Methodology
+updated accordingly.
+
+## 2026-05-18 — Sections can share a first-class — disambiguate via `data-section`
+
+(from [003-patagonia-proposed-a](../projects/003-patagonia-proposed-a/))
+
+The overlay engine matches DA block tables to template sections by
+the template `<section>` element's first class
+(`section.className.split(' ')[0]`). Run #003 input had three
+collisions:
+- Two `<section class="section" data-section="...">` blocks (activity-tile-grid, category-tile-grid)
+- Two `<section class="sec-hero" data-section="...">` blocks (secondary-photo-hero, tertiary-photo-hero)
+- One `<section class="section values" ...>` (sharing the `section` first-token with the first two)
+
+If left as-is, all three "section" sections would collide on `section.section` selectors and the engine couldn't tell them apart. Same for both `sec-hero`s.
+
+**Generic rule:** the Generate phase must ensure each
+template `<section>`'s **first class** is unique within the
+template. When the source's first class isn't unique, derive a
+unique first-class from `data-section` (Stardust's stable
+discriminator) and reorder so it's first in the class list. The
+original classes stay in the list — CSS rules depending on them
+still apply.
+
+Example:
+```diff
+- <section class="section" data-section="activity-tile-grid">
++ <section class="activity-tile-grid section" data-section="activity-tile-grid">
+```
+
+Pattern observed across Stardust 0.2.0 outputs: when a generator
+emits semantically distinct sections that happen to share a
+utility class (`section`, `card`, `tile`, etc.), use the
+`data-section` (or equivalent per-instance label) as the canonical
+unique identifier. Methodology updated.
+
 ## 2026-05-18 — Boilerplate block CSS leaks into overlay-fetched fragments
 
 (from [002-vanguard-proposed-a](../projects/002-vanguard-proposed-a/),
