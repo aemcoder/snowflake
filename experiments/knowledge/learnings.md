@@ -18,6 +18,47 @@ verified fact, and link back here.
 
 ---
 
+## 2026-05-18 — Boilerplate block CSS leaks into overlay-fetched fragments
+
+(from [002-vanguard-proposed-a](../projects/002-vanguard-proposed-a/),
+user spotted misaligned utility nav)
+
+EDS auto-loads `/blocks/<blockname>/<blockname>.css` for every
+decorated block. The aem-boilerplate's `blocks/header/header.css`
+(272 lines!) and `blocks/footer/footer.css` define element-level
+rules scoped to the BOILERPLATE's DA-authored nav markup:
+
+```css
+/* from boilerplate blocks/header/header.css */
+header nav { display: grid; ... margin: auto; ... }
+header .nav-wrapper { ... position: fixed; ... }
+```
+
+In our overlay model, `blocks/header/header.js` fetches a static
+`/fragments/<template>/header.html` containing the source page's
+real nav markup — `nav.utility`, `nav.gnav-links`, whatever. The
+boilerplate's element-level selectors match our fragment's `<nav>`
+elements too and cascade destructively:
+
+- Run #002 Vanguard: `header nav { margin: auto }` competed with the
+  template's `.utility { margin-left: auto }`, and `display: grid`
+  killed the flex-row layout. Utility nav rendered mid-row instead
+  of pinned right.
+- Run #001 Semrush: the same boilerplate rules were affecting
+  `<nav class="gnav-links">` — visually subtle enough we didn't
+  notice, but it was there.
+
+**Fix:** empty `blocks/header/header.css` and `blocks/footer/footer.css`
+with a comment explaining why. Don't keep them as dead-but-loaded
+files. For overlay-controlled pages, ALL header/footer styling
+comes from `/styles/<template>.css` — the source's inline `<style>`
+extracted faithfully.
+
+**Generic rule:** when the overlay model takes over a block's
+behaviour by replacing its JS (as we do for header/footer), the
+matching boilerplate CSS becomes a hazard, not an asset. Empty it.
+If another block ever gets the same treatment, do the same.
+
 ## 2026-05-18 — Template head-level `<link>` resources must be lifted into document.head
 
 (from [002-vanguard-proposed-a](../projects/002-vanguard-proposed-a/),

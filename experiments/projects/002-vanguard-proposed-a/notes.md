@@ -238,3 +238,30 @@ Promoted to `experiments/knowledge/learnings.md` and a methodology
 rule was added to the Generate phase (capture head-level `<link>`
 elements, not just inline `<style>`).
 
+### Second follow-up: boilerplate block CSS leak
+
+After the font fix, user noticed the header utility nav (My saves,
+Search, Support, Log in) was floating mid-row instead of pinned to
+the right edge like the original.
+
+Probed via `getComputedStyle` + `cssRules` lookup: `nav.utility` was
+being matched by TWO rules with `margin-left: auto`:
+- `.utility { margin-left: auto }` from `/styles/vanguard-home.css`
+  (correct, from the source's inline `<style>`)
+- `header nav { margin-left: auto }` from
+  `/blocks/header/header.css` (boilerplate leftover — 272 lines of
+  rules designed for the boilerplate's DA-authored nav markup)
+
+The boilerplate rule ALSO forced `display: grid` on `<nav>`,
+overriding our template's flex-row layout.
+
+**Fix (substrate):** emptied `blocks/header/header.css` and
+`blocks/footer/footer.css`. Our overlay model owns header/footer
+styling via `/styles/<template>.css` — there's no place for
+boilerplate cascade. Promoted to `knowledge/learnings.md`.
+
+Verified after Code Sync redeploy: `nav.utility` margin-left now
+resolves to `536.305px` (matching the original's `536.281px` —
+delta is float noise from a tiny width difference). Visual diff
+in `diff/converted-header-fixed.jpg` matches the original layout.
+
