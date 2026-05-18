@@ -1,113 +1,123 @@
 /*
- * Transform a DA-format HTML document into the post-pipeline EDS HTML
- * response shape, suitable for use as a drafts/ test file.
+ * Wrap a DA-source body fragment into a full HTML page suitable for
+ * local round-trip testing via `aem up --html-folder drafts`.
  *
- * DA format:
- *   <body>
- *     <header><p>Page title</p></header>
- *     <main>
- *       <div><table><tr><th>BlockName</th></tr>...</table></div>
- *     </main>
- *     <footer><table><tr><th>Metadata</th></tr>...</table></footer>
- *   </body>
- *
- * Post-pipeline EDS format:
- *   <!DOCTYPE html><html><head>...</head>
+ * Input — DA-source body fragment, divs-with-class shape:
  *   <body>
  *     <header></header>
  *     <main>
- *       <div><div class="block-name"><div><div>slot</div><div>val</div></div></div></div>
+ *       <div>
+ *         <div class="blockname">
+ *           <div><div>slot-name</div><div>slot-value</div></div>
+ *           ...
+ *         </div>
+ *       </div>
+ *       ...
+ *       <div>
+ *         <div class="metadata">
+ *           <div><div>template</div><div>home</div></div>
+ *           <div><div>title</div><div>...</div></div>
+ *         </div>
+ *       </div>
  *     </main>
  *     <footer></footer>
- *   </body></html>
+ *   </body>
  *
- * Why we need this: the AEM dev server (`aem up --html-folder drafts`)
- * serves drafts verbatim — the table→div transformation happens in the
- * production pipeline, not locally. For round-trip testing we have to
- * pre-bake the post-pipeline shape ourselves.
+ * Output — a complete HTML document for `drafts/<page>.html`:
+ *   <!DOCTYPE html><html><head>… boilerplate <head> + meta tags from
+ *   the metadata block …</head>
+ *   <body>… the body fragment, unchanged …</body></html>
  *
- * Usage: node transform-da-to-eds.mjs <in.html> <out.html>
+ * The output does NOT hardcode a per-template CSS link — the overlay
+ * engine in scripts/scripts.js loadCSS()'s /styles/<template>.css
+ * dynamically after resolving <meta name="template">.
+ *
+ * Why this exists: `aem up --html-folder drafts` serves files
+ * verbatim. The EDS pipeline that would normally inject `head.html`
+ * and lift the metadata block to `<meta>` tags does NOT run for
+ * drafts content. This script mimics those pipeline steps so the
+ * overlay engine has the same `<meta name="template">` it'd see in
+ * production. See experiments/knowledge/learnings.md (2026-05-18
+ * entries) for the underlying findings.
+ *
+ * NOT for production. Production uses DA → EDS pipeline directly.
+ *
+ * Usage:
+ *   node transform-da-to-eds.mjs <da-source.html> <drafts-output.html>
  */
 
 import { readFileSync, writeFileSync } from 'node:fs';
 import { argv } from 'node:process';
 
-function slug(text) {
-  return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+/**
+ * Return the inner content of `<body>…</body>`, or the input
+ * unchanged if no body tag is present.
+ */
+function extractBodyInner(html) {
+  const m = html.match(/<body[^>]*>([\s\S]*?)<\/body>/);
+  return m ? m[1] : html;
 }
 
-function extractTables(html, sectionTag) {
-  // Capture each <table>...</table> inside the named section.
-  const sectionRe = new RegExp(`<${sectionTag}>([\\s\\S]*?)</${sectionTag}>`);
-  const sectionMatch = html.match(sectionRe);
-  if (!sectionMatch) return [];
-  const inner = sectionMatch[1];
-  const tables = [];
-  const tableRe = /<table>([\s\S]*?)<\/table>/g;
+/**
+ * Extract the inner content of `<div class="metadata">…</div>` using
+ * balanced-div counting. A naive lazy regex breaks because metadata
+ * rows like `<div><div>home</div></div>` contain `</div></div>`
+ * sequences that look like the block close to a lazy matcher.
+ */
+function extractMetadataInner(html) {
+  const open = '<div class="metadata">';
+  const start = html.indexOf(open);
+  if (start === -1) return '';
+  const innerStart = start + open.length;
+  const tagRe = /<\/?div\b[^>]*>/g;
+  tagRe.lastIndex = innerStart;
+  let depth = 1;
   let m;
   // eslint-disable-next-line no-cond-assign
-  while ((m = tableRe.exec(inner)) !== null) tables.push(m[1]);
-  return tables;
-}
-
-function parseRows(tableInner) {
-  // Returns { name: 'BlockName', rows: [{label, value}], ... }
-  const rows = [];
-  let blockName = null;
-  const rowRe = /<tr>([\s\S]*?)<\/tr>/g;
-  let m;
-  // eslint-disable-next-line no-cond-assign
-  while ((m = rowRe.exec(tableInner)) !== null) {
-    const rowContent = m[1];
-    const thMatch = rowContent.match(/<th[^>]*>([\s\S]*?)<\/th>/);
-    if (thMatch) {
-      blockName = thMatch[1].trim();
-      continue;
+  while ((m = tagRe.exec(html)) !== null) {
+    if (m[0].startsWith('</')) {
+      depth -= 1;
+      if (depth === 0) return html.substring(innerStart, m.index);
+    } else {
+      depth += 1;
     }
-    const cellRe = /<td[^>]*>([\s\S]*?)<\/td>/g;
-    const cells = [];
-    let c;
-    // eslint-disable-next-line no-cond-assign
-    while ((c = cellRe.exec(rowContent)) !== null) cells.push(c[1]);
-    if (cells.length >= 2) rows.push({ label: cells[0].trim(), value: cells[1].trim() });
   }
-  return { name: blockName, rows };
+  return '';
 }
 
-function renderBlockDiv(block) {
-  const cls = slug(block.name);
-  const rows = block.rows
-    .map((r) => `      <div><div>${r.label}</div><div>${r.value}</div></div>`)
-    .join('\n');
-  return `    <div>\n      <div class="${cls}">\n${rows}\n      </div>\n    </div>`;
+/**
+ * Parse `<div><div>label</div><div>value</div></div>` rows from the
+ * metadata block. Values are typically plain text for metadata.
+ */
+function parseMetadataRows(inner) {
+  const out = {};
+  const rowRe = /<div>\s*<div>([\s\S]+?)<\/div>\s*<div>([\s\S]+?)<\/div>\s*<\/div>/g;
+  let m;
+  // eslint-disable-next-line no-cond-assign
+  while ((m = rowRe.exec(inner)) !== null) out[m[1].trim()] = m[2].trim();
+  return out;
 }
 
-function renderMetadataAsMeta(metadataBlock) {
-  if (!metadataBlock) return '';
-  return metadataBlock.rows
-    .map((r) => `  <meta name="${r.label}" content="${r.value.replace(/"/g, '&quot;')}">`)
-    .join('\n');
-}
-
-function pageTitle(html) {
-  const m = html.match(/<header>\s*<p>(.*?)<\/p>\s*<\/header>/);
-  return m ? m[1].trim() : 'Untitled';
+function escapeAttr(s) {
+  return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
 }
 
 const [, , inFile, outFile] = argv;
 if (!inFile || !outFile) {
-  process.stderr.write('Usage: node transform-da-to-eds.mjs <in.html> <out.html>\n');
+  process.stderr.write(
+    'Usage: node transform-da-to-eds.mjs <da-source.html> <drafts-output.html>\n',
+  );
   process.exit(1);
 }
 
 const src = readFileSync(inFile, 'utf8');
-const title = pageTitle(src);
-const mainTables = extractTables(src, 'main').map(parseRows);
-const footerTables = extractTables(src, 'footer').map(parseRows);
-const metadata = footerTables.find((b) => b.name === 'Metadata');
+const bodyInner = extractBodyInner(src);
+const meta = parseMetadataRows(extractMetadataInner(src));
 
-const blocks = mainTables.map(renderBlockDiv).join('\n');
-const metaTags = renderMetadataAsMeta(metadata);
+const title = meta.title || 'Untitled';
+const metaTags = Object.entries(meta)
+  .map(([name, content]) => `  <meta name="${name}" content="${escapeAttr(content)}">`)
+  .join('\n');
 
 const html = `<!DOCTYPE html>
 <html lang="en">
@@ -119,17 +129,12 @@ ${metaTags}
   <script nonce="aem" src="/scripts/aem.js" type="module"></script>
   <script nonce="aem" src="/scripts/scripts.js" type="module"></script>
   <link rel="stylesheet" href="/styles/styles.css">
-  <link rel="stylesheet" href="/styles/home.css">
 </head>
-<body>
-  <header></header>
-  <main>
-${blocks}
-  </main>
-  <footer></footer>
-</body>
+<body>${bodyInner}</body>
 </html>
 `;
 
 writeFileSync(outFile, html);
-process.stdout.write(`Wrote ${outFile} (${html.length} bytes, ${mainTables.length} blocks)\n`);
+process.stdout.write(
+  `Wrote ${outFile} (${html.length} bytes, ${Object.keys(meta).length} meta tags)\n`,
+);

@@ -1,9 +1,9 @@
 /*
  * Minimal EDS lifecycle CSS for overlay-driven pages.
- * The bulk of styling lives in /styles/home.css (or per-template
- * CSS), shipped with the static page contract.
- * Boilerplate typography/button/icon styles were removed because
- * the overlay's template carries its own design system inline.
+ * The bulk of styling lives in /styles/<template>.css, loaded
+ * dynamically by the overlay engine after it resolves the template
+ * name. Boilerplate typography/button/icon styles were removed
+ * because each template carries its own design system inline.
  */
 
 body {
