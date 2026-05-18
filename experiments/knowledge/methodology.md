@@ -58,9 +58,12 @@ becomes template, what becomes slots.
   - `<a>` with text and href → link slot (carries both).
   - Decorative `aria-hidden` icons, hard-coded glyphs → NOT slots,
     stay in template.
-  - Generator-emitted placeholders (Stardust's `data-placeholder="true"`,
-    Mobirise's `[data-mfp-src]`, etc.) → NOT slots; mark with
-    `data-slot-skip="placeholder"`.
+  - Generator-emitted placeholders → NOT slots; mark with
+    `data-slot-skip="placeholder"`. **Detect the convention per-input
+    during this phase and document it in `notes.md`** so the Generate
+    subagent knows what to skip. Examples observed:
+    - Stardust 0.3.0: `<element data-placeholder="true">` attribute.
+    - Stardust 0.2.0: `<span class="placeholder-tag">` inline marker.
 
 Write `notes.md` with the structural map (line numbers, section list,
 header/footer boundary). The map anchors the rest of the run.
@@ -122,12 +125,14 @@ gory details.
    and standard EDS decoration tries to load `/blocks/<name>/<name>.js`
    for every block (one 404 per block).
 
-3. **No inline `<span class="...">` in cell content.** The pipeline's
-   markdown-ish normaliser strips arbitrary inline classed spans
-   (e.g., `<span class="accent">everywhere</span>` becomes plain
-   "everywhere"). `<strong>`, `<em>`, `<a>`, `<h1>`-`<h6>`, `<img>`
-   survive. For typography accents inside titles, use `<strong>`
-   or restructure to put the class on the parent element instead.
+3. **No inline `<span class="...">`, `<b>`, `<i>`, `<u>`, `<mark>`
+   in cell content.** The pipeline's markdown-ish normaliser strips
+   anything not on its preserve list. **Preserve list (empirically):**
+   `<strong>`, `<em>`, `<a>`, `<img>`, `<picture>`, `<h1>`-`<h6>`,
+   `<p>`. Use `<strong>`/`<em>` for inline emphasis; for typography
+   accents inside titles, use `<strong>` or restructure to put the
+   class on the parent element instead. (Run #001 lost
+   `<span class="accent">`; run #002 lost `<b>`.)
 
 ### Slot rules in the template
 

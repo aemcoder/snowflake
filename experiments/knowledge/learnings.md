@@ -18,6 +18,79 @@ verified fact, and link back here.
 
 ---
 
+## 2026-05-18 — `<b>` is stripped by the pipeline normaliser (use `<strong>`)
+
+(from [002-vanguard-proposed-a](../projects/002-vanguard-proposed-a/))
+
+The 2026-05-18 inline-stripping entry already covered `<span class="…">`.
+Run #002 surfaced that `<b>` is also not on the preserve list — even
+without a class. The Vanguard hero used `<b>0.25%</b>` and
+`<b>$1.25M</b>` for typography accents; both survived as plain text
+after the pipeline pass.
+
+Pipeline preserve list (empirically): `<strong>`, `<em>`, `<a>`,
+`<img>`, `<picture>`, `<h1>`-`<h6>`, `<p>`. Anything else gets
+flattened to its text content.
+
+**Generic rule:** in DA cell values, **only use `<strong>` and `<em>`**
+for inline emphasis. Avoid `<b>`, `<i>`, `<u>`, `<mark>`, `<span class>`.
+The methodology doc Generate section enforces this now.
+
+## 2026-05-18 — Templates without an animation engine cost ~150 KB of wasted CDN load
+
+(from [002-vanguard-proposed-a](../projects/002-vanguard-proposed-a/))
+
+The original `delayed.js` always loaded GSAP + ScrollTrigger + Lenis
+before checking whether the page's template actually had an animation
+engine. For plain-HTML templates like `vanguard-home`, that's ~150 KB
+of motion libs downloaded for nothing, plus a 404 on the missing
+engine script.
+
+Fix in `scripts/delayed.js`: HEAD-probe `/scripts/<template>-animations.js`
+before loading CDN deps. If the probe 404s, skip everything silently.
+
+Residual: the HEAD probe's own 404 still logs as a network error
+in the browser console (cosmetic — page renders fine). A future
+polish could use a `<meta name="has-animations">` flag in the DA
+metadata block instead of file-presence probing. Not blocking.
+
+## 2026-05-18 — The substrate works (run #002 needed no rule-restating)
+
+(from [002-vanguard-proposed-a](../projects/002-vanguard-proposed-a/))
+
+For run #002's Generate phase, the subagent prompt was just
+"read methodology.md + learnings.md + this project's docs, then
+produce template + DA doc per the rules in those docs." No re-inlining
+of the run #001 lessons (div-shape DA, `<div class="metadata">` in
+`<main>`, no inline classed spans, etc.).
+
+The subagent applied all three rules correctly on first pass.
+Verified by structural diff: 353/353 elements match input; 0 lint
+warnings; production URL renders correctly on first preview.
+
+This validates the "promote learnings to knowledge/, then a future
+agent reads them and doesn't re-make the mistake" model. The
+substrate IS a learning machine.
+
+## 2026-05-18 — Generator placeholder conventions vary across versions
+
+(from [002-vanguard-proposed-a](../projects/002-vanguard-proposed-a/))
+
+| Generator | Placeholder marker |
+|---|---|
+| Stardust 0.3.0 (run #001) | `<element data-placeholder="true">` attr + nested `placeholder-eyebrow` / `placeholder-shape` spans |
+| Stardust 0.2.0 (run #002) | `<span class="placeholder-tag">` inline marker inside the containing element |
+
+The Generate phase needs to detect which convention is in the input
+and tell the slot extractor what to skip. Both produce the same
+"static template content, not a slot" outcome — but the marker
+differs.
+
+**Generic rule:** the Analyze phase should document the input's
+placeholder convention in `notes.md`; the Generate subagent reads
+that and applies the right skip pattern. Don't hardcode either
+convention into methodology — sniff and pass.
+
 ## 2026-05-18 — EDS pipeline does not convert DA-source `<table>` → `<div class="blockname">`
 
 (from [001-semrush-home-cinematic](../projects/001-semrush-home-cinematic/),
