@@ -16,11 +16,13 @@ This is the most important split in the substrate:
 
 ```
 experiments/
-├── README.md           This file — how to use the substrate
+├── README.md           This file — substrate map + honesty rules
 ├── knowledge/          GENERIC — applies to every project, becomes the skill
 │   ├── architecture.md         Current design (overlay pattern)
+│   ├── methodology.md          Operational guide — read this before running a project
 │   ├── eds-da-mechanics.md     Verified facts about EDS/DA internals
-│   └── learnings.md            Cross-project findings (the brain)
+│   ├── learnings.md            Cross-project findings (the brain)
+│   └── tools/                  Reusable scripts (with their own README)
 └── projects/           PER-PROJECT — one folder per conversion target
     └── <NNN-slug>/
         ├── README.md           What this project is, where source came from
@@ -30,6 +32,14 @@ experiments/
         ├── notes.md            Per-project working notes
         └── learnings.md        Findings that ONLY apply to this project
 ```
+
+**Read order for a fresh agent starting a new project:**
+
+1. This README — for the high-level shape.
+2. `knowledge/architecture.md` — for the overlay design.
+3. `knowledge/methodology.md` — for the per-phase how-to.
+4. `knowledge/learnings.md` — for accumulated gotchas (don't re-derive).
+5. `knowledge/eds-da-mechanics.md` — referenced as needed during work.
 
 **Generic knowledge** = anything that would help convert *the next*
 project. EDS pipeline facts. DA API behaviors. Recurring patterns in
@@ -49,7 +59,7 @@ Everything under `experiments/` is excluded from EDS delivery via
 `.hlxignore` so artifacts can't accidentally collide with real page
 paths.
 
-## The methodology
+## The methodology — six phases
 
 Each project run is a closed loop:
 
@@ -57,31 +67,22 @@ Each project run is a closed loop:
 1. Capture       — grab the static page (HTML, CSS, JS, assets)
 2. Analyze       — identify header/footer; segment the body into semantic
                    blocks; identify text/image slots within each block
-3. Generate      — produce template HTML (with [data-slot] markers),
-                   header/footer fragments, and a DA block-table document
-4. Wire          — deploy artifacts; modify scripts.js so loadEager
-                   performs template+slot merge before decoration
-5. Round-trip    — render the converted page locally, compare DOM to
-                   original, capture the diff
+3. Generate      — produce template, fragments, page CSS/JS, DA doc
+4. Wire          — copy artifacts to template-keyed deployed paths
+5. Round-trip    — render the converted page locally + on a feature
+                   branch's aem.page; diff against the original input
 6. Reflect       — record findings in notes.md; promote anything reusable
                    to knowledge/learnings.md or to the other knowledge
                    docs
 ```
 
+**Don't follow these bullets to run a project — they're the table of
+contents.** `knowledge/methodology.md` has the operational details for
+each phase, including the production-debug rules that make or break
+the Generate step. Read it.
+
 Steps 2 and 3 are where the LLM does the heavy lifting. Step 5 is the
 ground-truth check that keeps us honest.
-
-## Running a new experiment
-
-1. Create `projects/NNN-<slug>/` (next sequence number).
-2. Save the source page under `input/` — include CSS and any referenced
-   assets so the project is self-contained.
-3. Work through steps 2–6 above, producing files in `output/` and
-   `diff/`.
-4. Update `notes.md` as you go. Don't wait until the end.
-5. After the run, ask: *what would I do differently next time?*
-   - If the answer is project-specific, write to project `learnings.md`.
-   - If it would help a future project, write to `knowledge/learnings.md`.
 
 ## Honesty rules
 
