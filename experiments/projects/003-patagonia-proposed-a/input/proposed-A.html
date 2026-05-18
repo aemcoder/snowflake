@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- stardust:provenance
+  writtenBy:         stardust:prototype
+  writtenAt:         2026-04-28T11:32:00Z
+  page:              home (variant A — conservative refresh)
+  pageUrl:           https://www.patagonia.com/
+  surrogateUrl:      https://www.patagonia.com.au/
+  proposedFile:      ./home-A-proposed.html
+  againstDirection:  stardust/direction.md (Active 2026-04-28T11:23:00Z)
+  readArtifacts:
+    - stardust/current/pages/home.json
+    - stardust/current/_brand-extraction.json
+    - DESIGN.md
+    - DESIGN.json
+  stardustVersion:   0.2.0
+  fontDeck:          brand-inherited (Ridgeway Sans target; Inter Tight stand-in for prototype distribution)
+  paletteSource:     inherited from _brand-extraction.json
+  unsourcedContent:  []
+  divergenceVersion: v1.0 (stardust v2 — Mode A brand-faithful)
+  notes: |
+    All literal copy preserved verbatim from current/pages/home.json or _brand-extraction.json§voice.
+    Photography re-used via captured public Shopify CDN URLs in same semantic positions.
+    Pure #000 / #fff retained per brand-faithful inversion (DESIGN.json§divergence).
+-->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Patagonia — Outdoor Clothing & Gear (Variant A · refresh)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* — colour — */
+    --color-bg:           #ffffff;
+    --color-fg:           #000000;
+    --color-fg-2:         #3c3c3c;
+    --color-fg-muted:     #6e6e6e;
+    --color-on-dark:      #ffffff;
+    --color-surface:      #f5f5f5;
+    --color-surface-2:    #ebebeb;
+    --color-surface-alt:  #121212;
+    --color-accent:       #500778;
+    --color-accent-tint:  #3a0556;
+    --color-border:       #e6e6e6;
+    --color-border-strong:#000000;
+    --scrim:              rgba(0,0,0,0.45);
+    --shadow-tint:        rgba(23, 73, 77, 0.18);
+
+    /* — type — */
+    --heading-font-family: "Inter Tight", "RidgewaySans", "Söhne", system-ui, -apple-system, sans-serif;
+    --body-font-family:    "Inter Tight", "RidgewaySans", "Söhne", system-ui, -apple-system, sans-serif;
+
+    --text-xs:   14px;
+    --text-sm:   16px;
+    --body:      16px;
+    --body-sm:   14px;
+    --text-md:   20px;
+    --text-lg:   25px;
+    --text-xl:   32px;
+    --heading-md: 25px;
+    --heading-lg: 40px;
+    --heading-xl: 50px;
+    --heading-xxl: 64px;
+
+    --line-height-heading: 1.05;
+    --line-height-body:    1.55;
+
+    /* — spacing — */
+    --spacing-xs:  4px;
+    --spacing-sm:  8px;
+    --spacing-md:  16px;
+    --spacing-lg:  24px;
+    --spacing-xl:  48px;
+    --spacing-2xl: 64px;
+
+    --section-padding: 64px;
+    --max-width:       1440px;
+    --radius:          8px;
+    --pill:            36px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: var(--body-font-family);
+    font-size: var(--body);
+    line-height: var(--line-height-body);
+    color: var(--color-fg);
+    background: var(--color-bg);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  img { display: block; max-width: 100%; }
+  a { color: inherit; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  button { font: inherit; border: 0; background: transparent; cursor: pointer; color: inherit; }
+  h1, h2, h3, h4, h5, h6 { margin: 0; font-weight: 700; line-height: var(--line-height-heading); letter-spacing: -0.01em; }
+  ul { margin: 0; padding: 0; list-style: none; }
+
+  /* — utility ribbon — */
+  .ribbon {
+    background: var(--color-accent);
+    color: var(--color-on-dark);
+    border-bottom: 1px solid rgba(255,255,255,0.18);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .ribbon__inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 10px 24px;
+    display: flex; align-items: center; gap: 28px;
+    font-weight: 500;
+  }
+  .ribbon__links { display: flex; gap: 28px; }
+  .ribbon__announce { margin-left: auto; opacity: 0.85; text-transform: none; letter-spacing: 0; font-weight: 400; font-size: 13px; }
+
+  /* — header — */
+  .header { background: var(--color-bg); border-bottom: 1px solid var(--color-border); position: sticky; top: 0; z-index: 30; }
+  .header__inner {
+    max-width: var(--max-width); margin: 0 auto;
+    display: grid; grid-template-columns: 1fr auto 1fr;
+    align-items: center; gap: var(--spacing-lg);
+    padding: 14px 24px;
+  }
+  .header__nav { display: flex; gap: 24px; font-size: 15px; font-weight: 500; }
+  .header__nav a { color: var(--color-fg); }
+  .header__nav a:hover { text-decoration: none; opacity: 0.6; }
+  .wordmark {
+    display: inline-flex; flex-direction: column; align-items: center; gap: 3px;
+    color: var(--color-fg);
+    line-height: 1;
+  }
+  .wordmark__text {
+    font-family: "Hoefler Text", "Cormorant Garamond", "Times New Roman", serif;
+    font-weight: 400;
+    font-style: italic;
+    font-size: 26px;
+    letter-spacing: -0.005em;
+  }
+  .wordmark__mark { display: block; }
+  .wordmark__mark svg { display: block; height: 6px; width: auto; }
+  .header__utility { display: flex; gap: 12px; align-items: center; justify-content: flex-end; }
+  .header__search { display: flex; align-items: center; gap: 8px; padding: 8px 14px; border: 1.5px solid var(--color-border); border-radius: 999px; background: var(--color-surface); font-size: 14px; color: var(--color-fg-muted); width: 220px; }
+  .header__icon { width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; border-radius: 999px; }
+  .header__icon:hover { background: var(--color-surface); }
+  .header__icon svg { width: 18px; height: 18px; }
+
+  /* — hero — */
+  .hero {
+    position: relative;
+    min-height: 640px;
+    height: clamp(640px, 78vh, 880px);
+    background: var(--color-surface-alt) center/cover no-repeat;
+    color: var(--color-on-dark);
+    display: flex; align-items: flex-end;
+    overflow: hidden;
+  }
+  .hero__media {
+    position: absolute; inset: 0;
+    background-image: url("https://www.patagonia.com.au/cdn/shop/files/fa36a0a74437d9ecfb15ffb15438903127b84b6f_1_2880x.jpg?v=1774403099");
+    background-size: cover; background-position: center;
+    background-color: #1a2230;
+  }
+  .hero__scrim {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.55) 100%);
+    pointer-events: none;
+  }
+  .hero__inner {
+    position: relative; z-index: 2;
+    max-width: var(--max-width); margin: 0 auto;
+    padding: var(--section-padding) 24px 56px;
+    width: 100%;
+  }
+  .hero__eyebrow { font-size: var(--text-xs); letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.92; margin-bottom: 12px; font-weight: 500; }
+  .hero__title { font-size: var(--heading-xxl); font-weight: 700; letter-spacing: -0.02em; line-height: 1.02; max-width: 18ch; }
+  .hero__sub { font-size: 18px; max-width: 50ch; margin-top: 16px; opacity: 0.92; line-height: 1.5; }
+  .hero__cta { margin-top: 28px; }
+
+  .pill, .btn-pill {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 12px 24px; border-radius: var(--pill);
+    font-size: 16px; font-weight: 500;
+    transition: transform 200ms cubic-bezier(0.2,0.7,0.3,1), background 160ms;
+  }
+  .pill--primary { background: var(--color-on-dark); color: var(--color-fg); }
+  .pill--primary:hover { background: rgba(255,255,255,0.92); transform: translateY(-1px); text-decoration: none; }
+  .pill--dark { background: var(--color-fg); color: var(--color-on-dark); }
+  .pill--dark:hover { background: var(--color-fg-2); transform: translateY(-1px); text-decoration: none; }
+  .pill--ghost { background: transparent; color: var(--color-on-dark); border: 1.5px solid rgba(255,255,255,0.85); }
+  .pill--ghost:hover { background: rgba(255,255,255,0.12); text-decoration: none; }
+
+  /* — sections — */
+  .section { padding: var(--section-padding) 24px; }
+  .section--inset { padding: var(--section-padding) 24px; }
+  .section__inner { max-width: var(--max-width); margin: 0 auto; }
+  .section__head { display: flex; align-items: end; justify-content: space-between; margin-bottom: 24px; gap: 24px; flex-wrap: wrap; }
+  .section__title { font-size: var(--text-xl); letter-spacing: -0.01em; font-weight: 700; }
+  .section__more { font-size: 14px; font-weight: 500; text-decoration: underline; text-underline-offset: 4px; }
+
+  /* — activity tiles — */
+  .tiles { display: grid; gap: var(--spacing-sm); }
+  .tiles--6 { grid-template-columns: repeat(6, 1fr); }
+  .tile {
+    position: relative;
+    aspect-ratio: 4/5;
+    border-radius: var(--radius);
+    overflow: hidden;
+    color: var(--color-on-dark);
+    background: var(--color-surface) center/cover no-repeat;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    transition: box-shadow 220ms cubic-bezier(0.2,0.7,0.3,1), transform 220ms;
+  }
+  .tile:hover { box-shadow: 0 20px 30px var(--shadow-tint); transform: translateY(-2px); }
+  .tile::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0) 50%, rgba(0,0,0,0.5) 100%);
+    pointer-events: none;
+  }
+  .tile__inner { position: relative; z-index: 2; padding: 18px 16px 18px; display: flex; flex-direction: column; gap: 12px; }
+  .tile__label { font-size: 18px; font-weight: 700; letter-spacing: -0.01em; }
+  .tile__cta { align-self: flex-start; }
+
+  /* — secondary hero — */
+  .sec-hero {
+    position: relative;
+    height: 520px;
+    background: var(--color-surface-alt) center/cover no-repeat;
+    color: var(--color-on-dark);
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+    margin: var(--spacing-xl) 0;
+  }
+  .sec-hero__media { position: absolute; inset: 0; background-size: cover; background-position: center; }
+  .sec-hero__scrim { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 30%, rgba(0,0,0,0.5) 100%); }
+  .sec-hero__inner { position: relative; z-index: 2; text-align: center; padding: 0 24px; max-width: 720px; }
+  .sec-hero__title { font-size: var(--heading-lg); letter-spacing: -0.015em; font-weight: 700; }
+  .sec-hero__sub { font-size: 18px; opacity: 0.92; margin-top: 12px; }
+
+  /* — category tiles — */
+  .cats { display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--spacing-sm); }
+  .cat {
+    aspect-ratio: 1/1;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--color-surface) center/cover no-repeat;
+    position: relative;
+    transition: box-shadow 220ms cubic-bezier(0.2,0.7,0.3,1), transform 220ms;
+  }
+  .cat:hover { box-shadow: 0 20px 30px var(--shadow-tint); transform: translateY(-2px); }
+  .cat__caption {
+    position: absolute; inset: auto 12px 12px;
+    background: var(--color-on-dark); color: var(--color-fg);
+    padding: 10px 16px; border-radius: var(--pill);
+    font-size: 14px; font-weight: 500;
+    display: inline-flex; align-items: center; gap: 6px;
+    width: fit-content;
+  }
+
+  /* — values — */
+  .values { background: var(--color-bg); }
+  .values__grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--spacing-lg); }
+  .value { padding-right: 12px; border-right: 1px solid var(--color-border); }
+  .value:last-child { border-right: 0; }
+  .value__icon { width: 32px; height: 32px; margin-bottom: 14px; color: var(--color-fg); }
+  .value__title { font-size: var(--text-md); line-height: 1.25; font-weight: 700; letter-spacing: -0.005em; }
+  .value__link { display: inline-block; margin-top: 12px; font-size: 14px; font-weight: 500; text-decoration: underline; text-underline-offset: 4px; }
+
+  /* — footer — */
+  .footer { background: var(--color-surface-alt); color: var(--color-on-dark); padding: var(--section-padding) 24px 32px; }
+  .footer__inner { max-width: var(--max-width); margin: 0 auto; display: grid; grid-template-columns: 1.2fr 1fr 1.5fr; gap: 56px; }
+  .footer__col h4 { font-size: 16px; margin-bottom: 16px; font-weight: 700; }
+  .footer__sublist, .footer__infolist { display: grid; gap: 8px; font-size: 14px; }
+  .footer__chip { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: var(--pill); border: 1px solid rgba(255,255,255,0.25); font-size: 13px; }
+  .footer__help-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .footer__info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 24px; }
+  .footer__info-grid a { color: var(--color-on-dark); opacity: 0.8; }
+  .footer__info-grid a:hover { opacity: 1; text-decoration: underline; }
+  .footer__email-form { display: flex; gap: 0; max-width: 340px; }
+  .footer__email-form input { flex: 1; background: transparent; border: 1.5px solid rgba(255,255,255,0.4); color: var(--color-on-dark); padding: 12px; font-size: 14px; }
+  .footer__email-form input::placeholder { color: rgba(255,255,255,0.55); }
+  .footer__email-form button { background: var(--color-on-dark); color: var(--color-fg); padding: 12px 20px; font-size: 14px; font-weight: 500; }
+  .footer__legal { margin-top: 56px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.15); display: flex; gap: 24px; flex-wrap: wrap; font-size: 12px; color: rgba(255,255,255,0.6); }
+
+  /* — responsive — */
+  @media (max-width: 1100px) {
+    .tiles--6 { grid-template-columns: repeat(3, 1fr); }
+    .cats { grid-template-columns: repeat(3, 1fr); }
+    .values__grid { grid-template-columns: repeat(2, 1fr); gap: 32px; }
+    .value:nth-child(2) { border-right: 0; }
+    .footer__inner { grid-template-columns: 1fr 1fr; }
+    :root { --section-padding: 48px; }
+    .header__nav { display: none; }
+    .header__inner { grid-template-columns: 1fr auto 1fr; }
+  }
+  @media (max-width: 700px) {
+    .tiles--6 { grid-template-columns: repeat(2, 1fr); }
+    .cats { grid-template-columns: repeat(2, 1fr); }
+    :root { --section-padding: 32px; --heading-xxl: 44px; }
+    .ribbon__links { gap: 16px; font-size: 11px; }
+    .ribbon__announce { display: none; }
+    .header__search { display: none; }
+    .footer__inner { grid-template-columns: 1fr; gap: 40px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ribbon -->
+<div class="ribbon" data-section="utility-ribbon" data-intent="cross-promote activism" data-layout="edge-to-edge">
+  <div class="ribbon__inner">
+    <div class="ribbon__links">
+      <a href="/stardust-site/blogs/roaring-journals">Roaring Journals</a>
+      <a href="/stardust-site/pages/activism">Activism</a>
+      <a href="/stardust-site/pages/business-unusual">Business Unusual</a>
+    </div>
+    <div class="ribbon__announce">Free Shipping on Orders $200+</div>
+  </div>
+</div>
+
+<!-- header -->
+<header class="header" data-section="primary-header" data-intent="navigation" data-layout="contained">
+  <div class="header__inner">
+    <nav class="header__nav" aria-label="Primary">
+      <a href="/stardust-site/collections/mens">Men</a>
+      <a href="/stardust-site/collections/womens">Women</a>
+      <a href="/stardust-site/collections/kids-baby">Kids' &amp; Baby</a>
+      <a href="/stardust-site/collections/packs-gear">Packs &amp; Gear</a>
+      <a href="/stardust-site/collections/sports">Sports</a>
+    </nav>
+    <a href="/stardust-site/" class="wordmark" aria-label="Patagonia home">
+      <span class="wordmark__text">patagonia</span>
+      <span class="wordmark__mark" aria-hidden="true">
+        <svg viewBox="0 0 80 6" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0 6 L8 1 L14 4 L22 0 L30 3 L38 1 L46 4 L54 2 L62 5 L70 1 L80 6 Z" fill="currentColor"/>
+        </svg>
+      </span>
+    </a>
+    <div class="header__utility">
+      <div class="header__search" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="14" height="14"><circle cx="11" cy="11" r="6"/><path d="M16 16l4 4"/></svg>
+        <span>Search for products...</span>
+      </div>
+      <a class="header__icon" href="/stardust-site/account" aria-label="Account">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>
+      </a>
+      <a class="header__icon" href="/stardust-site/wishlist" aria-label="Wishlist">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"/></svg>
+      </a>
+      <a class="header__icon" href="/stardust-site/cart" aria-label="Cart">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 7h14l-1.5 12H6.5L5 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- hero -->
+<section class="hero" data-section="hero" data-intent="emotional hook" data-layout="full-bleed" data-media="image">
+  <div class="hero__media" role="img" aria-label="Surfer paddling out into a cold-water swell"></div>
+  <div class="hero__scrim"></div>
+  <div class="hero__inner">
+    <div class="hero__eyebrow">Yulex® · Neoprene-free</div>
+    <h1 class="hero__title">Outlast the Winter</h1>
+    <p class="hero__sub">High-performance, neoprene-free wetsuits that leave no excuse when the water's cold and the waves are cooking.</p>
+    <div class="hero__cta">
+      <a class="pill pill--primary" href="/stardust-site/pages/yulex">Explore</a>
+    </div>
+  </div>
+</section>
+
+<!-- activity tile grid -->
+<section class="section" data-section="activity-tile-grid" data-intent="route to activity" data-layout="grid" data-items="6">
+  <div class="section__inner">
+    <header class="section__head">
+      <h2 class="section__title">Find your sport</h2>
+      <a class="section__more" href="/stardust-site/collections/all">See all activities</a>
+    </header>
+    <div class="tiles tiles--6">
+      <a class="tile" href="/stardust-site/pages/trail-running" style="background-image:url('https://www.patagonia.com.au/cdn/shop/files/sport2_324x.jpg?v=1648010502')">
+        <div class="tile__inner"><div class="tile__label">Trail Running</div><span class="pill pill--primary tile__cta">Explore</span></div>
+      </a>
+      <a class="tile" href="/stardust-site/pages/surfing" style="background-image:url('https://www.patagonia.com.au/cdn/shop/files/grambeau_t_0055_surfing_routing_1024x_093401d6-d542-491c-9ef9-95e9a3d6a612_324x.jpg?v=1648010499')">
+        <div class="tile__inner"><div class="tile__label">Surf</div><span class="pill pill--primary tile__cta">Explore</span></div>
+      </a>
+      <a class="tile" href="/stardust-site/pages/snow" style="background-image:url('https://www.patagonia.com.au/cdn/shop/files/sport5_324x.jpg?v=1648010504')">
+        <div class="tile__inner"><div class="tile__label">Snow</div><span class="pill pill--primary tile__cta">Explore</span></div>
+      </a>
+      <a class="tile" href="/stardust-site/pages/climbing" style="background-image:url('https://www.patagonia.com.au/cdn/shop/files/sport4_324x.jpg?v=1648010503')">
+        <div class="tile__inner"><div class="tile__label">Climbing</div><span class="pill pill--primary tile__cta">Explore</span></div>
+      </a>
+      <a class="tile" href="/stardust-site/pages/mountain-biking" style="background-image:url('https://www.patagonia.com.au/cdn/shop/files/sport3_324x.jpg?v=1648010503')">
+        <div class="tile__inner"><div class="tile__label">Mountain Biking</div><span class="pill pill--primary tile__cta">Explore</span></div>
+      </a>
+      <a class="tile" href="/stardust-site/pages/fly-fishing" style="background-image:url('https://www.patagonia.com.au/cdn/shop/files/sport6_40x.jpg?v=1648010504')">
+        <div class="tile__inner"><div class="tile__label">Fly Fishing</div><span class="pill pill--primary tile__cta">Explore</span></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- secondary hero -->
+<section class="sec-hero" data-section="secondary-photo-hero" data-intent="brand voice" data-layout="full-bleed" data-media="image">
+  <div class="sec-hero__media" style="background-image:url('https://www.patagonia.com.au/cdn/shop/files/Homepage_Banner_-_Desktop_-1_2880x.jpg?v=1757563012');"></div>
+  <div class="sec-hero__scrim"></div>
+  <div class="sec-hero__inner">
+    <h2 class="sec-hero__title">Stay Out, Stay Dry</h2>
+    <p class="sec-hero__sub">Built to keep moving when the weather doesn't.</p>
+    <div style="margin-top:18px;"><a class="pill pill--primary" href="/stardust-site/collections/rainwear">Explore</a></div>
+  </div>
+</section>
+
+<!-- category tile grid -->
+<section class="section" data-section="category-tile-grid" data-intent="discover by category" data-layout="grid" data-items="6">
+  <div class="section__inner">
+    <header class="section__head">
+      <h2 class="section__title">Shop by category</h2>
+      <a class="section__more" href="/stardust-site/collections/all">All collections</a>
+    </header>
+    <div class="cats">
+      <a class="cat" href="/stardust-site/collections/jackets-vests" style="background-image:url('https://cdn.shopify.com/s/files/1/1605/8669/files/26200_CLMB_BC1_930x930.jpg?v=1756551715')"><span class="cat__caption">Jackets</span></a>
+      <a class="cat" href="/stardust-site/collections/fleece" style="background-image:url('https://cdn.shopify.com/s/files/1/1605/8669/files/37826_OLGG_GNL1_930x930.jpg?v=1756552171')"><span class="cat__caption">Fleece</span></a>
+      <a class="cat" href="/stardust-site/collections/packs-gear" style="background-image:url('https://www.patagonia.com.au/cdn/shop/files/packs-gear-routing_578x.jpg?v=1724829086')"><span class="cat__caption">Packs &amp; Gear</span></a>
+      <a class="cat" href="/stardust-site/collections/t-shirts" style="background-image:url('https://cdn.shopify.com/s/files/1/1605/8669/files/37795_WHI_BK1_930x930.png?v=1742869993')"><span class="cat__caption">T-Shirts</span></a>
+      <a class="cat" href="/stardust-site/pages/yulex" style="background-image:url('https://www.patagonia.com.au/cdn/shop/files/Web_Large-burr_a_7079_BP_578x.jpg?v=1724828023')"><span class="cat__caption">Yulex® Wetsuits</span></a>
+      <a class="cat" href="/stardust-site/collections/workwear" style="background-image:url('https://www.patagonia.com.au/cdn/shop/files/3113ee6e3307620dab5b56efd3a2178054802d93_578x.jpg?v=1746679972')"><span class="cat__caption">Workwear</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- tertiary hero — full-bleed dark band. The captured page has a "Life's in the Bag"
+     photographic hero but its background image was not captured cleanly (lazy-loaded
+     below the screenshot fold); rendering as a black surface-alt band per brand
+     conventions rather than reusing an image with conflicting overlay text. -->
+<section class="sec-hero" data-section="tertiary-photo-hero" data-intent="brand voice" data-layout="full-bleed" data-media="none" style="background:var(--color-surface-alt); margin:var(--spacing-xl) 0; height:auto; padding:80px 24px;">
+  <div class="sec-hero__inner">
+    <div style="font-size:14px; letter-spacing:0.14em; text-transform:uppercase; opacity:0.7; margin-bottom:14px;">Black Hole®</div>
+    <h2 class="sec-hero__title">Life's in the Bag</h2>
+    <p class="sec-hero__sub">Built to haul whatever you're hauling.</p>
+    <div style="margin-top:18px;"><a class="pill pill--primary" href="/stardust-site/collections/black-hole-bags">Shop</a></div>
+  </div>
+</section>
+
+<!-- values row -->
+<section class="section values" data-section="values-row" data-intent="brand pillars" data-layout="grid" data-items="5">
+  <div class="section__inner">
+    <div class="values__grid">
+      <div class="value">
+        <svg class="value__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3l8 4v5c0 5-4 8-8 9-4-1-8-4-8-9V7l8-4z"/><path d="M9 12l2 2 4-4"/></svg>
+        <h3 class="value__title">We guarantee everything we make.</h3>
+        <a class="value__link" href="/stardust-site/pages/ironclad-guarantee">View Ironclad Guarantee</a>
+      </div>
+      <div class="value">
+        <svg class="value__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M3 12c4 0 4 4 9 4s5-4 9-4"/><path d="M3 12c4 0 4-4 9-4s5 4 9 4"/></svg>
+        <h3 class="value__title">We take responsibility for our impact.</h3>
+        <a class="value__link" href="/stardust-site/pages/our-footprint">Explore Our Footprint</a>
+      </div>
+      <div class="value">
+        <svg class="value__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 21V8l8-5 8 5v13"/><path d="M9 21V13h6v8"/></svg>
+        <h3 class="value__title">We support grassroots activism.</h3>
+        <a class="value__link" href="/stardust-site/pages/activism">Visit Activism</a>
+      </div>
+      <div class="value">
+        <svg class="value__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 12a9 9 0 1 1-3.5-7.1"/><path d="M21 4v5h-5"/></svg>
+        <h3 class="value__title">We keep you going.</h3>
+        <a class="value__link" href="/stardust-site/pages/wornwear">Visit Worn Wear</a>
+      </div>
+      <div class="value">
+        <svg class="value__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21l4-12c2 0 4 1 5 3 1-2 3-3 5-3l4 12"/><path d="M12 3v3"/></svg>
+        <h3 class="value__title">We give our profits to the planet.</h3>
+        <a class="value__link" href="/stardust-site/pages/ownership">Read Our Commitment</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- footer -->
+<footer class="footer" data-section="mega-footer" data-intent="discovery / convert / legal" data-layout="grid">
+  <div class="footer__inner">
+    <div class="footer__col">
+      <h4>Subscribe</h4>
+      <p style="margin-top:0; opacity:.85; font-size:14px; max-width:36ch;">Sign up to receive Patagonia news and stories.</p>
+      <form class="footer__email-form" onsubmit="event.preventDefault();">
+        <input type="email" placeholder="Email address" aria-label="Email address" required>
+        <button type="submit">Sign Up</button>
+      </form>
+    </div>
+    <div class="footer__col">
+      <h4>Need Help?</h4>
+      <div class="footer__help-grid">
+        <a class="footer__chip" href="/stardust-site/pages/store-locator">Find a Store</a>
+        <a class="footer__chip" href="/stardust-site/customer-service">Contact Us</a>
+        <a class="footer__chip" href="/stardust-site/pages/order-status">Order Status</a>
+        <a class="footer__chip" href="/stardust-site/pages/returns">Returns</a>
+        <a class="footer__chip" href="/stardust-site/pages/shipping">Shipping</a>
+        <a class="footer__chip" href="/stardust-site/pages/size-charts">Size Charts</a>
+      </div>
+    </div>
+    <div class="footer__col">
+      <h4>More Info</h4>
+      <div class="footer__info-grid">
+        <a href="/stardust-site/pages/cold-weather-layering">Cold Layering Guide</a>
+        <a href="/stardust-site/pages/yulex">Yulex® Wetsuits</a>
+        <a href="/stardust-site/pages/wornwear">Worn Wear</a>
+        <a href="/stardust-site/pages/our-footprint">Our Footprint</a>
+        <a href="/stardust-site/pages/activism">Activism</a>
+        <a href="/stardust-site/blogs/films">Films</a>
+        <a href="/stardust-site/blogs/roaring-journals">Roaring Journals</a>
+        <a href="/stardust-site/pages/business-unusual">Business Unusual</a>
+        <a href="/stardust-site/products/egiftcard">Gift Cards</a>
+        <a href="/stardust-site/pages/events">Events</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer__legal">
+    <span>© 2026 Patagonia, Inc.</span>
+    <a href="/stardust-site/pages/privacy">Privacy</a>
+    <a href="/stardust-site/pages/terms">Terms</a>
+    <a href="/stardust-site/pages/accessibility">Accessibility</a>
+    <span style="margin-left:auto; opacity:.6;">Variant A · conservative refresh</span>
+  </div>
+</footer>
+
+</body>
+</html>
