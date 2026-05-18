@@ -208,3 +208,33 @@ flag in the metadata block. Not blocking; documented for run #003.
   (different from 0.3.0's `data-placeholder="true"`).
 - Card-wrapper anchors don't get slots — same pattern as run #001.
 
+## Phase: Follow-up (user-spotted subtle font drift)
+
+User noticed the converted page had subtle typography drift vs the
+original Vanguard. Investigation: computed font-family stacks were
+identical (`"FF Mark", "Mona Sans", "Inter Tight", system-ui,
+sans-serif`) BUT the network-loaded fonts differed — original had
+15 Mona Sans weight variants loaded; converted had only boilerplate
+roboto. The CSS named Mona Sans but the font was never fetched.
+
+Root cause: the source `<head>` had three `<link>` elements
+(Google Fonts preconnects + Mona Sans stylesheet) that the mechanical
+CSS extraction missed. Only inline `<style>` got promoted.
+
+Substrate fix made (commit `6f3dbd1`): `applyTemplateOverlay`
+now lifts any top-level `<link>` from `/templates/<template>.html`
+into `document.head`. Templates can self-describe head needs.
+
+Run #002's template updated to declare its three font links at the
+top. Verified:
+- Local: 15 Mona Sans variants loaded, h1 typography correct
+- Production: same, after Code Sync redeploy and DA-content
+  unchanged (the change was purely code)
+
+Production screenshot updated: `diff/production-with-font.jpg`
+(supersedes the earlier `production-viewport.jpg`).
+
+Promoted to `experiments/knowledge/learnings.md` and a methodology
+rule was added to the Generate phase (capture head-level `<link>`
+elements, not just inline `<style>`).
+

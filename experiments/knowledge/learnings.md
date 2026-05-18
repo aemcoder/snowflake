@@ -18,6 +18,36 @@ verified fact, and link back here.
 
 ---
 
+## 2026-05-18 — Template head-level `<link>` resources must be lifted into document.head
+
+(from [002-vanguard-proposed-a](../projects/002-vanguard-proposed-a/),
+follow-up: subtle styling difference user spotted)
+
+Run #002 looked right at first glance but the user noticed subtle
+typography drift. Root cause: the original `<head>` had three
+`<link>` elements (Google Fonts preconnects + Mona Sans stylesheet)
+that the mechanical CSS extraction missed — only the inline `<style>`
+block was picked up. The CSS still named Mona Sans in font stacks,
+so `font-family: ... "Mona Sans" ...` resolved against… nothing.
+Browser fell back to system-ui, which is visually similar but
+distinctly not Mona Sans.
+
+**Substrate fix:** `scripts/scripts.js` `applyTemplateOverlay` now
+lifts any top-level `<link>` elements from the template file into
+`document.head` (deduping by href+rel). Templates self-describe their
+head-level resource needs.
+
+**Conversion-phase rule (in methodology now):** when extracting head
+resources, capture all `<link>` elements — not just stylesheets,
+also preconnects and any preload hints. Put them at the top of the
+template file, above `<main>`. They get picked up automatically.
+
+**Why this slipped the run #001 detection:** Semrush's source had
+its fonts referenced from inline CSS (via `--heading-font-family:
+'Adobe Clean Display' …` which is system-installed for most macOS
+users running Adobe apps). Run #002 needed a Google Font that no
+one has installed. Different surface for the same underlying gap.
+
 ## 2026-05-18 — `<b>` is stripped by the pipeline normaliser (use `<strong>`)
 
 (from [002-vanguard-proposed-a](../projects/002-vanguard-proposed-a/))

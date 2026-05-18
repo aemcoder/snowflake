@@ -84,6 +84,29 @@ output/
 └── da/<page-slug>.html                        ← DA-source body fragment
 ```
 
+**Don't forget head-level `<link>` resources.** The source page's
+`<head>` often has more than just inline `<style>` — font preconnects,
+Google Fonts stylesheet links, etc. Extract those too and include them
+at the **top of the template file**, above `<main>`:
+
+```html
+<!-- /templates/<template>.html -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=…">
+
+<main>
+  …slot-marked sections…
+</main>
+```
+
+The overlay engine lifts any top-level `<link>` it finds in the
+template into `document.head` at runtime. Without these, font stacks
+that name third-party fonts (Mona Sans, Inter, etc.) silently
+fall back to system-ui — visually subtle, semantically wrong.
+Discovered in run #002 when the converted Vanguard page rendered
+with system-ui where the original used Mona Sans.
+
 ### Critical rules for the DA doc
 
 These are the lessons from run #001 — DO NOT re-derive them empirically.
