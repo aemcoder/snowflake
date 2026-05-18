@@ -54,14 +54,32 @@ First experiment in the static-to-EDS overlay project.
 
 ## Conversion contract for this run
 
-- **Header** = announcement-banner + gnav → `/fragments/header.html`
-  (static, in repo). The announcement banner is part of the header
-  conceptually here since it sits above gnav.
-- **Footer** = site-footer → `/fragments/footer.html`
+Template name: **`home`**. All deployed paths are template-keyed —
+see `experiments/knowledge/architecture.md` for the convention.
+
+- **Header** = announcement-banner + gnav (+ mega-nav dim/panel)
+  → `/fragments/home/header.html`. The announcement banner is part
+  of the header conceptually here since it sits above gnav.
+- **Footer** = sticky-cta + modal + site-footer → `/fragments/home/footer.html`.
 - **Template** = the remaining 11 sections, with text and image slots
   marked via `data-slot`. Saved to `/templates/home.html`.
-- **DA document** = one block table per section, with rows of
-  `slot-name | content`.
+- **Page CSS** = inline `<style>` extracted to `/styles/home.css`,
+  loaded dynamically by the overlay engine.
+- **Page JS** = inline animation engine extracted to
+  `/scripts/home-animations.js`, loaded in delayed phase with GSAP +
+  ScrollTrigger + Lenis CDN deps.
+- **DA document** = `/sf-5th-attempt/exp-001/home.html`. **Note: two
+  versions live in `output/da/`** — see below.
+
+## DA document — two versions
+
+| File | Status |
+|---|---|
+| `output/da/home.html` | Original table-format DA doc. **Does not render correctly** — the EDS pipeline doesn't convert `<table>` blocks to `<div class="blockname">` for DA-sourced documents. Kept as a record of the lesson. |
+| `output/da/home-divshape.html` | Body fragment in divs-with-class shape (post-pipeline shape used directly as DA source). Adds a `<div class="metadata">` block for the page template/title. **This is what's actually deployed at the DA URL.** |
+
+The lesson is fully documented in `experiments/knowledge/learnings.md`
+under the 2026-05-18 entries.
 
 ## Status
 
