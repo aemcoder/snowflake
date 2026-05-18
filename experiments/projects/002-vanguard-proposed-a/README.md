@@ -57,7 +57,11 @@ template-keyed convention (see `experiments/knowledge/architecture.md`).
 - **Footer** = `<footer class="site-footer">` (brand + 4 cols + legal)
   → `/fragments/vanguard-home/footer.html`.
 - **Template** = the 9 `<main>` sections with `[data-slot]` markers
-  → `/templates/vanguard-home.html`.
+  → `/templates/vanguard-home.html`. The template file also declares
+  three head-level `<link>`s at its top (Google Fonts preconnects +
+  Mona Sans stylesheet); the overlay engine lifts them into
+  `document.head` so font-family stacks naming Mona Sans actually
+  resolve. See run-#002 Follow-up notes for the discovery.
 - **Page CSS** = the 270-line inline `<style>` block → `/styles/vanguard-home.css`,
   loaded dynamically by the overlay engine.
 - **Page JS** = none. No `/scripts/vanguard-home-animations.js`

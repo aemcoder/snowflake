@@ -155,12 +155,15 @@ async function applyTemplateOverlay(main) {
   // Lift any top-level <link> resources the template declares into
   // <head>. Lets a template self-describe its head needs (font
   // preconnects, Google Fonts stylesheet, etc) without forcing those
-  // links into the shared head.html for every page.
+  // links into the shared head.html for every page. Dedupe by the
+  // resolved href + rel string so a template doesn't double-load a
+  // resource that head.html already brings in.
+  const existingLinks = [...document.head.querySelectorAll('link')];
   doc.body.querySelectorAll(':scope > link').forEach((link) => {
-    const href = link.getAttribute('href');
-    const rel = link.getAttribute('rel');
-    if (document.head.querySelector(`link[href="${href}"][rel="${rel}"]`)) return;
-    document.head.appendChild(link.cloneNode(true));
+    const clone = link.cloneNode(true);
+    if (existingLinks.some((l) => l.href === clone.href && l.rel === clone.rel)) return;
+    document.head.appendChild(clone);
+    existingLinks.push(clone);
   });
 
   applySlotsToTemplate(newMain, slots);
