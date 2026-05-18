@@ -149,9 +149,66 @@ Two new generic rules to `knowledge/learnings.md` + methodology:
 
 In `learnings.md` in this folder.
 
-## Phase: Close (2026-05-18)
+## Phase: Close (premature — reopened)
 
-Iteration closed. Branch `sf-overlay-exp-003` frozen at commit
-TBD, tagged `iter-003-close`. Production URL remains live against
-the frozen branch.
+The agent closed prematurely after the production round-trip looked
+clean. User noticed afterwards that the header and footer weren't
+rendering visually (DOM was correct, but `visibility: hidden` was
+inherited from a boilerplate lifecycle CSS rule). Closure reverted.
+
+Tag `iter-003-close` was pushed to origin at `97342ba` before the
+issue was found. Leaving it as the "tentative close" marker; the
+user will decide when an actual close happens.
+
+## Phase: Follow-up — header/footer visibility regression
+
+User report: header and footer not rendering on production page.
+
+### Diagnosis
+
+`getComputedStyle` on the inner `<header class="header">` (Patagonia's
+own header element, nested inside the EDS block wrapper) returned
+`visibility: hidden`. Same for the inner `<footer class="footer">`.
+
+The DOM was correct — content loaded, dimensions correct (header
+70.7px, footer 480px) — but the inner elements were invisible.
+
+Root cause: the boilerplate's lifecycle CSS in `styles/styles.css`
+was:
+```css
+header .header,
+footer .footer { visibility: hidden; }
+
+header .header[data-block-status="loaded"],
+footer .footer[data-block-status="loaded"] { visibility: visible; }
+```
+
+The descendant selector `header .header` matches **any** `.header`
+inside a `<header>`. Patagonia's fragment uses `<header class="header">`
+as the inner element — that gets matched too, but it doesn't have
+`data-block-status`, so it never flips to visible.
+
+Vanguard's run #002 inner header was `<header class="site-header">`
+— different class, no collision. Semrush's run #001 was
+`<header class="gnav">` — same. Only Patagonia's class name
+collides with the boilerplate's lifecycle rule.
+
+### Fix (substrate)
+
+Tightened the selector to direct-child (`>`):
+```css
+header > .header,
+footer > .footer { visibility: hidden; }
+
+header > .header[data-block-status="loaded"],
+footer > .footer[data-block-status="loaded"] { visibility: visible; }
+```
+
+`header > .header` only matches the EDS block wrapper (which IS the
+direct `.header` child of `<header>`). Patagonia's nested
+`<header class="header">` is not a direct child of `<header>`
+— it's inside the block wrapper — so it escapes the rule.
+
+Substrate fix, applies to all overlay templates. Promoted to
+`experiments/knowledge/learnings.md`.
 

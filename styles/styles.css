@@ -24,13 +24,17 @@ main .section[data-section-status="initialized"] {
 
 /* Header/footer block visibility flag from aem.js block lifecycle.
    Allows the empty <header>/<footer> placeholders to stay invisible
-   until our static fragments are fetched and injected. */
-header .header,
-footer .footer {
+   until our static fragments are fetched and injected.
+   Uses direct-child (>) so we only target the EDS block wrapper —
+   NOT any nested .header / .footer elements the fetched fragment
+   might contain (Patagonia, run #003, had <header class="header">
+   inside the wrapper and the descendant selector hid it). */
+header > .header,
+footer > .footer {
   visibility: hidden;
 }
 
-header .header[data-block-status="loaded"],
-footer .footer[data-block-status="loaded"] {
+header > .header[data-block-status="loaded"],
+footer > .footer[data-block-status="loaded"] {
   visibility: visible;
 }

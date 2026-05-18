@@ -72,6 +72,59 @@ utility class (`section`, `card`, `tile`, etc.), use the
 `data-section` (or equivalent per-instance label) as the canonical
 unique identifier. Methodology updated.
 
+## 2026-05-18 — Boilerplate lifecycle CSS uses descendant selectors that catch fragment internals
+
+(from [003-patagonia-proposed-a](../projects/003-patagonia-proposed-a/),
+follow-up: header/footer visibility regression)
+
+The boilerplate `styles/styles.css` ships a visibility-lifecycle
+rule for the empty header/footer placeholders:
+
+```css
+/* before */
+header .header,
+footer .footer { visibility: hidden; }
+
+header .header[data-block-status="loaded"],
+footer .footer[data-block-status="loaded"] { visibility: visible; }
+```
+
+The intent: hide the EDS block wrapper (the `<div class="header block">`
+that's the direct child of `<header>`) until JS decoration flips
+`data-block-status` to `"loaded"`.
+
+The bug: `header .header` is a DESCENDANT selector. It matches **any**
+`.header` inside a `<header>`. If the fetched fragment contains its
+own `<header class="header">` (which Patagonia's source did — same
+class name), the descendant rule matches and hides it. The override
+rule needs `data-block-status` on the matched element, which the
+fragment-internal header doesn't have. → permanently hidden.
+
+Vanguard (run #002) escaped this because its fragment-internal
+header used `class="site-header"`. Semrush (run #001) used
+`class="gnav"`. Only run #003 collided.
+
+**Substrate fix** (in `styles/styles.css`): tighten to direct-child:
+
+```css
+/* after */
+header > .header,
+footer > .footer { visibility: hidden; }
+
+header > .header[data-block-status="loaded"],
+footer > .footer[data-block-status="loaded"] { visibility: visible; }
+```
+
+`header > .header` only matches the immediate `.header` child of
+`<header>` — the EDS block wrapper. Fragment-internal `<header class="header">`
+or `<footer class="footer">` are nested deeper and escape.
+
+**Generic rule:** when adding cascading CSS to the boilerplate
+substrate that targets standard HTML element classes (`.header`,
+`.footer`, `.nav`, etc.), prefer direct-child selectors. Fragment
+markup is opaque to the substrate; we don't know what class names
+authors will use inside.
+
 ## 2026-05-18 — Boilerplate block CSS leaks into overlay-fetched fragments
 
 (from [002-vanguard-proposed-a](../projects/002-vanguard-proposed-a/),
