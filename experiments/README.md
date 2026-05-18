@@ -84,6 +84,24 @@ the Generate step. Read it.
 Steps 2 and 3 are where the LLM does the heavy lifting. Step 5 is the
 ground-truth check that keeps us honest.
 
+## Branching policy
+
+The git story of an iteration is itself a learning artifact — when
+that run was closed, this is what shipped. Don't muddy it.
+
+- **Trunk** (currently `sf-overlay-exp`): substrate evolves here.
+  New iterations branch from here.
+- **Iteration branch** (`sf-overlay-exp-NNN`): active during that
+  run. When the iteration closes, the branch stays **frozen**.
+- **Substrate fixes during iteration N+1:** apply only to the trunk
+  and the active N+1 branch. Don't fast-forward, cherry-pick, or
+  rebase fixes onto a closed earlier-iteration branch unless the
+  user explicitly asks.
+
+The point: each iteration's branch is a snapshot of "what we knew
+and shipped at the close of that run." Retroactive edits erase the
+timeline of what improved between runs.
+
 ## Honesty rules
 
 - Mark any claim as **verified** (we've run it) or **assumed** (we're
