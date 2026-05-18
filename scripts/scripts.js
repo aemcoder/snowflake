@@ -129,6 +129,12 @@ async function applyTemplateOverlay(main) {
 
   const slots = readBlockSlots(main);
 
+  // Load template-scoped CSS in parallel with the template HTML so
+  // styles arrive before body.appear paints. `head.html` no longer
+  // hardcodes a per-template stylesheet — each template ships its
+  // own at /styles/<template>.css.
+  const cssLoaded = loadCSS(`${window.hlx.codeBasePath}/styles/${templateName}.css`);
+
   const resp = await fetch(`${window.hlx.codeBasePath}/templates/${templateName}.html`);
   if (!resp.ok) {
     // eslint-disable-next-line no-console
@@ -150,6 +156,8 @@ async function applyTemplateOverlay(main) {
 
   main.innerHTML = newMain.innerHTML;
   main.dataset.overlay = templateName;
+
+  await cssLoaded;
   return true;
 }
 

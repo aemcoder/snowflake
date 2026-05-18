@@ -1,9 +1,16 @@
 /**
  * Delayed phase — non-LCP-critical work that can wait.
- * For overlay pages, this loads the page's animation engine.
+ * For overlay pages, this loads the template's animation engine
+ * (if it exists). The engine is at /scripts/<template>-animations.js.
+ * Pages whose template doesn't ship an animation engine simply
+ * 404 the script and continue.
  */
 const main = document.querySelector('main');
-if (main && main.dataset.overlay) {
+const template = main?.dataset?.overlay;
+
+if (template) {
+  // CDN deps shared across templates. Add per-template variants here if
+  // a future template uses a different motion stack.
   const cdnDeps = [
     'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js',
     'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js',
@@ -18,10 +25,6 @@ if (main && main.dataset.overlay) {
     document.head.appendChild(s);
   });
 
-  // Load all CDN deps in parallel; load the engine afterwards
-  // regardless of individual misses. The animations engine has
-  // reduced-motion guards and defensive global checks, so missing
-  // libs degrade to no-op rather than crashing.
   Promise.allSettled(cdnDeps.map(loadScript)).then((results) => {
     results.forEach((r) => {
       if (r.status === 'rejected') {
@@ -30,7 +33,11 @@ if (main && main.dataset.overlay) {
       }
     });
     const engine = document.createElement('script');
-    engine.src = `${window.hlx.codeBasePath}/scripts/animations.js`;
+    engine.src = `${window.hlx.codeBasePath}/scripts/${template}-animations.js`;
+    engine.onerror = () => {
+      // eslint-disable-next-line no-console
+      console.warn(`[animations] no engine at /scripts/${template}-animations.js — skipping`);
+    };
     document.head.appendChild(engine);
   });
 }

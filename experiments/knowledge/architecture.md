@@ -19,64 +19,95 @@ generator's output.
 
 ## Solution shape
 
+Every artifact is **template-keyed** so multiple runs coexist in
+one EDS repo without colliding (refactor done on
+[sf-overlay-exp-002](../projects/) branch).
+
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│  ONE-TIME CONVERTER  (per static page → four kinds of artifact)     │
-│                                                                     │
-│  static page.html ─┬─► /fragments/header.html  (lives in EDS repo)  │
-│                    ├─► /fragments/footer.html  (lives in EDS repo)  │
-│                    ├─► /templates/<name>.html  (lives in EDS repo)  │
-│                    │     ↳ original DOM with [data-slot="…"]        │
-│                    │       markers where texts and images sat       │
-│                    ├─► /styles/<name>.css      (page CSS, optional) │
-│                    └─► DA doc (pushed via admin API)                │
-│                          ↳ one block table per semantic block       │
-│                          ↳ rows: slot-name | content                │
-└─────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────┐
+│  ONE-TIME CONVERTER  (per static page → five kinds of artifact)      │
+│                                                                      │
+│  static page.html ─┬─► /fragments/<template>/header.html  (code bus) │
+│                    ├─► /fragments/<template>/footer.html  (code bus) │
+│                    ├─► /templates/<template>.html         (code bus) │
+│                    │     ↳ original <main> with [data-slot]          │
+│                    │       markers where texts and images sat        │
+│                    ├─► /styles/<template>.css             (code bus) │
+│                    ├─► /scripts/<template>-animations.js  (optional) │
+│                    └─► DA doc (pushed via admin API)                 │
+│                          ↳ divs-with-class shape, body fragment      │
+│                          ↳ one <div class="blockname"> per block     │
+│                          ↳ rows: slot-name | value (paired divs)     │
+│                          ↳ <div class="metadata"> in <main> for       │
+│                            template/title/og:* meta tags              │
+└──────────────────────────────────────────────────────────────────────┘
 
                       AT REQUEST TIME (browser)
 
-  GET /home  →  DA serves block-table HTML (the editable bits only)
+  GET /<path>  →  pipeline serves DA-stored body (divs-with-class)
+                  with <meta name="template"> populated from the
+                  Metadata block
                        │
                        ▼
-       scripts.js loadEager — overlay step inserted here:
+       scripts.js loadEager — overlay step:
          1. resolveTemplateName():
               <meta name="template"> || body[data-template] || null
          2. readBlockSlots(main): walk DA-shape divs →
               { blockClassName: { slotName: html, ... } }
-         3. fetch /templates/<name>.html → parse → newMain
+         3. start loadCSS('/styles/<template>.css') and
+            fetch('/templates/<template>.html') in parallel
          4. applySlotsToTemplate(newMain, slots): for each
               section[class], find [data-slot] elements and
               writeSlot() with element-typed semantics
               (text→innerHTML, img→src/alt, a→href+innerHTML)
          5. main.innerHTML = newMain.innerHTML
          6. main.dataset.overlay = templateName  ← sentinel
-         7. body.appear → first paint
+         7. await cssLoaded
+         8. body.appear → first paint
                        │
                        ▼
        loadLazy:
-         - <header> block fetches /fragments/header.html (raw HTML)
-         - <footer> block fetches /fragments/footer.html (raw HTML)
+         - blocks/header/header.js reads main.dataset.overlay,
+           fetches /fragments/<template>/header.html
+         - blocks/footer/footer.js — same for footer
          - main.dataset.overlay set → skip standard loadSections
                        │
                        ▼
        loadDelayed:
-         - if main.dataset.overlay, load template's animation engine
-           (e.g. /scripts/animations.js + its CDN deps)
+         - if main.dataset.overlay set: load CDN motion deps in
+           parallel (Promise.allSettled), then attempt
+           /scripts/<template>-animations.js (404 is silent —
+           templates without animations don't need it)
                        │
                        ▼
        Final rendered DOM == original static page DOM ✅
 ```
+
+## Path conventions
+
+| Artifact                | Path                                          |
+|-------------------------|-----------------------------------------------|
+| Template HTML           | `/templates/<template>.html`                  |
+| Page-scoped CSS         | `/styles/<template>.css`                      |
+| Header fragment         | `/fragments/<template>/header.html`           |
+| Footer fragment         | `/fragments/<template>/footer.html`           |
+| Animation engine        | `/scripts/<template>-animations.js`           |
+| Local test (drafts)     | `/drafts/<page-slug>.html` (post-pipeline shape) |
+| DA content              | `/<da-root>/<page-slug>.html`                 |
+
+Nothing in `head.html` references a specific template anymore. The
+overlay engine resolves the template at runtime and loads everything
+scoped under that name.
 
 ## Where decisions live
 
 | Decision                     | Who decides         | Encoded as                          |
 |------------------------------|---------------------|-------------------------------------|
 | Which template a page uses   | Author (via DA)     | `<meta name="template">` in DA doc  |
-| Page structure / classes     | Original generator  | `/templates/<name>.html`            |
-| Header & footer markup       | Original generator  | `/fragments/header.html`, `/footer` |
+| Page structure / classes     | Original generator  | `/templates/<template>.html`        |
+| Header & footer markup       | Original generator  | `/fragments/<template>/header.html` |
 | Editable text/image values   | Author              | DA block-table rows                 |
-| Block grouping (semantics)   | Converter (LLM)     | Block table names in DA             |
+| Block grouping (semantics)   | Converter (LLM)     | `<div class="blockname">` in DA     |
 | Slot naming                  | Converter (LLM)     | `data-slot` in template, row key    |
 
 ## Why this shape
@@ -177,6 +208,14 @@ run #2 with a page where real repetition exists.
 
 ## Update log
 
+- **2026-05-18** (post-run-#001 prod-debug + refactor for run #002) —
+  refactored all hardcoded asset paths to be template-keyed
+  (`/fragments/<template>/...`, `/scripts/<template>-animations.js`,
+  CSS loaded dynamically by the overlay engine instead of from
+  `head.html`). Pipeline gotchas surfaced and documented:
+  DA-source tables don't auto-convert to div-with-class; footer
+  Metadata table is ignored, must be a `<div class="metadata">`
+  block in `<main>`; inline `<span class="...">` is stripped.
 - **2026-05-14** (run #001 reflect) — validated overlay-runs-and-EDS-
   decoration-is-skipped pattern. Updated diagram and "Why this
   shape." Added Slot semantics section. Documented per-`<style>`-block

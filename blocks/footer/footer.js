@@ -1,11 +1,13 @@
 /**
- * Loads the static footer fragment from the code bus.
- * The fragment lives at /fragments/footer.html and contains everything
- * below the main content (sticky-cta, modal, site footer). It is NOT
- * authored — see experiments/knowledge/architecture.md.
+ * Loads the template-specific footer fragment from the code bus.
+ * Each overlay-controlled page sets main.dataset.overlay = <template>
+ * during loadEager; we read it here to pick the right fragment.
+ * Fragments live at /fragments/<template>/footer.html.
  */
 export default async function decorate(block) {
-  const path = '/fragments/footer.html';
+  const template = document.querySelector('main')?.dataset?.overlay;
+  if (!template) return;
+  const path = `/fragments/${template}/footer.html`;
   const resp = await fetch(`${window.hlx.codeBasePath}${path}`);
   if (!resp.ok) {
     // eslint-disable-next-line no-console

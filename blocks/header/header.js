@@ -1,11 +1,13 @@
 /**
- * Loads the static header fragment from the code bus.
- * The fragment lives at /fragments/header.html and contains the full
- * header DOM (announcement banner, gnav, mega-nav panels). It is NOT
- * authored — see experiments/knowledge/architecture.md.
+ * Loads the template-specific header fragment from the code bus.
+ * Each overlay-controlled page sets main.dataset.overlay = <template>
+ * during loadEager; we read it here to pick the right fragment.
+ * Fragments live at /fragments/<template>/header.html.
  */
 export default async function decorate(block) {
-  const path = '/fragments/header.html';
+  const template = document.querySelector('main')?.dataset?.overlay;
+  if (!template) return;
+  const path = `/fragments/${template}/header.html`;
   const resp = await fetch(`${window.hlx.codeBasePath}${path}`);
   if (!resp.ok) {
     // eslint-disable-next-line no-console

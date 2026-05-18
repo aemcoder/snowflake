@@ -1,4 +1,4 @@
 helix-importer-ui
 *.min.js
-scripts/animations.js
+scripts/*-animations.js
 experiments/
