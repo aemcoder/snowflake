@@ -2,6 +2,7 @@
 coverage/*
 logs/*
 node_modules/*
+.playwright-mcp/
 
 helix-importer-ui
 .DS_Store
@@ -11,3 +12,7 @@ helix-importer-ui
 # Ensure these files are tracked
 !CLAUDE.md
 !AGENTS.md
+
+.hlx/.da-token.json
+
+content
