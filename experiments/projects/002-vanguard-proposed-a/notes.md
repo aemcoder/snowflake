@@ -265,3 +265,48 @@ resolves to `536.305px` (matching the original's `536.281px` —
 delta is float noise from a tiny width difference). Visual diff
 in `diff/converted-header-fixed.jpg` matches the original layout.
 
+## Phase: Close (2026-05-18)
+
+Iteration closed. Branch `sf-overlay-exp-002` frozen at commit
+`655176f`, tagged `iter-002-close`. Production URL remains live
+against the frozen branch.
+
+### Substrate improvements made during this run
+
+Three landed on trunk as a side-effect of this iteration:
+
+1. `scripts/delayed.js` HEAD-probes the engine URL before loading
+   CDN deps (saves ~150 KB on no-animation templates).
+2. `scripts/scripts.js` `applyTemplateOverlay` lifts top-level
+   `<link>` elements from the template file into `document.head`
+   (templates self-describe their head-level resource needs).
+3. `blocks/header/header.css` and `blocks/footer/footer.css` are
+   now intentionally empty — the boilerplate's element-level rules
+   were leaking into overlay-fetched fragments and breaking layout.
+
+### Cross-project learnings promoted (knowledge/learnings.md)
+
+- `<b>` is stripped by the pipeline normaliser (use `<strong>`).
+- Templates without an engine cost ~150 KB without the HEAD probe.
+- The substrate works — run #002 needed no rule-restating.
+- Generator placeholder conventions vary across versions.
+- Template head-level `<link>` resources must be lifted into head.
+- Boilerplate block CSS leaks into overlay-fetched fragments.
+
+### Open items deferred (not blocking close)
+
+- The HEAD probe's own 404 logs to console (cosmetic). A
+  metadata-flag-based alternative is noted for run #003.
+- The pre-existing run #001 issue with invisible Pricing /
+  Enterprise nav items in the gnav — flagged but not in scope
+  for this iteration.
+
+### Next time the substrate is touched, run #003 will benefit from
+
+- Template-keyed asset paths (no per-template collision)
+- Self-describing head `<link>` resources
+- Empty boilerplate block CSS (no cascade fights)
+- The `transform-da-to-eds.mjs` script that takes div-shape DA
+  source and emits a drafts file
+- The full methodology doc with all production-debug rules baked in
+

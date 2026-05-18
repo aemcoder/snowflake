@@ -73,4 +73,16 @@ template-keyed convention (see `experiments/knowledge/architecture.md`).
 
 ## Status
 
-See `notes.md` for the in-progress log.
+**Closed 2026-05-18 at commit `655176f` (tag `iter-002-close`).**
+
+- Production URL (frozen against `sf-overlay-exp-002` branch):
+  `https://sf-overlay-exp-002--snowflake--aemcoder.aem.page/sf-overlay-exp-002/home`
+- DA editor URL:
+  `https://da.live/edit#/aemcoder/snowflake/sf-overlay-exp-002/home`
+- Final rendered DOM is visually faithful to the original Vanguard
+  page; computed font-family / font-size / margin / color /
+  layout-flex all match.
+
+See `notes.md` for the full phase log (Capture → Analyze →
+Generate → Wire → Round-trip → Reflect, plus three follow-up
+phases — fonts, head-link substrate fix, boilerplate-CSS leak).
