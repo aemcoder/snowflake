@@ -221,3 +221,64 @@ user; restoration deferred to their decision.
 Promoted to `knowledge/learnings.md` + methodology (Slot rules
 section now lists 5 writer types).
 
+## Phase: Close (2026-05-19)
+
+Iteration closed by explicit user request after:
+  - End-to-end overlay verified on production (sf-overlay-exp-004
+    branch).
+  - DA edit-and-publish round-trip verified working.
+  - Image authorability fix landed (substrate background-image
+    slot writer + 6 pillar-card photos slotted).
+  - architecture.md + methodology.md synced with the 5th writer
+    case.
+  - DA-PUT-clobbers-edits gotcha documented in learnings.
+
+Branch `sf-overlay-exp-004` frozen at this commit. Tag
+`iter-004-close` to follow.
+
+### Substrate improvements made during this run (full list)
+
+1. `scripts/delayed.js` HEAD-probes engine URL before loading CDN
+   deps (saves ~150 KB on no-animation templates). [Earlier in run]
+2. `scripts/scripts.js applyTemplateOverlay` lifts top-level
+   `<link>` elements from template into `document.head`.
+3. `styles/styles.css` lifecycle rules tightened to direct-child
+   selectors so fragment-internal `.header`/`.footer` classes
+   don't get hidden.
+4. `scripts/scripts.js writeSlot()` adds a 5th case for
+   background-image slots (target element with inline
+   `style="background-image:url()"` + `data-slot` → engine writes
+   new URL into `el.style.backgroundImage`).
+5. Variable-naming polish in `writeSlot` (`img` for parsed `<img>`
+   across both IMG and background-image cases).
+
+(Items 1–3 landed across run #003 reopen and run #004 wire phase;
+item 4 is the user-requested image authorability fix; item 5 is
+self-review polish.)
+
+### Cross-project learnings promoted (full list, 6 entries)
+
+In `experiments/knowledge/learnings.md`:
+
+1. `<br>` is also stripped by the pipeline normaliser.
+2. Disambiguator hierarchy when `data-section` is absent.
+3. Relative asset paths must be rewritten to absolute.
+4. Background-image slot writer (5th `writeSlot` case).
+5. DA admin PUT clobbers author edits (no merge semantics).
+6. (carryover from run #003 reopen on this branch): Boilerplate
+   lifecycle CSS uses descendant selectors that catch fragment
+   internals — use direct-child.
+
+### Open items deferred (not blocking close)
+
+- Per-phase body text in `phased-expansion` still blocked by
+  `<br>` stripping. Would need engine support for two slots in
+  one element, or `<br>` survival via different markup.
+- Header/footer logos in fragments aren't slotted. Typically
+  chrome, not page content; out of scope unless asked.
+- The user's `WOW!` eyebrow edit was overwritten during a
+  PUT and not restored. User aware; deferred to their choice.
+- Run #003's 13 background-image tiles could benefit from the
+  new slot writer (same fix), but `sf-overlay-exp-003` is frozen
+  per policy. Backportable on explicit request.
+

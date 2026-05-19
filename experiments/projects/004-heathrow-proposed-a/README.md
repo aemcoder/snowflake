@@ -77,10 +77,9 @@ Template name: **`heathrow-home`**.
 
 ## Status
 
-**Active.** Image authorability fix landed (run-#004-2 commit
-`4075260`). Awaiting user direction for closure.
+**Closed 2026-05-19 (tag `iter-004-close`).**
 
-- Production URL (against `sf-overlay-exp-004`):
+- Production URL (frozen against `sf-overlay-exp-004`):
   `https://sf-overlay-exp-004--snowflake--aemcoder.aem.page/sf-overlay-exp-004/home`
 - DA editor: `https://da.live/edit#/aemcoder/snowflake/sf-overlay-exp-004/home`
 
