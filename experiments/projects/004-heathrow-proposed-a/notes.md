@@ -173,12 +173,51 @@ delayed.js, styles/styles.css, blocks/*).
 
 In `learnings.md` in this folder.
 
-### Open items (not blocking)
+### Open items
 
 - Per-phase body text in the phased-expansion section isn't DA-
   authorable due to the `<br>` workaround. Would need engine
   support for "two slots in one element" or for `<br>` survival
-  via different markup.
-- Pillar-card photos in inline `style="background-image:url(...)"`
-  aren't slottable. Same engine limitation flagged in runs #001-#003.
+  via different markup. Still open.
+- ~~Pillar-card photos in inline `style="background-image:url(...)"`
+  aren't slottable.~~ **Resolved 2026-05-19** via the new
+  background-image slot writer (substrate addition). All 6 pillar
+  photos are now DA-authorable. Bonus: EDS Media Bus optimises
+  the images automatically once they're DA-stored.
+
+## Phase: Follow-up — image authorability (background-image slot)
+
+After local + production round-trip verified working, user noted
+that the 6 pillar-card photos weren't editable from DA. Initial
+investigation (saved in chat log) identified the gap: writeSlot
+only knew IMG / PICTURE / A / default-text; CSS-driven photos
+via inline `style="background-image:url()"` weren't covered.
+
+Substrate addition (commit `04b5f9d`):
+- `scripts/scripts.js writeSlot()` adds a 5th case before the
+  default. Detection: `el.style.backgroundImage` is truthy.
+  Behaviour: extract `<img src>` from DA cell, write to
+  `el.style.backgroundImage`, preserving other inline styles.
+- Template change: add `data-slot="card-N.photo"` to each of the
+  6 `<div class="pillar-card__photo">` elements.
+- DA doc: 6 new image rows inserted before each `card-N.label`
+  row (photo becomes the natural first slot in each card group).
+
+Local verified: all 6 pillar photos' `style.backgroundImage`
+URLs are now set by the engine reading from DA, not from template
+defaults.
+
+Production verified: Media Bus picked up the `<img>` cells and
+rewrote them to optimised paths
+(`./media_<sha>.jpg?width=750&format=jpg&optimize=medium`).
+Engine writes those into background-image — overlay pages get
+EDS image optimization for free.
+
+Side-effect during deploy: the upload of the updated DA doc
+overwrote the user's experimental `WOW!` prefix in the eyebrow
+(introduced earlier as a content-change test). Surfaced to the
+user; restoration deferred to their decision.
+
+Promoted to `knowledge/learnings.md` + methodology (Slot rules
+section now lists 5 writer types).
 

@@ -72,6 +72,42 @@ utility class (`section`, `card`, `tile`, etc.), use the
 `data-section` (or equivalent per-instance label) as the canonical
 unique identifier. Methodology updated.
 
+## 2026-05-19 — Background-image slot writer (5th writeSlot case)
+
+(from [004-heathrow-proposed-a](../projects/004-heathrow-proposed-a/),
+follow-up: image authorability ask)
+
+Static pages often use CSS-driven photos rather than `<img>` tags
+— hero backdrops, tile/card "media" divs with
+`style="background-image:url(…)"`. Run #003 (Patagonia) had 13
+such photos; run #004 (Heathrow) had 6 pillar-card photos. None
+were authorable through the existing image slot writer (which
+only knows `<img>`/`<picture>`/`<a>`).
+
+**Substrate addition** in `scripts/scripts.js writeSlot()`: when
+the target element has a truthy `el.style.backgroundImage`, treat
+it as a background-image slot. The DA cell carries an `<img>`;
+the engine extracts the `src` and writes
+`el.style.backgroundImage = \`url('\${src}')\``, preserving any other
+inline styles. ~8 lines.
+
+Template authoring: just add `data-slot` to the existing
+background-image-bearing element. No DOM restructuring.
+
+DA authoring: an `<img src="…" alt="…">` in the cell. Authors
+get DA's standard image picker.
+
+**Bonus** confirmed in run #004 production: the EDS pipeline's
+Media Bus auto-rewrites `<img>` URLs in DA cells to optimised
+references (e.g. `./media_<sha>.jpg?width=750&format=jpg&optimize=medium`).
+The engine writes that URL into background-image — so the
+overlay-rendered page gets responsive, optimised images even when
+the source markup is CSS-driven.
+
+Per the branching policy, this fix applies to trunk + run #004
+only. Run #003's 13 background-image tiles stay frozen with the
+gap; backportable on explicit request.
+
 ## 2026-05-19 — `<br>` is also stripped by the pipeline normaliser
 
 (from [004-heathrow-proposed-a](../projects/004-heathrow-proposed-a/))

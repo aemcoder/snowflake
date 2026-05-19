@@ -219,6 +219,16 @@ gory details.
   replaces the picture with the DA cell's `<picture>`.
 - Link slot: `<a data-slot="name" href="…">label</a>`. Runtime copies
   `href` and `innerHTML` from the DA cell's `<a>`.
+- **Background-image slot**: any element with an inline
+  `style="background-image:url(…)"` plus a `data-slot` attribute.
+  DA cell carries an `<img>`; runtime extracts its `src` and writes
+  it as the element's `background-image` URL, preserving other
+  inline styles. Use this for CSS-driven photos (hero backdrops,
+  card tiles where the image is the container's background, etc.)
+  without restructuring the source's markup. (Added in run #004 —
+  unblocks Heathrow's 6 pillar-card photos. The pipeline's Media
+  Bus also picks up the `<img>` in the DA cell and serves an
+  optimised version via `./media_<sha>.jpg?width=…&format=…&optimize=…`.)
 - Placeholder pass-through: `<el data-slot-skip="placeholder">…</el>`.
   Never a slot; rendered as-is.
 
