@@ -212,3 +212,27 @@ direct `.header` child of `<header>`). Patagonia's nested
 Substrate fix, applies to all overlay templates. Promoted to
 `experiments/knowledge/learnings.md`.
 
+## Phase: Close (2026-05-19 — actual)
+
+Iteration closed by explicit user request after the substrate
+fix was verified rendering correctly in production. Branch
+`sf-overlay-exp-003` frozen at this commit. Tag `iter-003-close`
+moved from the stale `97342ba` (premature close) to the actual
+close point on this branch.
+
+### Substrate improvements made during this run
+
+1. Two Generate-phase rules (synthesize `<main>`, disambiguate
+   first-class collisions) promoted to methodology + learnings.
+2. `styles/styles.css` lifecycle rules tightened to direct-child
+   selectors so fragment-internal `.header`/`.footer` elements
+   aren't accidentally hidden.
+
+### Process learning
+
+The agent prematurely closed after the production round-trip looked
+clean — without scrolling beyond the hero. Header & footer were
+in the DOM but `visibility: hidden`; the close docs missed it.
+User caught the regression and reopened. Updated memory: closure
+is now strictly user-driven, never agent-initiated.
+

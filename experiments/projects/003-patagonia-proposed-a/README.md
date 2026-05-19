@@ -79,19 +79,21 @@ Template name: **`patagonia-home`**.
 
 ## Status
 
-**Active.** (Tentatively tagged `iter-003-close` at `97342ba`
-— that was a premature close by the agent; reopened by the user
-to fix a header/footer rendering regression. New close to be set
-when the user decides.)
+**Closed 2026-05-19 (tag `iter-003-close` moved to actual close).**
 
-- Working URL: `https://sf-overlay-exp-003--snowflake--aemcoder.aem.page/sf-overlay-exp-003/home`
+The tag was originally pushed at `97342ba` during a premature
+close by the agent; user reopened to fix a header/footer rendering
+regression; the tag was moved to the real close commit.
+
+- Production URL (against `sf-overlay-exp-003`):
+  `https://sf-overlay-exp-003--snowflake--aemcoder.aem.page/sf-overlay-exp-003/home`
 - DA editor: `https://da.live/edit#/aemcoder/snowflake/sf-overlay-exp-003/home`
 
-See `notes.md` for the full phase log.
-
-### Cross-project knowledge promoted from this run (so far)
+### Cross-project knowledge promoted from this run
 
 - Synthesize `<main>` if source has none.
 - Disambiguate first-class collisions via `data-section`.
 - Tighten boilerplate lifecycle CSS to direct-child selectors so
   fragment-internal `.header` / `.footer` classes don't get hidden.
+
+See `notes.md` for the full phase log.
