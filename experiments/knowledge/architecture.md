@@ -146,23 +146,41 @@ publish-time / edge-merge implementation. The merge logic is identical.
 
 ## Slot semantics
 
-Verified run #001:
+Five writer cases in `writeSlot()` (dispatch by target element).
+Each branch returns early; cases are checked in this order:
 
-- **Text slots** (default): `[data-slot]` on a heading, paragraph,
-  span, or button. Runtime sets `el.innerHTML = value`. Preserves
-  inline HTML in the value (e.g. `<span class="accent">` inside a
-  title). Authors can include simple inline HTML in DA cells.
-- **Image slots**: `[data-slot]` on `<img>`. Runtime copies `src` and
-  `alt` from an `<img>` element parsed from the cell value.
-- **Picture slots**: `[data-slot]` on `<picture>`. Runtime replaces
-  the element with a `<picture>` parsed from the cell value.
-- **Link slots**: `[data-slot]` on `<a>`. Runtime copies `href` and
-  sets the anchor's innerHTML from an `<a>` parsed from the cell.
+- **Image slots**: `[data-slot]` on `<img>`. Runtime parses an
+  `<img>` from the cell value and copies its `src`/`alt`.
+  (Verified run #001.)
+- **Picture slots**: `[data-slot]` on `<picture>`. Runtime parses
+  a `<picture>` from the cell and replaces the template element
+  entirely with it. (Verified run #001.)
+- **Link slots**: `[data-slot]` on `<a>`. Runtime parses an `<a>`
+  from the cell and copies `href` + `innerHTML`. Falls back to
+  setting `innerHTML = value` if the cell has no `<a>`.
+  (Verified run #001.)
+- **Background-image slots** (added run #004): `[data-slot]` on
+  any element with an inline `style="background-image:url(…)"`.
+  Runtime parses an `<img>` from the cell, extracts its `src`,
+  and writes it back into `el.style.backgroundImage`, preserving
+  any other inline styles on the element. Use for CSS-driven
+  photos without restructuring source markup. Bonus: EDS Media
+  Bus rewrites the `<img>` URLs in DA cells to optimised paths
+  (`./media_<sha>.jpg?width=…&format=…&optimize=…`), so overlay
+  pages get image optimisation for free.
+- **Text slots** (default fall-through): any other element with
+  `[data-slot]`. Runtime sets `el.innerHTML = value`. Preserves
+  inline HTML the pipeline keeps (`<strong>`/`<em>`/`<a>`/`<img>`/
+  `<picture>`/`<h*>`/`<p>`); avoid `<b>`/`<i>`/`<u>`/`<mark>`/
+  `<br>`/`<span class>` per the preserve-list rules in
+  `methodology.md` Generate phase.
 
 - **`data-slot-skip="placeholder"`**: not a slot. Used to mark
-  generator-emitted placeholder UIs (e.g. Stardust's
-  `data-placeholder="true"` elements) that should stay visible in
-  the rendered DOM but never appear as authorable rows in DA.
+  generator-emitted placeholder UIs (e.g. Stardust 0.3.0's
+  `data-placeholder="true"` elements, 0.2.0's
+  `<span class="placeholder-tag">` markers) that should stay
+  visible in the rendered DOM but never appear as authorable
+  rows in DA.
 
 ## Repeating items
 
