@@ -86,3 +86,99 @@ protects future runs that DO collide.
    - `<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600&display=swap">`
    - NOT the `assets/css/site.css` link (replaced by dynamic load).
 
+## Phase: Generate
+
+Delegated to a subagent that read methodology + learnings + this
+project's docs.
+
+Produced (in `output/`):
+- `templates/heathrow-home.html` — 53 `[data-slot]` markers, 4
+  unique-first-class sections in synthesized `<main>`, 3 Open Sans
+  head `<link>`s at top.
+- `da/home.html` — 4 content blocks + 1 metadata block, divs-with-class
+  shape, all rules followed.
+
+Subagent's notable judgment calls:
+1. **Pillar-card `<div class="pillar-card__photo" style="background-image:url(...)">`**
+   left static. Inline-style background images don't fit the
+   img/picture slot patterns. Photo URLs aren't authorable from DA;
+   the visual structure is preserved exactly.
+2. **`<br>` inside phase copy**: each phase had `<p><strong>Title</strong><br>trailing</p>`.
+   `<br>` is not on the pipeline preserve list. Subagent slotted only
+   the `<strong>` (as `phase-N.heading`) and left the trailing text
+   as static template defaults. **Generic finding promoted: `<br>`
+   gets stripped.**
+3. `&` in content: source has bare `&` in titles; DA cells use
+   `&amp;`. Standard HTML.
+
+Mechanical extractions: header (17 lines), footer (39 lines),
+`assets/css/site.css` lifted verbatim to `/styles/heathrow-home.css`
+(664 lines).
+
+## Phase: Wire
+
+Standard copy-to-deployed-paths. **One project-specific issue**
+discovered + fixed during this phase:
+
+- 10 relative asset references (`assets/photos/*.jpg`,
+  `assets/logos/heathrow-white.png`) caused 9 console 404s on
+  localhost — assets/ resolved against the serving host, which
+  doesn't have them.
+- Fixed: rewrote all 10 to absolute URLs pointing back to
+  `https://paolomoz.github.io/stardust-site/samples/heathrow/`.
+- Generic finding promoted to `knowledge/learnings.md` + methodology:
+  "rewrite relative asset paths to absolute pointing back to source."
+
+## Phase: Round-trip
+
+### Local
+- overlayApplied: "heathrow-home" ✓
+- 4 unique-first-class sections (hero, about-consultation,
+  phased-expansion, cta-band) ✓
+- Header + footer both visible (header 65px, footer 375px) ✓
+- Open Sans 30 variants loaded ✓
+- 1 expected error (animations 404)
+
+### Production (sf-overlay-exp-004)
+- Pushed branch (commit `317eea3`), Code Sync deployed within
+  seconds.
+- PUT body fragment to admin.da.live → HTTP 201.
+- POST preview → HTTP 200.
+- Force-refreshed code endpoint for styles/heathrow-home.css to
+  ensure latest deploy (precaution after run #003's caching observation).
+- Production URL renders full page end-to-end. Full-page screenshot
+  at `diff/production-fullpage.jpg` shows header, hero, 6 pillar
+  cards, 4-phase timeline, purple CTA band, dark footer — all
+  matching the original design.
+
+## Phase: Reflect (not closed — awaiting user)
+
+### Substrate improvements made during this run
+
+None to the deployed code paths. All three findings are
+methodology/learnings-level (no code changes to scripts.js,
+delayed.js, styles/styles.css, blocks/*).
+
+### Cross-project learnings promoted
+
+1. **`<br>` is also stripped** by the pipeline normaliser.
+   Preserve list expanded to include it explicitly.
+2. **Disambiguator hierarchy** when `data-section` is absent:
+   `data-section` → `id` → eyebrow/label slug → positional.
+3. **Relative asset paths must be rewritten** to absolute URLs
+   pointing back to the source host. Assets migration to DA is
+   explicitly out of scope.
+
+### Project-specific learnings
+
+In `learnings.md` in this folder.
+
+### Open items (not blocking)
+
+- Per-phase body text in the phased-expansion section isn't DA-
+  authorable due to the `<br>` workaround. Would need engine
+  support for "two slots in one element" or for `<br>` survival
+  via different markup.
+- Pillar-card photos in inline `style="background-image:url(...)"`
+  aren't slottable. Same engine limitation flagged in runs #001-#003.
+

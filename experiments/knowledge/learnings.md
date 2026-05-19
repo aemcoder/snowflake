@@ -72,6 +72,96 @@ utility class (`section`, `card`, `tile`, etc.), use the
 `data-section` (or equivalent per-instance label) as the canonical
 unique identifier. Methodology updated.
 
+## 2026-05-19 — `<br>` is also stripped by the pipeline normaliser
+
+(from [004-heathrow-proposed-a](../projects/004-heathrow-proposed-a/))
+
+The preserve-list discoveries from run #002 (`<b>` stripped) and
+run #003 (`<span class>` stripped, by extrapolation) now extend
+to `<br>`. Run #004's source used `<p><strong>Title</strong><br>trailing
+text</p>` in 4 phase descriptions. If we'd put the whole `<p>`
+content into a DA cell with the `<br>`, the pipeline would have
+emitted `Titletrailing text` on one line.
+
+The subagent surfaced this and worked around by slotting only the
+`<strong>` (as `phase-N.heading`) and leaving the trailing text as
+static per-phase template defaults — preserving visual fidelity
+at the cost of per-phase body authorability.
+
+**Updated preserve list (empirical, 4 runs):**
+`<strong>`, `<em>`, `<a>`, `<img>`, `<picture>`, `<h1>`-`<h6>`, `<p>`.
+**Stripped:** `<b>`, `<i>`, `<u>`, `<mark>`, `<span class>`, **`<br>`**.
+
+Methodology updated to add `<br>` explicitly to the strip list.
+For content that needs a line break inside a slot value, the
+Generate phase should restructure to two `<p>` tags (or two slots)
+rather than one `<p>` with `<br>`.
+
+## 2026-05-19 — When `data-section` is absent, derive first-class from a label or eyebrow
+
+(from [004-heathrow-proposed-a](../projects/004-heathrow-proposed-a/))
+
+Run #003 introduced the rule: when multiple sections share a
+first class, promote `data-section`'s value to first class.
+Heathrow has no `data-section` attributes — it's not a Stardust
+output, it's hand-crafted (or a different generator).
+
+Two `<section class="section">` blocks still needed
+disambiguation. Solution: derive a slug from the section's
+**visible label** (the `<p class="label">` or similar eyebrow
+typically present at the top of every section in static-page
+designs):
+- `<p class="label label--accent">About this consultation</p>`
+  → `about-consultation` becomes the first class
+- `<p class="label label--accent">A phased expansion</p>`
+  → `phased-expansion` becomes the first class
+
+This generalises the methodology rule. The discriminator hierarchy
+is now:
+1. `data-section` attribute (Stardust convention).
+2. `id` attribute on the section element (Heathrow's `cta-band` had
+   `id="have-your-say"` but its first class was already unique).
+3. **Slug from the most prominent eyebrow/label inside the
+   section.**
+4. Last resort: positional `section-N`.
+
+Methodology updated.
+
+## 2026-05-19 — Source pages with relative asset paths need URL rewriting
+
+(from [004-heathrow-proposed-a](../projects/004-heathrow-proposed-a/))
+
+Vanguard, Patagonia, Semrush all used **absolute CDN URLs** for
+their images (`https://investor.vanguard.com/…`,
+`https://cdn.shopify.com/…`). They worked unchanged in our
+overlay because absolute URLs resolve identically from any host.
+
+Heathrow's source uses **relative paths** (`assets/photos/hero-vision.jpg`,
+`assets/logos/heathrow-white.png`). These resolve against the
+serving host. On our overlay-served URL
+(`localhost:3000/drafts/<page>.html` or
+`<branch>--<repo>--<owner>.aem.page/<da-root>/<page>`), they
+404 because the assets don't exist at the corresponding paths
+on our host.
+
+**Generic rule for the Generate phase:** scan the source for
+relative asset references (matches like `="assets/`, `url('assets/`,
+etc., or any non-`http(s)`/non-`data:` URL in src/href/url()
+positions). Rewrite to absolute URLs pointing back to the source's
+host — for Heathrow, the prefix is
+`https://paolomoz.github.io/stardust-site/samples/heathrow/`.
+
+For the substrate, this means asset migration is **explicitly
+out of scope** — we link back to the source's CDN/host for
+images, fonts, etc. If a future iteration wants self-hosted
+assets, the DA `/media/<site-slug>/` pattern from the team docs
+is the path. For now, "rewrite to source-absolute" keeps things
+simple.
+
+Run #004's 10 relative refs were rewritten in `output/templates`,
+`output/fragments`, and `output/da/home.html` before deployment.
+Methodology updated.
+
 ## 2026-05-18 — Boilerplate lifecycle CSS uses descendant selectors that catch fragment internals
 
 (from [003-patagonia-proposed-a](../projects/003-patagonia-proposed-a/),

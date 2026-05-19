@@ -84,6 +84,19 @@ output/
 └── da/<page-slug>.html                        ← DA-source body fragment
 ```
 
+**Rewrite relative asset paths to absolute.** When a source uses
+relative paths like `assets/photos/foo.jpg`, `url(./images/bar.png)`,
+`<link href="assets/css/site.css">`, they resolve against our
+serving host (`localhost:3000/drafts/...` or
+`<branch>--<repo>--<owner>.aem.page/<da-root>/...`) — where they
+404. Rewrite them all to absolute URLs pointing back to the source
+host (e.g.
+`https://paolomoz.github.io/stardust-site/samples/<site>/assets/...`).
+This applies to template HTML, fragment HTML, DA cell values
+referencing images, and any CSS `url()` references. Asset migration
+to DA's `/media/` is explicitly out of scope unless the user asks.
+(Discovered in run #004 — first source we hit with relative paths.)
+
 **Don't forget head-level `<link>` resources.** The source page's
 `<head>` often has more than just inline `<style>` — font preconnects,
 Google Fonts stylesheet links, etc. Extract those too and include them
@@ -123,11 +136,18 @@ Two transformations the template needs that aren't slot-related:
    sections by `section.className.split(' ')[0]`. If the source
    has multiple sections sharing a first class (common when
    utility classes like `section`, `card`, `tile` are used),
-   rewrite so a stable discriminator (typically `data-section`'s
-   value) becomes the first class. Keep the original classes
-   in the list afterward — CSS rules depending on them still
-   match. (Discovered in run #003 — three section classes
-   collided.)
+   rewrite so a stable discriminator becomes the first class.
+   Keep the original classes in the list afterward — CSS rules
+   depending on them still match.
+
+   Discriminator priority (use the first one that works):
+   1. `data-section` attribute (Stardust convention).
+   2. `id` attribute on the section element.
+   3. Slug from the most prominent eyebrow/label inside the
+      section (`<p class="label">`, `<span class="eyebrow">`, etc).
+   4. Last resort: positional `section-N`.
+
+   (Discovered in run #003, generalised in run #004.)
 
    Example:
    ```diff
@@ -176,14 +196,17 @@ gory details.
    and standard EDS decoration tries to load `/blocks/<name>/<name>.js`
    for every block (one 404 per block).
 
-3. **No inline `<span class="...">`, `<b>`, `<i>`, `<u>`, `<mark>`
-   in cell content.** The pipeline's markdown-ish normaliser strips
-   anything not on its preserve list. **Preserve list (empirically):**
-   `<strong>`, `<em>`, `<a>`, `<img>`, `<picture>`, `<h1>`-`<h6>`,
-   `<p>`. Use `<strong>`/`<em>` for inline emphasis; for typography
-   accents inside titles, use `<strong>` or restructure to put the
-   class on the parent element instead. (Run #001 lost
-   `<span class="accent">`; run #002 lost `<b>`.)
+3. **No inline `<span class="...">`, `<b>`, `<i>`, `<u>`, `<mark>`,
+   `<br>` in cell content.** The pipeline's markdown-ish normaliser
+   strips anything not on its preserve list. **Preserve list
+   (empirical, 4 runs):** `<strong>`, `<em>`, `<a>`, `<img>`,
+   `<picture>`, `<h1>`-`<h6>`, `<p>`. Use `<strong>`/`<em>` for
+   inline emphasis; for typography accents inside titles, use
+   `<strong>` or restructure to put the class on the parent
+   element instead. For line breaks inside a slot value, restructure
+   to two `<p>` tags (or two slots) rather than `<br>`.
+   (Run #001 lost `<span class="accent">`; run #002 lost `<b>`;
+   run #004 confirmed `<br>` strips.)
 
 ### Slot rules in the template
 
