@@ -67,10 +67,10 @@ function parseFirst(value, selector) {
 function writeSlot(el, value) {
   const { tagName } = el;
   if (tagName === 'IMG') {
-    const src = parseFirst(value, 'img');
-    if (src) {
-      el.src = src.getAttribute('src');
-      if (src.alt) el.alt = src.alt;
+    const img = parseFirst(value, 'img');
+    if (img) {
+      el.src = img.getAttribute('src');
+      if (img.alt) el.alt = img.alt;
     }
     return;
   }
@@ -100,7 +100,9 @@ function writeSlot(el, value) {
     const img = parseFirst(value, 'img');
     if (img) {
       const newSrc = img.getAttribute('src');
-      el.style.backgroundImage = `url('${newSrc}')`;
+      // Double-quote — URLs more commonly contain ' than " (which
+      // would have to be percent-encoded), so " is the safer wrap.
+      el.style.backgroundImage = `url("${newSrc}")`;
     }
     return;
   }
