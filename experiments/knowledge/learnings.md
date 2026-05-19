@@ -72,6 +72,35 @@ utility class (`section`, `card`, `tile`, etc.), use the
 `data-section` (or equivalent per-instance label) as the canonical
 unique identifier. Methodology updated.
 
+## 2026-05-19 — DA admin PUT replaces the entire doc — clobbers author edits
+
+(from [004-heathrow-proposed-a](../projects/004-heathrow-proposed-a/),
+when we deployed the photo-slot change)
+
+The DA admin source API has no merge semantics. `PUT /source/<org>/<repo>/<path>.html`
+**replaces the document wholesale**. If the user has made content
+edits in the DA editor since the last upload, a PUT of our local
+copy silently discards their edits.
+
+This happened in run #004: the user had added a `WOW!` prefix to
+the hero eyebrow as a content-change test. Later, when we uploaded
+the locally-modified DA doc to add 6 photo-slot rows, the `WOW!`
+edit was lost — our local doc didn't have it.
+
+**Generic rule for any "edit local file → upload to DA" workflow:**
+- Before PUTting, GET the current DA source and diff against your
+  last-uploaded version to surface author edits.
+- If there are edits, either merge them into the local copy or
+  flag them to the user before proceeding.
+- A naive PUT after a session of DA editing **will lose work**.
+
+A safer pattern for incremental updates: fetch the DA source first,
+modify in place (e.g., insert the new slot rows but keep author-
+edited slot values), then PUT. The current
+`experiments/knowledge/tools/transform-da-to-eds.mjs` is
+unidirectional (file → file, no DA round-trip) — a future helper
+could do the fetch-merge-PUT pattern for in-place additions.
+
 ## 2026-05-19 — Background-image slot writer (5th writeSlot case)
 
 (from [004-heathrow-proposed-a](../projects/004-heathrow-proposed-a/),

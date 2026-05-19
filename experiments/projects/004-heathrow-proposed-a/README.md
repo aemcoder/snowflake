@@ -77,4 +77,24 @@ Template name: **`heathrow-home`**.
 
 ## Status
 
-See `notes.md` for the in-progress log.
+**Active.** Image authorability fix landed (run-#004-2 commit
+`4075260`). Awaiting user direction for closure.
+
+- Production URL (against `sf-overlay-exp-004`):
+  `https://sf-overlay-exp-004--snowflake--aemcoder.aem.page/sf-overlay-exp-004/home`
+- DA editor: `https://da.live/edit#/aemcoder/snowflake/sf-overlay-exp-004/home`
+
+### Cross-project knowledge promoted from this run
+
+- `<br>` is also stripped by the pipeline normaliser.
+- Disambiguator hierarchy when `data-section` is absent:
+  `data-section` → `id` → eyebrow/label slug → positional.
+- Relative asset paths must be rewritten to absolute URLs pointing
+  back to the source host.
+- Background-image slot writer (5th `writeSlot` case) — CSS-driven
+  photos via inline `style="background-image:url()"` are now
+  authorable via DA.
+- DA admin PUT clobbers author edits — local-file-then-upload
+  workflows must fetch+merge first if edits may have happened.
+
+See `notes.md` for the full phase log.
